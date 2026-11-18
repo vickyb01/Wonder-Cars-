@@ -1,0 +1,4076 @@
+{
+  "cars": [
+    {
+      "id": "car-911-carrera-s-2022",
+      "listingCode": "SM-9921",
+      "slug": "2022-porsche-911-carrera-s",
+      "brand": "Porsche",
+      "model": "911 Carrera S",
+      "variant": "992 Coupe PDK",
+      "year": 2022,
+      "registrationYear": 2022,
+      "registrationDate": "2022-04-18",
+      "priceInr": 18800000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-12",
+      "priceExplanation": "Reflects low 9,400 km reading, full factory PPF from delivery, Sport Chrono package, and active Porsche Centre Mumbai service history.",
+      "discountNote": "",
+      "marketComparisonNote": "Comparable 2022 992 Carrera S listings in Mumbai range ₹1.85 Cr – ₹1.98 Cr.",
+      "kilometres": 9400,
+      "fuelType": "Petrol",
+      "transmission": "PDK",
+      "ownership": "1st Owner",
+      "location": "Mumbai, MH",
+      "status": "Available",
+      "featured": true,
+      "category": "Sports Coupe",
+      "bodyType": "Coupe",
+      "color": "GT Silver Metallic",
+      "interiorColor": "Slate Grey Leather & Carbon",
+      "seatingCapacity": 4,
+      "doors": 2,
+      "engineCc": "2,981 cc",
+      "engine": "3.0L Twin-Turbo Flat-6",
+      "cylinders": "6 Cylinders (Boxer)",
+      "power": "444 bhp @ 6,500 rpm",
+      "torque": "530 Nm @ 2,300 rpm",
+      "drivetrain": "Rear-Wheel Drive",
+      "claimedMileage": "9.0 km/l (ARAI)",
+      "emissionStandard": "BS6",
+      "registrationState": "MH-01 Mumbai",
+      "insuranceValidUntil": "December 2026",
+      "images": [
+        "/src/assets/images/car_porsche_911_1794898129646.jpg",
+        "/src/assets/images/car_interior_cockpit_1794898131578.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "p911-ext-1",
+          "url": "/src/assets/images/car_porsche_911_1794898129646.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° Studio View",
+          "caption": "GT Silver Metallic bodywork in Worli studio.",
+          "order": 0
+        },
+        {
+          "id": "p911-int-1",
+          "url": "/src/assets/images/car_interior_cockpit_1794898131578.jpg",
+          "category": "Interior",
+          "angleLabel": "Driver Cockpit & Carbon Console",
+          "caption": "Sport steering wheel, bucket bolstering, and centre console.",
+          "order": 1
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Finished in timeless GT Silver Metallic over Slate Grey club leather, this 992-generation Porsche 911 Carrera S has covered just 9,400 km under single private ownership in South Mumbai. Maintained exclusively at Porsche Centre Mumbai with complete service provenance, front-end paint protection film from day one, and factory Sport Chrono package.",
+      "highlights": [
+        "Sport Chrono Package with mode switch",
+        "Porsche Active Suspension Management (PASM)",
+        "Sports Exhaust System with Black Tailpipes",
+        "14-Way Power Sport Seats with Memory",
+        "BOSE Surround Sound System",
+        "Matrix LED Headlights with PDLS Plus"
+      ],
+      "features": {
+        "comfort": [
+          "Dual-Zone Automatic Climate Control",
+          "Keyless Entry & Drive",
+          "Cruise Control",
+          "14-Way Electric Memory Seats",
+          "Power Steering Plus"
+        ],
+        "entertainment": [
+          "10.9-inch PCM Touchscreen",
+          "Apple CarPlay",
+          "BOSE Surround Sound",
+          "Satellite Navigation",
+          "Bluetooth"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "6 Airbags",
+          "Porsche Stability Management (PSM)",
+          "Front & Rear Parking Sensors",
+          "Reverse Camera"
+        ],
+        "exterior": [
+          "20/21-inch Carrera S Alloys",
+          "Matrix LED Headlights",
+          "LED Taillight Strip",
+          "Deployable Rear Spoiler"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "City & Highway",
+        "reasonForSelling": "Owner upgrading to 911 GT3 allocation.",
+        "registrationHistoryNote": "First registered in April 2022 at MH-01 Mumbai RTO; single individual owner.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Excellent",
+          "notes": "Protected by XPEL PPF; no scrapes on lower lip."
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Excellent",
+          "notes": "Factory paint thickness 118–124 microns verified."
+        },
+        {
+          "component": "Roof",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe configuration (not applicable)."
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe configuration (not applicable)."
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Excellent",
+          "notes": "Original factory GT Silver paint across all panels."
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Excellent",
+          "notes": "None observed on clearcoat or PPF."
+        },
+        {
+          "component": "Dents",
+          "status": "Excellent",
+          "notes": "Zero door dings or panel dents."
+        },
+        {
+          "component": "Rust",
+          "status": "Excellent",
+          "notes": "No corrosion observed."
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Excellent",
+          "notes": "Zero repainted panels confirmed by paint gauge."
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": "Minimal bolster creasing consistent with 9,400 km."
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": "Occasional 2+2 seating, virtually unused."
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": "Cools cabin to 16°C rapidly; zero compressor noise."
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Excellent",
+          "notes": "Dry sump pan and turbo lines inspected clean."
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "8-speed PDK dual-clutch transmission (wet clutch sealed unit)."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Good",
+          "notes": "Approx. 80% front pad life remaining; zero disc lip."
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Good",
+          "notes": "Michelin Pilot Sport 4S tyres with ~6.0 mm tread."
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Excellent",
+          "notes": "PIWIS diagnostic scan shows zero active fault codes."
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Good (~6.0 mm / 75%)",
+          "replacementNote": "Original factory fitment (2022 DOT)"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Good (~6.0 mm / 75%)",
+          "replacementNote": "Original factory fitment (2022 DOT)"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Good (~5.5 mm / 70%)",
+          "replacementNote": "Even wear across shoulder"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Good (~5.5 mm / 70%)",
+          "replacementNote": "Even wear across shoulder"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Factory Mobility Kit",
+          "treadCondition": "Complete & Unused",
+          "replacementNote": "Includes Porsche air compressor & sealant"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "Porsche OEM AGM (Varta)",
+        "age": "Approx. 4 Years (Original)",
+        "condition": "Good (12.6V resting / 14.3V charging)",
+        "replacementHistory": "Maintained on Porsche Charge-o-mat trickle charger; no replacement required yet."
+      },
+      "accidentHistory": {
+        "overallStatus": "Independently Verified",
+        "majorAccidents": "None reported; chassis rails & radiator support verified original.",
+        "minorAccidents": "None disclosed.",
+        "repaintedPanels": "None (all exterior panels 116–128 microns).",
+        "replacedParts": "None.",
+        "floodDamage": "None; carpet underlay & seat rails dry with zero silt.",
+        "structuralDamage": "None.",
+        "insuranceClaims": "Zero own-damage claims recorded on NCB history.",
+        "majorMechanicalRepairs": "None; scheduled maintenance only.",
+        "otherRepairNotes": "",
+        "evidenceNote": "Paint thickness audit sheet & Porsche Centre service records available for buyer review at gallery."
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-04-12",
+        "lastServiceOdometerKm": 8150,
+        "records": [
+          {
+            "id": "srv-911-3",
+            "date": "2026-04-12",
+            "odometerKm": 8150,
+            "serviceCenter": "Porsche Centre Mumbai",
+            "summary": "4-Year Major Service: Mobil 1 oil & filter, brake fluid flush, cabin microfilter, spark plug inspection.",
+            "receiptNote": "Authorized dealer invoice verified"
+          },
+          {
+            "id": "srv-911-2",
+            "date": "2024-04-20",
+            "odometerKm": 5210,
+            "serviceCenter": "Porsche Centre Mumbai",
+            "summary": "2-Year Intermediate Maintenance: Engine oil, oil filter, wiper blades, alignment check.",
+            "receiptNote": "Authorized dealer invoice verified"
+          },
+          {
+            "id": "srv-911-1",
+            "date": "2023-04-15",
+            "odometerKm": 2490,
+            "serviceCenter": "Porsche Centre Mumbai",
+            "summary": "1st Annual Inspection & engine oil service.",
+            "receiptNote": "Authorized dealer invoice verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "Original smart card verified at gallery (MH-01)."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Zero-depreciation policy active through Dec 2026."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Valid BS6 emission certificate."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable (private vehicle under 15 years)."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Provided upon request for out-of-state buyers."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "Hypothecation free (owned outright)."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Zero pending e-challans on Parivahan check."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included in Strada concierge closing desk."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Maharashtra lifetime individual road tax paid."
+        }
+      ],
+      "sellerName": "Strada Worli Flagship Gallery",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Strada Motors flagship showroom in Worli Sea Face, Mumbai. Specializing in curated sports coupes and grand tourers with verified service documentation.",
+      "sellerPhone": "+91 98204 51090",
+      "sellerWhatsapp": "919820451090",
+      "createdAt": "2026-11-10T09:30:00.000Z"
+    },
+    {
+      "id": "car-bmw-m4-comp-2023",
+      "listingCode": "SM-8240",
+      "slug": "2023-bmw-m4-competition",
+      "brand": "BMW",
+      "model": "M4 Competition",
+      "variant": "G82 M xDrive",
+      "year": 2023,
+      "registrationYear": 2023,
+      "registrationDate": "2023-03-10",
+      "priceInr": 14200000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-12",
+      "priceExplanation": "Priced factoring factory Frozen Black finish, full stealth PPF, and M Carbon bucket seat option.",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 6200,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "New Delhi, DL",
+      "status": "Available",
+      "featured": true,
+      "category": "Performance Coupe",
+      "bodyType": "Coupe",
+      "color": "Frozen Black Metallic",
+      "interiorColor": "Kyalami Orange / Black Merino",
+      "seatingCapacity": 4,
+      "doors": 2,
+      "engineCc": "2,993 cc",
+      "engine": "3.0L TwinPower Turbo Inline-6",
+      "cylinders": "6 Cylinders (Inline)",
+      "power": "503 bhp @ 6,250 rpm",
+      "torque": "650 Nm @ 2,750 rpm",
+      "drivetrain": "M xDrive All-Wheel Drive",
+      "claimedMileage": "9.7 km/l (ARAI)",
+      "emissionStandard": "BS6",
+      "registrationState": "DL-01 New Delhi",
+      "insuranceValidUntil": "March 2027",
+      "images": [
+        "/src/assets/images/car_bmw_m4_1794898129243.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "m4-ext-1",
+          "url": "/src/assets/images/car_bmw_m4_1794898129243.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° Studio View",
+          "caption": "Frozen Black Metallic matte finish with M Carbon splitter.",
+          "order": 0
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Specified in factory Frozen Black Metallic with full M Carbon exterior package and M Carbon bucket seats, this 2023 BMW M4 Competition delivers supercar acceleration with effortless daily usability. Protected with matte stealth PPF across every body panel and zero track usage.",
+      "highlights": [
+        "M Carbon Exterior & Interior Trim Package",
+        "M Carbon Bucket Seats in Merino Leather",
+        "BMW Laserlight Headlamps",
+        "Harman Kardon Surround Sound Audio",
+        "M Drive Professional with Drift Analyser",
+        "Forged 19/20-inch Double-Spoke Black Wheels"
+      ],
+      "features": {
+        "comfort": [
+          "3-Zone Automatic Climate Control",
+          "Keyless Comfort Access",
+          "Push-Button Start",
+          "Cruise Control",
+          "Heated Carbon Seats"
+        ],
+        "entertainment": [
+          "iDrive Curved Touchscreen",
+          "Apple CarPlay & Android Auto",
+          "Harman Kardon 16-Speaker Audio",
+          "Head-Up Display"
+        ],
+        "safety": [
+          "ABS & Cornering Brake Control",
+          "6 Airbags",
+          "Dynamic Stability Control",
+          "360° Parking Sensors & Camera"
+        ],
+        "exterior": [
+          "Forged M Alloy Wheels",
+          "BMW Laserlight Headlights",
+          "Carbon Fiber Roof",
+          "Quad M Exhaust"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "City & Highway",
+        "reasonForSelling": "Owner relocating overseas.",
+        "registrationHistoryNote": "Registered March 2023 in New Delhi.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Good",
+          "notes": "Stealth PPF shows minor highway bug mark near lower intake; paint underneath untouched."
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Excellent",
+          "notes": "Factory Frozen Black protected by matte PPF since delivery."
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": "Carbon bucket bolsters clean with no scuffing."
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "8-speed M Steptronic torque-converter automatic."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Good",
+          "notes": "Pirelli P Zero Star-marked tyres (~70% tread)."
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Good",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Pirelli P Zero",
+          "treadCondition": "Good (~5.8 mm)",
+          "replacementNote": "Original 2023 fitment"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Pirelli P Zero",
+          "treadCondition": "Good (~5.8 mm)",
+          "replacementNote": "Original 2023 fitment"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Pirelli P Zero",
+          "treadCondition": "Good (~5.2 mm)",
+          "replacementNote": "Original 2023 fitment"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Pirelli P Zero",
+          "treadCondition": "Good (~5.2 mm)",
+          "replacementNote": "Original 2023 fitment"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "BMW Mobility Kit",
+          "treadCondition": "Unused",
+          "replacementNote": "Factory compressor kit in boot"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "BMW OEM Lithium/AGM",
+        "age": "Approx. 3.5 Years",
+        "condition": "Good (Strong cold cranking)",
+        "replacementHistory": "No replacement required."
+      },
+      "accidentHistory": {
+        "overallStatus": "No Known Issues (Seller Declared)",
+        "majorAccidents": "None declared.",
+        "minorAccidents": "None declared.",
+        "repaintedPanels": "None detected on ultrasonic coating check.",
+        "replacedParts": "None declared.",
+        "floodDamage": "No signs of water ingress.",
+        "structuralDamage": "Chassis and subframe inspected straight.",
+        "insuranceClaims": "Zero claims reported by owner; NCB active.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-03-04",
+        "lastServiceOdometerKm": 5400,
+        "records": [
+          {
+            "id": "srv-m4-2",
+            "date": "2026-03-04",
+            "odometerKm": 5400,
+            "serviceCenter": "Deutsche Motoren BMW New Delhi",
+            "summary": "Annual CBS engine oil, microfilter, and brake inspection.",
+            "receiptNote": "Service record available"
+          },
+          {
+            "id": "srv-m4-1",
+            "date": "2023-07-18",
+            "odometerKm": 2050,
+            "serviceCenter": "Deutsche Motoren BMW New Delhi",
+            "summary": "Mandatory 2,000 km M Run-In Service (engine oil + rear differential fluid).",
+            "receiptNote": "BMW digital key history verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "DL-01 private registration verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Valid until March 2027."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Current."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not required for 2023 private vehicle."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Available upon buyer request."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Seller Provided",
+          "note": "Seller confirms active loan closure NOC ready."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Zero pending challans."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Managed by Strada Delhi desk."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Delhi road tax paid."
+        }
+      ],
+      "sellerName": "Strada Chanakyapuri Atelier",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Strada Motors Delhi showroom in Chanakyapuri offering white-glove inspections and enclosed Pan-India delivery.",
+      "sellerPhone": "+91 98110 74200",
+      "sellerWhatsapp": "919811074200",
+      "createdAt": "2026-11-12T11:15:00.000Z"
+    },
+    {
+      "id": "car-mercedes-g63-2022",
+      "listingCode": "SM-6308",
+      "slug": "2022-mercedes-amg-g63",
+      "brand": "Mercedes-AMG",
+      "model": "G63",
+      "variant": "4MATIC Obsidian Spec",
+      "year": 2022,
+      "registrationYear": 2022,
+      "registrationDate": "2022-08-22",
+      "priceInr": 29500000,
+      "priceType": "Fixed",
+      "priceLastUpdated": "2026-11-13",
+      "priceExplanation": "Fixed gallery pricing inclusive of 210-point audit, detailing, and Bengaluru transfer support.",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 14800,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "Bengaluru, KA",
+      "status": "Available",
+      "featured": true,
+      "category": "Luxury Performance SUV",
+      "bodyType": "SUV",
+      "color": "Obsidian Black Metallic",
+      "interiorColor": "Espresso Brown Nappa Leather",
+      "seatingCapacity": 5,
+      "doors": 5,
+      "engineCc": "3,982 cc",
+      "engine": "4.0L Biturbo V8",
+      "cylinders": "8 Cylinders (V8)",
+      "power": "577 bhp @ 6,000 rpm",
+      "torque": "850 Nm @ 2,500 rpm",
+      "drivetrain": "Permanent 4MATIC AWD",
+      "claimedMileage": "6.1 km/l (ARAI)",
+      "emissionStandard": "BS6",
+      "registrationState": "KA-03 Bengaluru",
+      "insuranceValidUntil": "August 2027",
+      "images": [
+        "/src/assets/images/car_mercedes_g63_1794898130781.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "g63-ext-1",
+          "url": "/src/assets/images/car_mercedes_g63_1794898130781.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Right 45° Garage View",
+          "caption": "Obsidian Black G63 with AMG Night Package.",
+          "order": 0
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Hand-built 4.0-litre Biturbo V8 power paired with AMG Night Package styling. This single-owner Bengaluru-registered Mercedes-AMG G63 features exclusive Nappa diamond-stitched upholstery, Burmester 3D audio, and full authorized dealer service history.",
+      "highlights": [
+        "AMG Night Package & Darkened Grille",
+        "22-inch AMG Cross-Spoke Forged Wheels",
+        "Burmester Surround Sound System",
+        "AMG Performance Exhaust with Selectable Valves",
+        "Adaptive Damping Suspension & Three Diff Locks",
+        "64-Colour Ambient Cabin Illumination"
+      ],
+      "features": {
+        "comfort": [
+          "Automatic Climate Control",
+          "Sunroof",
+          "Keyless Start",
+          "Power Windows",
+          "Cruise Control",
+          "Ventilated Massage Seats"
+        ],
+        "entertainment": [
+          "Dual 12.3-inch Displays",
+          "Burmester Surround Sound",
+          "Apple CarPlay & Android Auto",
+          "Navigation"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "9 Airbags",
+          "360° Surround Camera",
+          "Active Brake Assist",
+          "ISOFIX"
+        ],
+        "exterior": [
+          "22-inch Forged AMG Alloys",
+          "Multibeam LED Headlights",
+          "Side-Exit AMG Exhaust",
+          "Rear Wiper"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "Mostly City",
+        "reasonForSelling": "Adding newer 2025 specification to family garage.",
+        "registrationHistoryNote": "Registered August 2022 at KA-03 Bengaluru.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Good",
+          "notes": "Small 2mm wiper trace mark on passenger edge; no cracks or chips."
+        },
+        {
+          "component": "Other windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Excellent",
+          "notes": "Ceramic coated over original Obsidian Black paint."
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "9-speed AMG Speedshift TCT automatic."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Good",
+          "notes": "Approx. 65% pad thickness remaining."
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Pirelli Scorpion Zero",
+          "treadCondition": "Good (~6.0 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Pirelli Scorpion Zero",
+          "treadCondition": "Good (~6.0 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Pirelli Scorpion Zero",
+          "treadCondition": "Good (~5.8 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Pirelli Scorpion Zero",
+          "treadCondition": "Good (~5.8 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Pirelli Scorpion Zero (Full Size)",
+          "treadCondition": "Excellent (Unused)",
+          "replacementNote": "Mounted in tailgate carrier"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "Mercedes-Benz OEM AGM",
+        "age": "Approx. 4 Years",
+        "condition": "Good",
+        "replacementHistory": "No replacement needed."
+      },
+      "accidentHistory": {
+        "overallStatus": "No Known Issues (Seller Declared)",
+        "majorAccidents": "None declared.",
+        "minorAccidents": "None declared.",
+        "repaintedPanels": "None detected.",
+        "replacedParts": "None.",
+        "floodDamage": "None.",
+        "structuralDamage": "Ladder-frame chassis inspected clean.",
+        "insuranceClaims": "No major claims disclosed.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-08-18",
+        "lastServiceOdometerKm": 13200,
+        "records": [
+          {
+            "id": "srv-g63-2",
+            "date": "2026-08-18",
+            "odometerKm": 13200,
+            "serviceCenter": "Sundaram Motors Mercedes-Benz Bengaluru",
+            "summary": "Service B: Engine oil, air & dust filters, differential oil inspection, brake fluid.",
+            "receiptNote": "Authorized dealer history verified"
+          },
+          {
+            "id": "srv-g63-1",
+            "date": "2024-08-29",
+            "odometerKm": 7400,
+            "serviceCenter": "Sundaram Motors Mercedes-Benz Bengaluru",
+            "summary": "Service A scheduled maintenance.",
+            "receiptNote": "Authorized dealer history verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "KA-03 RC verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Active through August 2027."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Valid."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Supported on buyer request."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "No active hypothecation."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Clear."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Karnataka lifetime tax paid."
+        }
+      ],
+      "sellerName": "Strada Lavelle Road Showroom",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Strada Motors Bengaluru gallery on Lavelle Road specializing in flagship SUVs and collector performance vehicles.",
+      "sellerPhone": "+91 99001 88430",
+      "sellerWhatsapp": "919900188430",
+      "createdAt": "2026-11-13T14:20:00.000Z"
+    },
+    {
+      "id": "car-audi-rs-etron-2023",
+      "listingCode": "SM-4910",
+      "slug": "2023-audi-rs-e-tron-gt",
+      "brand": "Audi",
+      "model": "RS e-tron GT",
+      "variant": "Quattro Carbon Edition",
+      "year": 2023,
+      "registrationYear": 2023,
+      "registrationDate": "2023-05-19",
+      "priceInr": 15800000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-14",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 5100,
+      "fuelType": "Electric",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "Hyderabad, TS",
+      "status": "Available",
+      "featured": true,
+      "category": "Electric Grand Tourer",
+      "bodyType": "Sportback",
+      "color": "Kemora Titanium Grey",
+      "interiorColor": "Arras Red / Black Dinamica",
+      "seatingCapacity": 5,
+      "doors": 4,
+      "engineCc": "Electric (93.4 kWh)",
+      "engine": "Dual Synchronous Electric Motors (93.4 kWh)",
+      "cylinders": "Zero-Emission Dual Motor",
+      "power": "637 bhp (Launch Control)",
+      "torque": "830 Nm Instant Torque",
+      "drivetrain": "Electric Quattro AWD",
+      "claimedMileage": "472 km Range (WLTP)",
+      "emissionStandard": "Zero Tailpipe Emission (EV)",
+      "registrationState": "TS-09 Hyderabad",
+      "insuranceValidUntil": "May 2027",
+      "images": [
+        "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{5F6AD725-7AD9-4F6D-986E-BC7AEC2D9ED2}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{95CAB99D-8299-4837-887D-C85A436732EA}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{B9D5D637-03CF-4EA0-B49B-54D932452D62}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{4707AFD9-4B0A-4D7B-BA68-CE89EC6EEFBE}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{FE667DA2-BA12-4ADE-B3F1-CC79CCBB73A9}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{1A2EE97F-E2D3-4488-8F35-62D8693F2B99}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{BDAF5D8B-15DF-4448-A2C8-64EAD526B7F9}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{0F4383D2-721A-4084-A47F-8623F1A0264C}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{552AC3F3-9EE4-4D35-8100-C9A03D5D2170}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{511F6B84-5122-4CFB-9D24-B68AABD55389}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{669CECEE-A7A2-4335-9742-FB506DEA2EBF}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{F835C8F6-6AAC-49A3-AF3E-FA0A888C3344}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{FDD380DB-C85E-4218-9DFA-8C62509DBE33}.png",
+        "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{6E069925-246E-473A-98B9-2A7F9B1DED2A}.png"
+      ],
+      "gallery": [
+        {
+          "id": "etron-ext-1",
+          "url": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° Gallery View",
+          "caption": "Kemora Titanium Grey RS e-tron GT.",
+          "order": 0
+        },
+        {
+          "id": "etron-ext-2",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{5F6AD725-7AD9-4F6D-986E-BC7AEC2D9ED2}.png",
+          "category": "Exterior",
+          "angleLabel": "Front Bumper & Aerodynamic Air Intake",
+          "caption": "Front lower bumper with aerodynamic intake and radar sensor housing.",
+          "order": 1
+        },
+        {
+          "id": "etron-ext-3",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{95CAB99D-8299-4837-887D-C85A436732EA}.png",
+          "category": "Exterior",
+          "angleLabel": "Matrix LED Laser Headlamp",
+          "caption": "Precision matrix LED lighting unit with laser high-beam module.",
+          "order": 2
+        },
+        {
+          "id": "etron-ext-4",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{B9D5D637-03CF-4EA0-B49B-54D932452D62}.png",
+          "category": "Exterior",
+          "angleLabel": "Aerodynamic Side Mirror",
+          "caption": "High-gloss mirror casing with integrated dynamic LED indicator.",
+          "order": 3
+        },
+        {
+          "id": "etron-ext-5",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{4707AFD9-4B0A-4D7B-BA68-CE89EC6EEFBE}.png",
+          "category": "Exterior",
+          "angleLabel": "Aero Alloy Wheel & Disc Brake",
+          "caption": "21-inch sport alloy wheel paired with performance brake rotor.",
+          "order": 4
+        },
+        {
+          "id": "etron-int-1",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{FE667DA2-BA12-4ADE-B3F1-CC79CCBB73A9}.png",
+          "category": "Interior",
+          "angleLabel": "Cockpit & Panoramic Dashboard",
+          "caption": "Driver-centric cabin with central infotainment and digital display.",
+          "order": 5
+        },
+        {
+          "id": "etron-int-2",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{1A2EE97F-E2D3-4488-8F35-62D8693F2B99}.png",
+          "category": "Interior",
+          "angleLabel": "Multifunction Sport Steering Wheel",
+          "caption": "Leather-wrapped steering wheel with cruise, media, and drive controls.",
+          "order": 6
+        },
+        {
+          "id": "etron-int-3",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{BDAF5D8B-15DF-4448-A2C8-64EAD526B7F9}.png",
+          "category": "Interior",
+          "angleLabel": "Instrument Cluster & Odometer",
+          "caption": "High-resolution digital driver instrument console display.",
+          "order": 7
+        },
+        {
+          "id": "etron-int-4",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{0F4383D2-721A-4084-A47F-8623F1A0264C}.png",
+          "category": "Interior",
+          "angleLabel": "Drive Selector & Centre Console",
+          "caption": "Drive-by-wire shift selector and piano black console surround.",
+          "order": 8
+        },
+        {
+          "id": "etron-int-5",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{552AC3F3-9EE4-4D35-8100-C9A03D5D2170}.png",
+          "category": "Interior",
+          "angleLabel": "Front Cabin & Sport Seats",
+          "caption": "Ergonomic sport bucket seating with contrasting stitching and power controls.",
+          "order": 9
+        },
+        {
+          "id": "etron-int-6",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{511F6B84-5122-4CFB-9D24-B68AABD55389}.png",
+          "category": "Interior",
+          "angleLabel": "Rear Passenger Lounge",
+          "caption": "Premium rear passenger bench with ample legroom and ISOFIX child seat points.",
+          "order": 10
+        },
+        {
+          "id": "etron-int-7",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{669CECEE-A7A2-4335-9742-FB506DEA2EBF}.png",
+          "category": "Interior",
+          "angleLabel": "Panoramic Sunroof & Roof Liner",
+          "caption": "Full-glass panoramic sunroof with tinted acoustic glazing.",
+          "order": 11
+        },
+        {
+          "id": "etron-int-8",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{F835C8F6-6AAC-49A3-AF3E-FA0A888C3344}.png",
+          "category": "Interior",
+          "angleLabel": "Driver Door Controls & Mirrors",
+          "caption": "One-touch power window switches and power folding mirror adjusters.",
+          "order": 12
+        },
+        {
+          "id": "etron-eng-1",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{FDD380DB-C85E-4218-9DFA-8C62509DBE33}.png",
+          "category": "Engine & Mechanical",
+          "angleLabel": "Under-Bonnet High-Voltage Bay",
+          "caption": "Dual-motor high-voltage electric drivetrain bay, coolant systems, and 12V battery.",
+          "order": 13
+        },
+        {
+          "id": "etron-storage-1",
+          "url": "/assets/aistudio/2023 Audi RS e-tron GT Quattro Carbon Edition/{6E069925-246E-473A-98B9-2A7F9B1DED2A}.png",
+          "category": "Underbody & Storage",
+          "angleLabel": "Rear Boot & Luggage Compartment",
+          "caption": "Spacious rear luggage space with low loading lip and parcel shelf.",
+          "order": 14
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Audi’s flagship electric grand tourer finished in Titanium Grey with carbon-fiber roof panel and tungsten-carbide coated brake discs. With only 5,100 km on the odometer and active battery warranty until 2031, it offers razor-sharp dynamics with zero tailpipe emissions.",
+      "highlights": [
+        "800V Fast Charging Architecture (270 kW)",
+        "Carbon Fiber Roof & Matte Carbon Inlays",
+        "All-Wheel Steering & Adaptive Air Suspension",
+        "Bang & Olufsen 3D Premium Sound",
+        "Matrix LED Headlights with Audi Laser Light",
+        "e-tron Sport Sound Package"
+      ],
+      "features": {
+        "comfort": [
+          "3-Zone Climate Control",
+          "Keyless Entry",
+          "Push-Button Start",
+          "Adaptive Cruise Control",
+          "Panoramic Carbon Roof"
+        ],
+        "entertainment": [
+          "MMI Touch Display",
+          "Bang & Olufsen 3D Audio",
+          "Apple CarPlay & Android Auto",
+          "Virtual Cockpit Plus"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "8 Airbags",
+          "360° Cameras",
+          "Lane Departure Warning",
+          "ISOFIX"
+        ],
+        "exterior": [
+          "21-inch Aero Alloys",
+          "Matrix LED Laser Headlamps",
+          "LED Light Bar",
+          "Carbon Diffuser"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "Mostly City",
+        "reasonForSelling": "Fleet consolidation.",
+        "registrationHistoryNote": "First registered May 2023 in Hyderabad.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Not Inspected",
+          "notes": "Electric dual-motor drive unit — 98% HV battery SoH verified."
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Not Inspected",
+          "notes": "Not applicable (BEV)."
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "Not applicable (2-speed EV transmission)."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Excellent",
+          "notes": "98% HV State of Health verified via Audi ODIS."
+        },
+        {
+          "component": "Cooling system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Not Inspected",
+          "notes": "Not applicable (Zero-emission EV)."
+        },
+        {
+          "component": "Warning lights",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Goodyear Eagle F1 Asymmetric 5",
+          "treadCondition": "Excellent (~6.5 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Goodyear Eagle F1 Asymmetric 5",
+          "treadCondition": "Excellent (~6.5 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Goodyear Eagle F1 Asymmetric 5",
+          "treadCondition": "Excellent (~6.2 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Goodyear Eagle F1 Asymmetric 5",
+          "treadCondition": "Excellent (~6.2 mm)",
+          "replacementNote": "Original fitment"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Audi Mobility Kit",
+          "treadCondition": "Unused",
+          "replacementNote": "Includes 11 kW home charger unit"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "Audi 93.4 kWh Lithium-Ion HV Pack",
+        "age": "Approx. 3.5 Years",
+        "condition": "Excellent (98% State of Health)",
+        "replacementHistory": "Covered by Audi 8-year / 1,60,000 km HV battery warranty until 2031."
+      },
+      "accidentHistory": {
+        "overallStatus": "Independently Verified",
+        "majorAccidents": "None.",
+        "minorAccidents": "None.",
+        "repaintedPanels": "None.",
+        "replacedParts": "None.",
+        "floodDamage": "Zero HV pack or cabin moisture alerts.",
+        "structuralDamage": "None.",
+        "insuranceClaims": "Zero claims.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": "Audi Hyderabad HV Battery Health & Service Report on file."
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-05-14",
+        "lastServiceOdometerKm": 4650,
+        "records": [
+          {
+            "id": "srv-etron-1",
+            "date": "2026-05-14",
+            "odometerKm": 4650,
+            "serviceCenter": "Audi Hyderabad Jubilee Hills",
+            "summary": "2-Year EV inspection, brake fluid replacement, HV battery cooling loop check & software update.",
+            "receiptNote": "Audi digital inspection sheet verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "TS-09 EV green plate verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Valid until May 2027."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Not Available",
+          "note": "Exempt (Zero-emission electric vehicle)."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Provided upon request."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "Hypothecation clear."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Zero pending challans."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Telangana EV road tax benefit applied."
+        }
+      ],
+      "sellerName": "Strada Jubilee Hills Concierge",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.",
+      "sellerPhone": "+91 98490 61210",
+      "sellerWhatsapp": "919849061210",
+      "createdAt": "2026-11-14T10:00:00.000Z"
+    },
+    {
+      "id": "car-aston-dbs-2021",
+      "listingCode": "SM-7150",
+      "slug": "2021-aston-martin-dbs-superleggera",
+      "brand": "Aston Martin",
+      "model": "DBS Superleggera",
+      "variant": "V12 Coupe",
+      "year": 2021,
+      "registrationYear": 2021,
+      "registrationDate": "2021-01-28",
+      "priceInr": 36500000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-15",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 7900,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "New Delhi, DL",
+      "status": "Available",
+      "featured": true,
+      "category": "V12 Grand Tourer",
+      "bodyType": "Grand Tourer",
+      "color": "Satin Xenon Grey",
+      "interiorColor": "Obsidian Black Semi-Aniline",
+      "seatingCapacity": 4,
+      "doors": 2,
+      "engineCc": "5,204 cc",
+      "engine": "5.2L Twin-Turbo V12",
+      "cylinders": "12 Cylinders (V12)",
+      "power": "715 bhp @ 6,500 rpm",
+      "torque": "900 Nm @ 1,800 rpm",
+      "drivetrain": "Rear-Wheel Drive",
+      "claimedMileage": "Not Provided",
+      "emissionStandard": "BS6",
+      "registrationState": "DL-02 New Delhi",
+      "insuranceValidUntil": "January 2027",
+      "images": [
+        "/src/assets/images/hero_luxury_coupe_1794898128860.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "dbs-ext-1",
+          "url": "/src/assets/images/hero_luxury_coupe_1794898128860.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left Studio Profile",
+          "caption": "Satin Xenon Grey carbon-clamshell V12 grand tourer.",
+          "order": 0
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "An extraordinary Satin Xenon Grey example of Aston Martin’s twin-turbocharged V12 flagship grand tourer. Carbon-fiber clamshell bonnet, carbon ceramic braking system, and Q by Aston Martin interior stitching. Stored in climate-controlled custody with full annual service documentation.",
+      "highlights": [
+        "5.2L Twin-Turbocharged V12 Powertrain",
+        "Carbon Ceramic Braking System (410mm Front)",
+        "Exposed Twill Carbon Fiber Splitter & Diffuser",
+        "Bang & Olufsen BeoSound Automotive Audio",
+        "360-Degree Camera & Active Adaptive Damping",
+        "21-inch Forged Twin-Spoke Satin Black Wheels"
+      ],
+      "features": {
+        "comfort": [
+          "Dual-Zone Climate Control",
+          "Keyless Start",
+          "Cruise Control",
+          "Heated & Ventilated Seats"
+        ],
+        "entertainment": [
+          "Bang & Olufsen BeoSound Audio",
+          "Navigation",
+          "Bluetooth",
+          "Apple CarPlay"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "6 Airbags",
+          "Carbon Ceramic Brakes",
+          "360° Camera & Sensors"
+        ],
+        "exterior": [
+          "21-inch Forged Alloys",
+          "LED Headlights & Taillights",
+          "Carbon Aeroblade II"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "Mostly Highway",
+        "reasonForSelling": "Collector rotation.",
+        "registrationHistoryNote": "Registered January 2021 in New Delhi.",
+        "recordVerification": "Seller Provided"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "ZF 8-speed automatic."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Pirelli P Zero AML",
+          "treadCondition": "Good (~6.0 mm)",
+          "replacementNote": "Aston Martin homologated"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Pirelli P Zero AML",
+          "treadCondition": "Good (~6.0 mm)",
+          "replacementNote": "Aston Martin homologated"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Pirelli P Zero AML",
+          "treadCondition": "Good (~5.4 mm)",
+          "replacementNote": "Aston Martin homologated"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Pirelli P Zero AML",
+          "treadCondition": "Good (~5.4 mm)",
+          "replacementNote": "Aston Martin homologated"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Mobility Kit",
+          "treadCondition": "Unused",
+          "replacementNote": "In boot compartment"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "OEM AGM",
+        "age": "Replaced 2025",
+        "condition": "Excellent",
+        "replacementHistory": "Battery replaced during 2025 annual service."
+      },
+      "accidentHistory": {
+        "overallStatus": "No Known Issues (Seller Declared)",
+        "majorAccidents": "None declared.",
+        "minorAccidents": "None declared.",
+        "repaintedPanels": "None detected.",
+        "replacedParts": "None.",
+        "floodDamage": "None.",
+        "structuralDamage": "Bonded aluminium chassis verified.",
+        "insuranceClaims": "None disclosed.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-01-20",
+        "lastServiceOdometerKm": 7100,
+        "records": [
+          {
+            "id": "srv-dbs-1",
+            "date": "2026-01-20",
+            "odometerKm": 7100,
+            "serviceCenter": "Aston Martin New Delhi",
+            "summary": "Annual V12 service, engine oil, brake fluid, software check.",
+            "receiptNote": "Service invoice on file"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "DL-02 RC verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Valid until January 2027."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Valid."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Supported."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "Owned outright."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Zero pending."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Paid."
+        }
+      ],
+      "sellerName": "Strada Chanakyapuri Atelier",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.",
+      "sellerPhone": "+91 98110 74200",
+      "sellerWhatsapp": "919811074200",
+      "createdAt": "2026-11-15T16:45:00.000Z"
+    },
+    {
+      "id": "car-range-rover-2021",
+      "listingCode": "SM-5042",
+      "slug": "2021-range-rover-autobiography-lwb",
+      "brand": "Range Rover",
+      "model": "Autobiography LWB",
+      "variant": "3.0 SDV6 Long Wheelbase",
+      "year": 2021,
+      "registrationYear": 2021,
+      "registrationDate": "2021-09-14",
+      "priceInr": 17600000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-08",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 24500,
+      "fuelType": "Diesel",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "Mumbai, MH",
+      "status": "Available",
+      "featured": false,
+      "category": "Flagship Luxury SUV",
+      "bodyType": "SUV",
+      "color": "Carpathian Grey",
+      "interiorColor": "Ebony / Ivory Semi-Aniline",
+      "seatingCapacity": 5,
+      "doors": 5,
+      "engineCc": "2,993 cc",
+      "engine": "3.0L V6 Twin-Turbo Diesel",
+      "cylinders": "6 Cylinders (V6)",
+      "power": "300 bhp @ 4,000 rpm",
+      "torque": "700 Nm @ 1,500 rpm",
+      "drivetrain": "Terrain Response 2 AWD",
+      "claimedMileage": "11.4 km/l (ARAI)",
+      "emissionStandard": "BS6",
+      "registrationState": "MH-02 Mumbai",
+      "insuranceValidUntil": "October 2026",
+      "images": [
+        "/src/assets/images/car_range_rover_1794898131419.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "rr-ext-1",
+          "url": "/src/assets/images/car_range_rover_1794898131419.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° Architectural View",
+          "caption": "Carpathian Grey Range Rover Autobiography LWB.",
+          "order": 0
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Chauffeur-driven Long Wheelbase Autobiography finished in Carpathian Grey with Executive Class rear seating, deployable center console, and Meridian Signature Reference audio. Comprehensive Jaguar Land Rover authorized service record included.",
+      "highlights": [
+        "Executive Class Comfort Plus Rear Seats",
+        "Meridian Signature 1700W Reference Audio",
+        "Sliding Panoramic Glass Sunroof",
+        "Pixel-Laser LED Headlights",
+        "Electronic Air Suspension with Dynamic Response",
+        "Soft-Close Doors & Powered Gesture Tailgate"
+      ],
+      "features": {
+        "comfort": [
+          "4-Zone Climate Control",
+          "Panoramic Sunroof",
+          "Rear Executive Reclining Seats",
+          "Soft-Close Doors",
+          "Cruise Control"
+        ],
+        "entertainment": [
+          "Touch Pro Duo Screens",
+          "Meridian 1700W Audio",
+          "Rear Seat Entertainment",
+          "Apple CarPlay & Android Auto"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "8 Airbags",
+          "360° Camera & Parking Aid",
+          "Terrain Response 2",
+          "ISOFIX"
+        ],
+        "exterior": [
+          "21-inch Autobiography Alloys",
+          "Pixel-Laser LED Headlights",
+          "Deployable Side Steps",
+          "Rear Wiper"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Corporate",
+        "drivingPattern": "City & Highway",
+        "reasonForSelling": "Upgrading to new-gen Range Rover SV.",
+        "registrationHistoryNote": "Registered September 2021 in Mumbai.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Good",
+          "notes": "Light loading scuff on upper stainless sill."
+        },
+        {
+          "component": "Bonnet",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear right door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Good",
+          "notes": "Minor hairline swirl marks polished out during detailing."
+        },
+        {
+          "component": "Dents",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Good",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "8-speed ZF automatic."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": "Air suspension height calibration & compressor pressure tested normal."
+        },
+        {
+          "component": "Steering",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Good",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Pirelli Scorpion Verde",
+          "treadCondition": "Good (~5.5 mm)",
+          "replacementNote": "Replaced at 18,000 km"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Pirelli Scorpion Verde",
+          "treadCondition": "Good (~5.5 mm)",
+          "replacementNote": "Replaced at 18,000 km"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Pirelli Scorpion Verde",
+          "treadCondition": "Good (~5.5 mm)",
+          "replacementNote": "Replaced at 18,000 km"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Pirelli Scorpion Verde",
+          "treadCondition": "Good (~5.5 mm)",
+          "replacementNote": "Replaced at 18,000 km"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Full-Size Alloy Spare",
+          "treadCondition": "Excellent (Unused)",
+          "replacementNote": "Under boot floor"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "Land Rover OEM AGM",
+        "age": "Replaced Feb 2026",
+        "condition": "Excellent",
+        "replacementHistory": "Replaced at Modi Motors JLR in Feb 2026."
+      },
+      "accidentHistory": {
+        "overallStatus": "No Known Issues (Seller Declared)",
+        "majorAccidents": "None declared.",
+        "minorAccidents": "Minor rear bumper polish recorded in 2023; no panel replacement.",
+        "repaintedPanels": "None detected.",
+        "replacedParts": "Tyres & 12V battery replaced as routine wear.",
+        "floodDamage": "None.",
+        "structuralDamage": "None.",
+        "insuranceClaims": "Zero structural claims.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-09-02",
+        "lastServiceOdometerKm": 23100,
+        "records": [
+          {
+            "id": "srv-rr-2",
+            "date": "2026-09-02",
+            "odometerKm": 23100,
+            "serviceCenter": "Modi Motors Jaguar Land Rover Worli",
+            "summary": "Annual diesel service, AdBlue top-up, air & fuel filters, brake pads checked.",
+            "receiptNote": "JLR service invoice verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "MH-02 verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Expired",
+          "note": "Renewal in progress with Strada insurance desk."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Valid."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Supported."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "No active hypothecation."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Clear."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Paid."
+        }
+      ],
+      "sellerName": "Strada Worli Flagship Gallery",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.",
+      "sellerPhone": "+91 98204 51090",
+      "sellerWhatsapp": "919820451090",
+      "createdAt": "2026-11-08T08:00:00.000Z"
+    },
+    {
+      "id": "car-porsche-911-2020",
+      "listingCode": "SM-9114",
+      "slug": "2020-porsche-911-carrera",
+      "brand": "Porsche",
+      "model": "911 Carrera",
+      "variant": "992 Coupe",
+      "year": 2020,
+      "registrationYear": 2020,
+      "registrationDate": "2020-07-11",
+      "priceInr": 15400000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-05",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 18200,
+      "fuelType": "Petrol",
+      "transmission": "PDK",
+      "ownership": "2nd Owner",
+      "location": "Pune, MH",
+      "status": "Available",
+      "featured": false,
+      "category": "Sports Coupe",
+      "bodyType": "Coupe",
+      "color": "Dolomite Silver",
+      "interiorColor": "Black Leather",
+      "seatingCapacity": 4,
+      "doors": 2,
+      "engineCc": "2,981 cc",
+      "engine": "3.0L Twin-Turbo Flat-6",
+      "cylinders": "6 Cylinders (Boxer)",
+      "power": "385 bhp @ 6,500 rpm",
+      "torque": "450 Nm @ 1,950 rpm",
+      "drivetrain": "Rear-Wheel Drive",
+      "claimedMileage": "9.2 km/l (ARAI)",
+      "emissionStandard": "BS6",
+      "registrationState": "MH-12 Pune",
+      "insuranceValidUntil": "July 2027",
+      "images": [
+        "/src/assets/images/car_porsche_911_1794898129646.jpg",
+        "/src/assets/images/car_interior_cockpit_1794898131578.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "p911c-ext-1",
+          "url": "/src/assets/images/car_porsche_911_1794898129646.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "caption": "Dolomite Silver 992 Carrera Coupe.",
+          "order": 0
+        },
+        {
+          "id": "p911c-int-1",
+          "url": "/src/assets/images/car_interior_cockpit_1794898131578.jpg",
+          "category": "Interior",
+          "angleLabel": "Cockpit & Steering View",
+          "order": 1
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Well-documented 992 Carrera Coupe featuring Porsche Approved warranty extension eligibility, immaculate underbody inspection, and fresh Michelin Pilot Sport 4S tyres fitted 1,500 km ago.",
+      "highlights": [
+        "8-Speed PDK Dual-Clutch Transmission",
+        "Sport Exhaust Tailpipes in Silver",
+        "Apple CarPlay & Porsche Communication Management",
+        "20/21-inch Carrera Classic Alloy Wheels",
+        "ParkAssist Front and Rear with Reversing Camera"
+      ],
+      "features": {
+        "comfort": [
+          "Dual-Zone Climate Control",
+          "Cruise Control",
+          "Electric Sport Seats"
+        ],
+        "entertainment": [
+          "PCM Touchscreen",
+          "Apple CarPlay",
+          "Bluetooth",
+          "Navigation"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "6 Airbags",
+          "Porsche Stability Management",
+          "Reverse Camera"
+        ],
+        "exterior": [
+          "20/21-inch Carrera Classic Alloys",
+          "LED Headlights",
+          "Deployable Spoiler"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 1,
+        "usageType": "Personal",
+        "drivingPattern": "Mostly Highway",
+        "reasonForSelling": "Weekend highway usage only; owner moving to mid-engine platform.",
+        "registrationHistoryNote": "MH-12 Pune registration; 2nd private owner since 2023.",
+        "recordVerification": "Verified Service Records"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": "2-door coupe."
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Good",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Good",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Good",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": "PDK dual-clutch."
+        },
+        {
+          "component": "Brake condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Excellent",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Excellent",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Excellent (~7.0 mm)",
+          "replacementNote": "Replaced at 16,700 km"
+        },
+        {
+          "position": "Front Right",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Excellent (~7.0 mm)",
+          "replacementNote": "Replaced at 16,700 km"
+        },
+        {
+          "position": "Rear Left",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Excellent (~7.0 mm)",
+          "replacementNote": "Replaced at 16,700 km"
+        },
+        {
+          "position": "Rear Right",
+          "brand": "Michelin Pilot Sport 4S",
+          "treadCondition": "Excellent (~7.0 mm)",
+          "replacementNote": "Replaced at 16,700 km"
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "Porsche Mobility Kit",
+          "treadCondition": "Complete",
+          "replacementNote": "Unused"
+        }
+      ],
+      "batteryDetails": {
+        "brand": "Varta OEM AGM",
+        "age": "Replaced 2025",
+        "condition": "Excellent",
+        "replacementHistory": "Replaced in 2025."
+      },
+      "accidentHistory": {
+        "overallStatus": "No Known Issues (Seller Declared)",
+        "majorAccidents": "None declared.",
+        "minorAccidents": "None declared.",
+        "repaintedPanels": "None observed.",
+        "replacedParts": "Tyres and battery replaced as routine maintenance.",
+        "floodDamage": "None.",
+        "structuralDamage": "None.",
+        "insuranceClaims": "None disclosed.",
+        "majorMechanicalRepairs": "None.",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "2026-07-08",
+        "lastServiceOdometerKm": 16700,
+        "records": [
+          {
+            "id": "srv-p911c-1",
+            "date": "2026-07-08",
+            "odometerKm": 16700,
+            "serviceCenter": "Porsche Centre Pune",
+            "summary": "6-Year major service + 4 new Michelin Pilot Sport 4S tyres + alignment.",
+            "receiptNote": "Invoice verified"
+          }
+        ]
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "MH-12 verified."
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Valid until July 2027."
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Verified",
+          "note": "Valid."
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Available",
+          "note": "Not applicable."
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Available",
+          "note": "Supported."
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Verified",
+          "note": "Clear."
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Verified",
+          "note": "Clear."
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Verified",
+          "note": "Included."
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Verified",
+          "note": "Paid."
+        }
+      ],
+      "sellerName": "Strada Pune Concierge",
+      "sellerType": "Verified Partner Dealer",
+      "sellerProfile": "Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.",
+      "sellerPhone": "+91 98204 51090",
+      "sellerWhatsapp": "919820451090",
+      "createdAt": "2026-11-05T12:00:00.000Z"
+    },
+    {
+      "id": "car-g63-magno-2021",
+      "listingCode": "SM-6301",
+      "slug": "2021-mercedes-amg-g63-magno",
+      "brand": "Mercedes-AMG",
+      "model": "G63 Magno",
+      "variant": "4MATIC Designo Edition",
+      "year": 2021,
+      "registrationYear": 2021,
+      "registrationDate": "2021-11-02",
+      "priceInr": 27200000,
+      "priceType": "Fixed",
+      "priceLastUpdated": "2026-10-28",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 21000,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "2nd Owner",
+      "location": "Chennai, TN",
+      "status": "Sold",
+      "featured": false,
+      "category": "Luxury Performance SUV",
+      "bodyType": "SUV",
+      "color": "Designo Night Black Magno",
+      "interiorColor": "Classic Red / Black Nappa",
+      "seatingCapacity": 5,
+      "doors": 5,
+      "engineCc": "3,982 cc",
+      "engine": "4.0L Biturbo V8",
+      "cylinders": "8 Cylinders (V8)",
+      "power": "577 bhp @ 6,000 rpm",
+      "torque": "850 Nm @ 2,500 rpm",
+      "drivetrain": "Permanent 4MATIC AWD",
+      "claimedMileage": "",
+      "emissionStandard": "",
+      "registrationState": "TN-01 Chennai",
+      "insuranceValidUntil": "November 2026",
+      "images": [
+        "/src/assets/images/car_mercedes_g63_1794898130781.jpg"
+      ],
+      "gallery": [
+        {
+          "id": "g63m-ext-1",
+          "url": "/src/assets/images/car_mercedes_g63_1794898130781.jpg",
+          "category": "Exterior",
+          "angleLabel": "Front-Right 45° Studio View",
+          "order": 0
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Sold through Strada Motors private buyer network within 9 days of listing. Complete 210-point inspection passed with zero paintwork history.",
+      "highlights": [
+        "Designo Night Black Magno Factory Matte Finish",
+        "AMG Exclusive Nappa Leather Interior",
+        "Adaptive Highbeam Assist Plus",
+        "Stainless Steel Exterior Package"
+      ],
+      "features": {
+        "comfort": [
+          "Automatic Climate Control",
+          "Sunroof",
+          "Keyless Start"
+        ],
+        "entertainment": [
+          "Burmester Sound",
+          "Navigation",
+          "Apple CarPlay"
+        ],
+        "safety": [
+          "ABS & EBD",
+          "9 Airbags",
+          "360° Camera"
+        ],
+        "exterior": [
+          "22-inch Forged Alloys",
+          "LED Headlights"
+        ]
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "Not Disclosed",
+        "reasonForSelling": "",
+        "registrationHistoryNote": "",
+        "recordVerification": "Seller Provided"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Brake condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Front Right",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Rear Left",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Rear Right",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        }
+      ],
+      "batteryDetails": {
+        "brand": "",
+        "age": "",
+        "condition": "Not Inspected",
+        "replacementHistory": ""
+      },
+      "accidentHistory": {
+        "overallStatus": "Not Disclosed",
+        "majorAccidents": "Not Disclosed",
+        "minorAccidents": "Not Disclosed",
+        "repaintedPanels": "Not Inspected",
+        "replacedParts": "Not Disclosed",
+        "floodDamage": "Not Disclosed",
+        "structuralDamage": "Not Inspected",
+        "insuranceClaims": "Verification Pending",
+        "majorMechanicalRepairs": "Not Disclosed",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "",
+        "records": []
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Not Verified",
+          "note": ""
+        }
+      ],
+      "sellerName": "Strada Lavelle Road Showroom",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.",
+      "sellerPhone": "+91 99001 88430",
+      "sellerWhatsapp": "919900188430",
+      "createdAt": "2026-10-28T10:30:00.000Z"
+    }
+  ],
+  "enquiries": [
+    {
+      "id": "enq-1001",
+      "type": "test-drive",
+      "carId": "car-911-carrera-s-2022",
+      "carTitle": "2022 Porsche 911 Carrera S",
+      "name": "Rohan Malhotra",
+      "email": "rohan.malhotra@example.in",
+      "phone": "+91 98201 44512",
+      "preferredDate": "2026-11-21",
+      "city": "Mumbai",
+      "message": "Would like to inspect the service history and schedule a morning test drive at Worli.",
+      "status": "Scheduled",
+      "createdAt": "2026-11-15T07:45:00.000Z"
+    },
+    {
+      "id": "enq-1002",
+      "type": "car-enquiry",
+      "carId": "car-bmw-m4-comp-2023",
+      "carTitle": "2023 BMW M4 Competition",
+      "name": "Siddharth Kapoor",
+      "email": "s.kapoor@example.in",
+      "phone": "+91 98114 90231",
+      "city": "New Delhi",
+      "message": "Please share insurance IDV details and zero-dep renewal status.",
+      "status": "New",
+      "createdAt": "2026-11-16T05:15:00.000Z"
+    }
+  ],
+  "sellRequests": [
+    {
+      "id": "sell-2001",
+      "brand": "Porsche",
+      "model": "Cayenne GTS",
+      "year": 2022,
+      "kilometres": 16400,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "city": "Bengaluru",
+      "expectedPriceInr": 14800000,
+      "ownerName": "Vikramaditya Rao",
+      "ownerPhone": "+91 98450 31900",
+      "ownerEmail": "vikram.rao@example.in",
+      "notes": "Quartzite Grey, Porsche Centre Bengaluru maintained, extended warranty active.",
+      "status": "Pending Review",
+      "createdAt": "2026-11-15T13:20:00.000Z"
+    }
+  ],
+  "locationSettings": {
+    "businessName": "Strada Motors Flagship Showroom",
+    "phone": "+91 83840 68347",
+    "email": "concierge@stradamotors.in",
+    "whatsapp": "918384068347",
+    "address": "Preet Vihar",
+    "city": "East Delhi",
+    "state": "Delhi NCR",
+    "postalCode": "110092",
+    "latitude": "28.6415",
+    "longitude": "77.2946",
+    "googleMapsUrl": "https://maps.google.com/?q=Preet+Vihar,+East+Delhi,+Delhi+NCR+110092",
+    "openingHours": "Monday – Sunday: 10:00 AM – 8:00 PM",
+    "nearbyLandmarks": "Near Preet Vihar Metro Station",
+    "instagramUrl": "https://www.instagram.com/",
+    "facebookUrl": "https://www.facebook.com/",
+    "youtubeUrl": "https://www.youtube.com/",
+    "updatedAt": "2026-11-18T04:19:58.608Z"
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Strada Motors",
+  "description": "Curated pre-owned luxury and performance automobile marketplace with certified inspection, instant valuation, and private concierge test drives.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
