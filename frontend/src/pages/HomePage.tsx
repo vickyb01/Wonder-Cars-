@@ -220,14 +220,6 @@ export function HomePage() {
         description="Discover quality pre-owned luxury and performance cars at the right price. Certified 210-point inspected inventory across India."
       />
 
-      {/* Promotional Top Announcement Banner (controlled via Admin Panel) */}
-      {homepageSettings?.promotionalBannerActive && homepageSettings.promotionalBannerText && (
-        <div className="bg-gradient-to-r from-amber-600 via-amber-500 to-amber-700 text-slate-950 font-bold text-xs py-2 px-4 text-center tracking-wide shadow-md relative z-20 flex items-center justify-center gap-2">
-          <Sparkles className="w-3.5 h-3.5 shrink-0" />
-          <span>{homepageSettings.promotionalBannerText}</span>
-        </div>
-      )}
-
       {/* 1. Full-Screen Hero Section (dark contrast scrim preserved over photography in both modes) */}
       <section ref={heroRef} className="relative min-h-[92vh] pt-24 pb-4 sm:pb-5 flex flex-col justify-between overflow-hidden bg-slate-950">
         <motion.div style={{ y: heroImageY }} className="absolute inset-0 z-0 will-change-transform">
