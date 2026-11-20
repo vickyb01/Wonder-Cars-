@@ -38,7 +38,13 @@ export function Navbar() {
           : 'bg-white/90 dark:bg-[#09090B]/80 backdrop-blur-md border-b border-slate-200/70 dark:border-white/[0.06]'
       }`}
     >
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 md:h-[72px] flex items-center justify-between gap-2 sm:gap-4 lg:gap-8">
+      {/* Top Ambient Amber Backlight / Luxury Warm Glow (Matches Reference Screenshot) */}
+      <div
+        className="absolute inset-x-0 top-0 h-10 sm:h-12 pointer-events-none bg-gradient-to-b from-amber-500/22 via-amber-600/10 to-transparent dark:from-amber-500/25 dark:via-amber-600/10 dark:to-transparent z-0"
+        aria-hidden="true"
+      />
+
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 md:h-[72px] flex items-center justify-between gap-2 sm:gap-4 lg:gap-8 relative z-10">
         {/* Zone 1: Wonder Cars Brand Logo */}
         <Link
           to="/"
