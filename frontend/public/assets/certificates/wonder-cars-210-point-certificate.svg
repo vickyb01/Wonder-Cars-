@@ -1,0 +1,175 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1100" width="100%" height="100%">
+  <defs>
+    <!-- Rich Background Gradient -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="75%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="60%" stop-color="#FAF8F5" />
+      <stop offset="100%" stop-color="#F2EDE4" />
+    </radialGradient>
+
+    <!-- Metallic Gold Gradients -->
+    <linearGradient id="goldOuter" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#C59B27" />
+      <stop offset="25%" stop-color="#F3E5AB" />
+      <stop offset="50%" stop-color="#C59B27" />
+      <stop offset="75%" stop-color="#F9F1D0" />
+      <stop offset="100%" stop-color="#9A7B1C" />
+    </linearGradient>
+
+    <linearGradient id="goldInner" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="50%" stop-color="#FFE082" />
+      <stop offset="100%" stop-color="#AA820A" />
+    </linearGradient>
+
+    <linearGradient id="sealGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D4AF37" />
+      <stop offset="30%" stop-color="#FFF2B2" />
+      <stop offset="70%" stop-color="#AA820A" />
+      <stop offset="100%" stop-color="#6B4E03" />
+    </linearGradient>
+
+    <!-- Drop Shadows -->
+    <filter id="shadow" x="-5%" y="-5%" width="110%" height="110%">
+      <feDropShadow dx="2" dy="5" stdDeviation="5" flood-color="#000000" flood-opacity="0.2" />
+    </filter>
+  </defs>
+
+  <!-- Solid White/Cream Canvas with Soft Grain -->
+  <rect width="800" height="1100" fill="url(#bgGrad)" />
+
+  <!-- Outer Wooden/Bronze Frame Border -->
+  <rect x="24" y="24" width="752" height="1052" rx="16" fill="none" stroke="#2B1D0C" stroke-width="16" />
+  <rect x="36" y="36" width="728" height="1028" rx="8" fill="none" stroke="url(#goldOuter)" stroke-width="8" />
+  <rect x="52" y="52" width="696" height="996" fill="none" stroke="#2B1D0C" stroke-width="2" />
+  <rect x="58" y="58" width="684" height="984" fill="none" stroke="url(#goldInner)" stroke-width="2" stroke-dasharray="8,4" />
+
+  <!-- Corner Flourish Ornaments -->
+  <g fill="url(#goldInner)">
+    <circle cx="58" cy="58" r="8" />
+    <circle cx="742" cy="58" r="8" />
+    <circle cx="58" cy="1042" r="8" />
+    <circle cx="742" cy="1042" r="8" />
+  </g>
+
+  <!-- Header: Wonder Cars Badge & Insignia -->
+  <g transform="translate(400, 155)" text-anchor="middle">
+    <!-- Center Emblem Shield -->
+    <path d="M-36,-42 L36,-42 L48,0 C48,34 0,56 0,56 C0,56 -48,34 -48,0 Z" fill="url(#goldInner)" filter="url(#shadow)" />
+    <path d="M-30,-36 L30,-36 L40,0 C40,28 0,46 0,46 C0,46 -40,28 -40,0 Z" fill="#0A1628" />
+    <!-- Winged Star inside shield -->
+    <polygon points="0,-24 5,-8 22,-8 9,2 14,18 0,8 -14,18 -9,2 -22,-8 -5,-8" fill="url(#goldOuter)" />
+
+    <!-- Top Ribbon / Subtitle -->
+    <text y="90" font-family="'Cinzel', 'Trajan Pro', 'Georgia', serif" font-size="14" font-weight="700" fill="#AA820A" letter-spacing="6">
+      QUALITY ASSURANCE BUREAU · DELHI NCR
+    </text>
+
+    <!-- Certificate Title -->
+    <text y="145" font-family="'Cinzel', 'Georgia', serif" font-size="34" font-weight="800" fill="#0A1628" letter-spacing="3">
+      CERTIFICATE OF AUDIT
+    </text>
+    <text y="180" font-family="'Cinzel', 'Georgia', serif" font-size="18" font-weight="600" fill="#C59B27" letter-spacing="4">
+      210-POINT TECHNICAL &amp; TITLE VERIFICATION
+    </text>
+  </g>
+
+  <!-- Golden Divider -->
+  <line x1="180" y1="365" x2="620" y2="365" stroke="url(#goldInner)" stroke-width="2" />
+  <circle cx="400" cy="365" r="5" fill="#AA820A" />
+
+  <!-- Body Text: Awarded To -->
+  <g transform="translate(400, 415)" text-anchor="middle">
+    <text font-family="'Playfair Display', 'Georgia', serif" font-style="italic" font-size="16" fill="#665D4F">
+      This is to certify that the certified pre-owned fleet of
+    </text>
+
+    <!-- Dealership Name -->
+    <text y="50" font-family="'Cinzel', 'Georgia', serif" font-size="38" font-weight="900" fill="#C93B2B" letter-spacing="2">
+      WONDER CARS
+    </text>
+
+    <!-- Location & Credential -->
+    <text y="88" font-family="'Montserrat', 'Arial', sans-serif" font-size="13" font-weight="700" fill="#1E293B" letter-spacing="3">
+      PREET VIHAR, EAST DELHI · AUTHORIZED DEALER
+    </text>
+  </g>
+
+  <!-- Detailed Compliance Scope Box -->
+  <g transform="translate(110, 545)">
+    <rect width="580" height="240" rx="12" fill="#FFFFFF" stroke="#E2D9CC" stroke-width="1.5" filter="url(#shadow)" />
+    
+    <text x="290" y="38" font-family="'Montserrat', 'Arial', sans-serif" font-size="13" font-weight="800" fill="#0B1528" text-anchor="middle" letter-spacing="2">
+      COMPREHENSIVE MULTI-POINT AUDIT BENCHMARKS
+    </text>
+
+    <!-- Check items -->
+    <g transform="translate(40, 75)" font-family="'Montserrat', 'Arial', sans-serif" font-size="12" fill="#334155">
+      <!-- Item 1 -->
+      <circle cx="0" cy="0" r="7" fill="#10B981" />
+      <path d="M-3,-1 L-1,2 L4,-3" fill="none" stroke="#FFFFFF" stroke-width="2" />
+      <text x="18" y="4" font-weight="700" fill="#0B1528">210-Point Mechanical &amp; Electrical Diagnostic Inspection Passed</text>
+      <text x="18" y="20" font-size="10" fill="#64748B">Engine compression, transmission gearing, suspension, and OBD-II diagnostics</text>
+
+      <!-- Item 2 -->
+      <g transform="translate(0, 50)">
+        <circle cx="0" cy="0" r="7" fill="#10B981" />
+        <path d="M-3,-1 L-1,2 L4,-3" fill="none" stroke="#FFFFFF" stroke-width="2" />
+        <text x="18" y="4" font-weight="700" fill="#0B1528">100% Non-Accidental Structural Chassis Verification</text>
+        <text x="18" y="20" font-size="10" fill="#64748B">Paint depth micrometer test, pillar welds integrity &amp; flood damage clear</text>
+      </g>
+
+      <!-- Item 3 -->
+      <g transform="translate(0, 100)">
+        <circle cx="0" cy="0" r="7" fill="#10B981" />
+        <path d="M-3,-1 L-1,2 L4,-3" fill="none" stroke="#FFFFFF" stroke-width="2" />
+        <text x="18" y="4" font-weight="700" fill="#0B1528">RTO Police &amp; Legal NCRP Provenance Guaranteed</text>
+        <text x="18" y="20" font-size="10" fill="#64748B">Clean RC transfer, zero loan hypothecation, authentic odometer guarantee</text>
+      </g>
+    </g>
+  </g>
+
+  <!-- Official Embossed Gold Seal -->
+  <g transform="translate(210, 915)">
+    <!-- Scalloped Starburst Seal -->
+    <circle cx="0" cy="0" r="62" fill="url(#sealGold)" filter="url(#shadow)" />
+    <circle cx="0" cy="0" r="54" fill="none" stroke="#FFFFFF" stroke-width="2" stroke-dasharray="3,3" />
+    <circle cx="0" cy="0" r="46" fill="#876508" />
+    <circle cx="0" cy="0" r="42" fill="url(#sealGold)" />
+    
+    <text y="-14" font-family="'Cinzel', serif" font-size="9" font-weight="900" fill="#422E02" text-anchor="middle" letter-spacing="1.5">
+      OFFICIAL SEAL
+    </text>
+    <text y="6" font-family="'Cinzel', serif" font-size="15" font-weight="900" fill="#0A1628" text-anchor="middle">
+      100%
+    </text>
+    <text y="22" font-family="'Cinzel', serif" font-size="8" font-weight="900" fill="#422E02" text-anchor="middle" letter-spacing="1">
+      CERTIFIED
+    </text>
+    <!-- Ribbon tails -->
+    <path d="M-22,54 L-34,92 L-10,80 L8,92 L-2,54 Z" fill="#876508" />
+    <path d="M22,54 L34,92 L10,80 L-8,92 L2,54 Z" fill="#C59B27" />
+  </g>
+
+  <!-- Signatures Block -->
+  <g transform="translate(560, 900)" text-anchor="middle">
+    <!-- Cursive Signature Graphic -->
+    <path d="M-90,-10 C-60,-40 -30,10 -10,-20 C10,-40 30,-5 60,-25 C75,-35 85,-20 95,-30" fill="none" stroke="#0B1528" stroke-width="2.5" stroke-linecap="round" />
+    <line x1="-110" y1="0" x2="110" y2="0" stroke="#AA820A" stroke-width="1.5" />
+    <text y="22" font-family="'Montserrat', sans-serif" font-size="13" font-weight="800" fill="#0B1528">
+      NAMAN JAIN
+    </text>
+    <text y="38" font-family="'Montserrat', sans-serif" font-size="10" font-weight="600" fill="#AA820A" letter-spacing="1">
+      FOUNDER &amp; MANAGING DIRECTOR
+    </text>
+    <text y="52" font-family="'Montserrat', sans-serif" font-size="9" fill="#64748B">
+      WONDER CARS EAST DELHI
+    </text>
+  </g>
+
+  <!-- Bottom Certificate Footer Code -->
+  <g transform="translate(400, 1030)" text-anchor="middle" font-family="'Montserrat', sans-serif" font-size="9" fill="#8C7F6E" letter-spacing="1">
+    <text>VERIFICATION REGISTRY ID: WND-CERT-2026-DEL · ISSUED IN NEW DELHI, INDIA</text>
+  </g>
+</svg>
+
