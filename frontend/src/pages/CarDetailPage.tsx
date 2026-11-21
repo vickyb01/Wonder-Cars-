@@ -8,7 +8,6 @@ import {
   MapPin,
   MessageCircle,
   Phone,
-  Scale,
   Share2,
   ShieldCheck,
 } from 'lucide-react';
@@ -29,7 +28,6 @@ import { InspectionReportsSection } from '../components/showroom/InspectionRepor
 import { HistoryAndLegalSection } from '../components/showroom/HistoryAndLegalSection';
 import { ShowroomEnquirySidebar } from '../components/showroom/ShowroomEnquirySidebar';
 import { EmiCalculatorSection } from '../components/showroom/EmiCalculatorSection';
-import { useCompare } from '../context/CompareContext';
 import { useWishlist } from '../context/WishlistContext';
 import { estimateCarEmiWithConfig } from '../utils/emi';
 
@@ -47,7 +45,6 @@ export function CarDetailPage() {
   const [activeFormMode, setActiveFormMode] = useState<'test-drive' | 'inspection' | 'offer'>('test-drive');
   const formContainerRef = useRef<HTMLDivElement | null>(null);
   const similarScrollRef = useRef<HTMLDivElement | null>(null);
-  const { isCompared, toggleCompare, compareCount } = useCompare();
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -285,30 +282,6 @@ export function CarDetailPage() {
                   <Heart className="w-4 h-4" fill={wishlisted ? 'currentColor' : 'none'} />
                   <span>{wishlisted ? 'Saved' : 'Save'}</span>
                 </button>
-
-                <button
-                  type="button"
-                  onClick={() => toggleCompare(car)}
-                  aria-pressed={isCompared(car.id)}
-                  className={`inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg border text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-                    isCompared(car.id)
-                      ? 'bg-blue-50 dark:bg-blue-500/15 border-blue-600 dark:border-blue-500 text-blue-700 dark:text-blue-400'
-                      : 'bg-slate-50 dark:bg-[#121215] border-slate-200 dark:border-white/[0.1] text-slate-700 dark:text-zinc-200 hover:border-blue-400 dark:hover:border-white/[0.25]'
-                  }`}
-                >
-                  {isCompared(car.id) ? <Check className="w-4 h-4" /> : <Scale className="w-4 h-4" />}
-                  <span>{isCompared(car.id) ? 'In Compare' : 'Compare'}</span>
-                </button>
-
-                {compareCount > 0 && (
-                  <Link
-                    to="/compare"
-                    className="inline-flex items-center gap-1.5 px-3.5 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-xs font-semibold text-white transition-colors whitespace-nowrap"
-                  >
-                    <span>Compare ({compareCount})</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
-                )}
 
                 <button
                   type="button"

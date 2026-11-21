@@ -55,7 +55,7 @@ function AppLayout({ mapsQuotaExceeded }: { mapsQuotaExceeded: boolean }) {
           <Route path="/" element={<HomePage />} />
           <Route path="/cars" element={<InventoryPage />} />
           <Route path="/cars/:id" element={<CarDetailPage />} />
-          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/compare" element={<Navigate to="/cars" replace />} />
           <Route path="/sell" element={<Navigate to="/cars" replace />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/contact" element={<ContactPage />} />

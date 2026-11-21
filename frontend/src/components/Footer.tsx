@@ -105,11 +105,6 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/compare" className="hover:text-blue-700 dark:hover:text-white transition-colors">
-                  Compare Cars
-                </Link>
-              </li>
-              <li>
                 <Link to="/about" className="hover:text-blue-700 dark:hover:text-white transition-colors">
                   About Wonder Cars
                 </Link>

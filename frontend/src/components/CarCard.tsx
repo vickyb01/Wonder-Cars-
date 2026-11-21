@@ -1,8 +1,7 @@
 import { Link } from 'react-router-dom';
 import { motion } from 'motion/react';
-import { ArrowUpRight, Check, Heart, Scale, ShieldCheck } from 'lucide-react';
+import { ArrowUpRight, Check, Heart, ShieldCheck } from 'lucide-react';
 import type { Car } from '../types/car';
-import { useCompare } from '../context/CompareContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 import { estimateCarEmiWithConfig, type EmiConfig } from '../utils/emi';
@@ -18,8 +17,6 @@ interface CarCardProps {
 export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
   const isSold = car.status === 'Sold';
   const estimatedEmi = estimateCarEmiWithConfig(car.priceInr, emiConfig);
-  const { isCompared, toggleCompare } = useCompare();
-  const compared = isCompared(car.id);
   const { isWishlisted, toggleWishlist } = useWishlist();
   const saved = isWishlisted(car.id);
   const { cartItems } = useCart();
@@ -142,34 +139,20 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-2 xs:gap-2.5">
-            <button
-              type="button"
-              onClick={() => toggleCompare(car)}
-              aria-pressed={compared}
-              className={`inline-flex items-center justify-center gap-1 xs:gap-1.5 text-[11px] xs:text-xs font-semibold py-2 xs:py-2.5 px-2 xs:px-3 rounded-lg border transition-colors whitespace-nowrap cursor-pointer ${
-                compared
-                  ? 'bg-blue-50 dark:bg-blue-600/20 border-blue-600 dark:border-blue-500 text-blue-700 dark:text-blue-300'
-                  : 'bg-slate-50 dark:bg-white/[0.03] border-slate-200 dark:border-white/[0.08] text-slate-700 dark:text-zinc-200 hover:border-blue-300 dark:hover:border-white/[0.2] hover:text-blue-700 dark:hover:text-white'
-              }`}
-            >
-              {compared ? <Check className="w-3.5 h-3.5" /> : <Scale className="w-3.5 h-3.5" />}
-              <span>{compared ? 'Added' : 'Compare'}</span>
-            </button>
-
+          <div className="mt-1">
             {isInCart ? (
               <Link
                 to={`/cars/${car.id}`}
-                className="inline-flex items-center justify-center gap-1 xs:gap-1.5 text-[11px] xs:text-xs font-semibold text-white transition-all py-2 xs:py-2.5 px-2 xs:px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 shadow-sm shadow-emerald-600/30 whitespace-nowrap"
+                className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white transition-all py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 dark:bg-emerald-600 dark:hover:bg-emerald-500 shadow-sm shadow-emerald-600/30 whitespace-nowrap"
                 title="Enquiry Already Submitted for this Car"
               >
                 <Check className="w-3.5 h-3.5 stroke-[2.5]" />
-                <span>Already Done</span>
+                <span>Already In Enquiry</span>
               </Link>
             ) : (
               <Link
                 to={`/cars/${car.id}`}
-                className="inline-flex items-center justify-center gap-1 xs:gap-1.5 text-[11px] xs:text-xs font-semibold text-white transition-colors py-2 xs:py-2.5 px-2 xs:px-3 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 whitespace-nowrap"
+                className="w-full inline-flex items-center justify-center gap-1.5 text-xs font-semibold text-white transition-colors py-2.5 px-3 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 whitespace-nowrap"
               >
                 <span>View Details</span>
                 <ArrowUpRight className="w-3.5 h-3.5" />

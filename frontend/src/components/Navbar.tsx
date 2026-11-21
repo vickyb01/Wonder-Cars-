@@ -1,8 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Heart, Menu, Scale, ShoppingCart, X } from 'lucide-react';
+import { Heart, Menu, ShoppingCart, X } from 'lucide-react';
 import { AnimatePresence, motion } from 'motion/react';
-import { useCompare } from '../context/CompareContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
 
@@ -10,7 +9,6 @@ export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
-  const { compareCount } = useCompare();
   const { wishlistCount } = useWishlist();
   const { cartCount, openCart } = useCart();
 
@@ -95,24 +93,7 @@ export function Navbar() {
             About
           </NavLink>
 
-          {/* 3. Compare */}
-          <NavLink
-            to="/compare"
-            className={({ isActive }) =>
-              `relative px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 tabular-nums transition-all duration-200 inline-flex items-center gap-1.5 ${
-                isActive
-                  ? 'bg-white dark:bg-white/10 text-amber-600 dark:text-amber-400 shadow-xs border border-slate-200/60 dark:border-white/[0.08]'
-                  : compareCount > 0
-                  ? 'text-blue-700 dark:text-blue-400 hover:text-blue-800 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/[0.05]'
-                  : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/[0.05]'
-              }`
-            }
-          >
-            <Scale className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Compare ({compareCount})</span>
-          </NavLink>
-
-          {/* 4. Saved */}
+          {/* 3. Saved */}
           <NavLink
             to="/cars?saved=true"
             className={({ isActive }) =>
@@ -151,20 +132,8 @@ export function Navbar() {
           </NavLink>
         </nav>
 
-        {/* Zone 3: Compare + Cart CTA + Mobile Menu */}
+        {/* Zone 3: Cart CTA + Mobile Menu */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          <Link
-            to="/compare"
-            className={`hidden xs:inline-flex lg:hidden items-center gap-1.5 px-2.5 xs:px-3 py-2 rounded-lg text-xs font-semibold tabular-nums whitespace-nowrap shrink-0 transition-colors ${
-              compareCount > 0
-                ? 'bg-blue-50 dark:bg-blue-600/20 border border-blue-200 dark:border-blue-500/40 text-blue-700 dark:text-blue-300'
-                : 'bg-slate-100 dark:bg-white/[0.05] border border-slate-200 dark:border-white/[0.1] text-slate-700 dark:text-zinc-200'
-            }`}
-          >
-            <Scale className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Compare ({compareCount})</span>
-          </Link>
-
           {/* Cart Icon Button (Replaces Explore Cars CTA) */}
           <button
             type="button"
@@ -258,19 +227,6 @@ export function Navbar() {
                 }
               >
                 Contact
-              </NavLink>
-              <NavLink
-                to="/compare"
-                className={({ isActive }) =>
-                  `px-3 py-3 rounded-lg text-base font-medium tabular-nums flex items-center justify-between transition-colors ${
-                    isActive
-                      ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white'
-                      : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
-                  }`
-                }
-              >
-                <span>Compare Cars</span>
-                <span className="text-sm font-mono text-blue-700 dark:text-blue-400">({compareCount})</span>
               </NavLink>
               <NavLink
                 to="/cars?saved=true"

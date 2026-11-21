@@ -289,12 +289,6 @@ export function HomePage() {
                 <span>{homepageSettings?.ctaExploreText || 'Explore Cars'}</span>
                 <ArrowRight className="w-4 h-4" />
               </Link>
-              <Link
-                to="/compare"
-                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#18181B]/80 hover:bg-[#27272A] border border-white/20 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap"
-              >
-                <span>{homepageSettings?.ctaCompareText || 'Compare Cars'}</span>
-              </Link>
             </motion.div>
           </div>
         </div>
