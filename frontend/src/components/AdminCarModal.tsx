@@ -54,7 +54,7 @@ interface AdminCarModalProps {
   onSaved: (saved: Car) => void;
 }
 
-type ModalTab = 'basic' | 'gallery' | 'inspection';
+type ModalTab = 'basic' | 'gallery';
 
 const PHOTO_CATEGORIES: PhotoCategory[] = [
   'Exterior',
@@ -642,7 +642,6 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
           {[
             { id: 'basic', label: '1. Basic & Pricing' },
             { id: 'gallery', label: `2. Photos (${gallery.length}/35)` },
-            { id: 'inspection', label: '3. Condition & Documents' },
           ].map((tab) => {
             const hasErr = hasTabError(tab.id as ModalTab);
             return (
@@ -1341,201 +1340,6 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                           </button>
                         </div>
                       </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-
-          {activeTab === 'inspection' && (
-            <div className="space-y-5">
-              <div className="flex flex-wrap gap-1.5">
-                {[
-                  { id: 'exterior', label: 'Exterior (19)' },
-                  { id: 'interior', label: 'Interior (17)' },
-                  { id: 'mechanical', label: 'Mechanical (14)' },
-                  { id: 'tyres', label: 'Tyres & Battery' },
-                  { id: 'docs', label: 'Documents (9)' },
-                ].map((sub) => (
-                  <button
-                    key={sub.id}
-                    type="button"
-                    onClick={() => setInspectionSubTab(sub.id as typeof inspectionSubTab)}
-                    className={`px-3 py-1.5 rounded-lg text-xs font-semibold cursor-pointer ${
-                      inspectionSubTab === sub.id
-                        ? 'bg-blue-700 dark:bg-white/[0.14] text-white'
-                        : 'bg-slate-100 dark:bg-[#09090B] text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-                    }`}
-                  >
-                    {sub.label}
-                  </button>
-                ))}
-              </div>
-
-              {(inspectionSubTab === 'exterior' ||
-                inspectionSubTab === 'interior' ||
-                inspectionSubTab === 'mechanical') && (
-                <div className="space-y-2.5">
-                  {(inspectionSubTab === 'exterior'
-                    ? exteriorReport
-                    : inspectionSubTab === 'interior'
-                    ? interiorReport
-                    : mechanicalReport
-                  ).map((row, idx) => {
-                    const setter =
-                      inspectionSubTab === 'exterior'
-                        ? setExteriorReport
-                        : inspectionSubTab === 'interior'
-                        ? setInteriorReport
-                        : setMechanicalReport;
-                    return (
-                      <div
-                        key={row.component}
-                        className="grid grid-cols-1 sm:grid-cols-12 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] items-center"
-                      >
-                        <span className="sm:col-span-3 text-xs font-medium text-slate-900 dark:text-white">{row.component}</span>
-                        <select
-                          value={row.status}
-                          onChange={(e) =>
-                            updateReportRow(setter, idx, { status: e.target.value as InspectionCondition })
-                          }
-                          className="sm:col-span-3 h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        >
-                          <option value="Excellent">Excellent</option>
-                          <option value="Good">Good</option>
-                          <option value="Average">Average</option>
-                          <option value="Needs Attention">Needs Attention</option>
-                          <option value="Not Inspected">Not Inspected</option>
-                        </select>
-                        <input
-                          type="text"
-                          value={row.notes || ''}
-                          onChange={(e) => updateReportRow(setter, idx, { notes: e.target.value })}
-                          placeholder="Inspection remarks..."
-                          className="sm:col-span-6 h-8 px-2.5 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        />
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-
-              {inspectionSubTab === 'tyres' && (
-                <div className="space-y-5">
-                  <div className="space-y-2.5">
-                    {tyreDetails.map((tyre, idx) => (
-                      <div
-                        key={tyre.position}
-                        className="grid grid-cols-1 sm:grid-cols-12 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] items-center"
-                      >
-                        <span className="sm:col-span-2 text-xs font-semibold text-slate-900 dark:text-white">{tyre.position}</span>
-                        <input
-                          type="text"
-                          placeholder="Brand (e.g. Michelin)"
-                          value={tyre.brand || ''}
-                          onChange={(e) =>
-                            setTyreDetails((prev) =>
-                              prev.map((t, i) => (i === idx ? { ...t, brand: e.target.value } : t))
-                            )
-                          }
-                          className="sm:col-span-3 h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Tread condition"
-                          value={tyre.treadCondition}
-                          onChange={(e) =>
-                            setTyreDetails((prev) =>
-                              prev.map((t, i) => (i === idx ? { ...t, treadCondition: e.target.value } : t))
-                            )
-                          }
-                          className="sm:col-span-3 h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        />
-                        <input
-                          type="text"
-                          placeholder="Replacement note"
-                          value={tyre.replacementNote || ''}
-                          onChange={(e) =>
-                            setTyreDetails((prev) =>
-                              prev.map((t, i) => (i === idx ? { ...t, replacementNote: e.target.value } : t))
-                            )
-                          }
-                          className="sm:col-span-4 h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        />
-                      </div>
-                    ))}
-                  </div>
-
-                  <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08] grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      placeholder="Battery Brand"
-                      value={batteryDetails.brand || ''}
-                      onChange={(e) => setBatteryDetails((b) => ({ ...b, brand: e.target.value }))}
-                      className="h-9 px-3 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Battery Age"
-                      value={batteryDetails.age || ''}
-                      onChange={(e) => setBatteryDetails((b) => ({ ...b, age: e.target.value }))}
-                      className="h-9 px-3 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Battery Condition"
-                      value={batteryDetails.condition}
-                      onChange={(e) => setBatteryDetails((b) => ({ ...b, condition: e.target.value }))}
-                      className="h-9 px-3 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                    />
-                    <input
-                      type="text"
-                      placeholder="Replacement History"
-                      value={batteryDetails.replacementHistory || ''}
-                      onChange={(e) => setBatteryDetails((b) => ({ ...b, replacementHistory: e.target.value }))}
-                      className="h-9 px-3 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                    />
-                  </div>
-                </div>
-              )}
-
-              {inspectionSubTab === 'docs' && (
-                <div className="space-y-2.5">
-                  {documents.map((doc, idx) => (
-                    <div
-                      key={doc.key}
-                      className="grid grid-cols-1 sm:grid-cols-12 gap-2 p-2.5 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] items-center"
-                    >
-                      <span className="sm:col-span-4 text-xs font-medium text-slate-900 dark:text-white">{doc.label}</span>
-                      <select
-                        value={doc.status}
-                        onChange={(e) =>
-                          setDocuments((prev) =>
-                            prev.map((d, i) =>
-                              i === idx ? { ...d, status: e.target.value as DocumentStatus } : d
-                            )
-                          )
-                        }
-                        className="sm:col-span-3 h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                      >
-                        <option value="Verified">Verified</option>
-                        <option value="Seller Provided">Seller Provided</option>
-                        <option value="Not Verified">Not Verified</option>
-                        <option value="Expired">Expired</option>
-                        <option value="Not Available">Not Available</option>
-                      </select>
-                      <input
-                        type="text"
-                        value={doc.note || ''}
-                        onChange={(e) =>
-                          setDocuments((prev) =>
-                            prev.map((d, i) => (i === idx ? { ...d, note: e.target.value } : d))
-                          )
-                        }
-                        placeholder="Public note (no private IDs)"
-                        className="sm:col-span-5 h-8 px-2.5 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                      />
                     </div>
                   ))}
                 </div>
