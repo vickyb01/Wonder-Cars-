@@ -809,11 +809,11 @@ export function AdminPage() {
 
   // Authenticated State: Premium Modern White and Navy-Blue Layout
   return (
-    <div className="min-h-screen bg-[#F8FAFC] text-slate-800 flex flex-col antialiased selection:bg-blue-600 selection:text-white">
+    <div className="h-screen bg-[#F8FAFC] text-slate-800 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
       <SeoHead title="Admin Dashboard — Wonder Cars" description="Wonder Cars professional showroom management dashboard." />
 
       {/* TOP HEADER BAR (Clean White with Navy Accents) */}
-      <header className="h-16 bg-white border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-6 flex items-center justify-between shadow-xs">
+      <header className="h-16 shrink-0 bg-white border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-6 flex items-center justify-between shadow-xs">
         {/* Left: Mobile Toggle & Brand Logo */}
         <div className="flex items-center gap-3">
           <button
@@ -884,14 +884,14 @@ export function AdminPage() {
           />
         )}
 
-        {/* PROFESSIONAL LEFT SIDEBAR (Navy Blue #0B1528) - 100% Sticky */}
+        {/* PROFESSIONAL LEFT SIDEBAR (Navy Blue #0B1528) - 100% Fixed & Sticky */}
         <aside
-          className={`fixed lg:sticky top-0 lg:top-16 inset-y-0 left-0 z-40 w-64 h-screen lg:h-[calc(100vh-4rem)] bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 self-start ${
+          className={`fixed lg:static top-0 lg:top-auto inset-y-0 left-0 z-40 w-64 h-full bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
         >
           {/* Scrollable Navigation Items */}
-          <div className="p-3 space-y-1 overflow-y-auto flex-1">
+          <div className="p-3 space-y-1 overflow-y-auto flex-1 sidebar-scroll">
             <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Admin Navigation
             </div>
@@ -983,7 +983,7 @@ export function AdminPage() {
         </aside>
 
         {/* MAIN DASHBOARD CONTENT AREA */}
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main className="flex-1 h-full overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6">
           {/* Global Alert Notification */}
           {saveFeedback && (
             <div
