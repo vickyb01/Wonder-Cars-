@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import type { Request, Response } from 'express';
-import { ADMIN_EMAIL, ADMIN_PASSWORD, UPLOADS_DIR } from '../config/index.ts';
+import { ADMIN_EMAIL, ADMIN_PASSWORD, BACKEND_ROOT, UPLOADS_DIR } from '../config/index.ts';
 import { hashPassword, verifyPassword, createSignedToken } from '../services/auth.service.ts';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import type { AuthenticatedRequest } from '../middleware/auth.middleware.ts';
@@ -318,6 +318,15 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
     }
     // Fallback: local disk URL
     urls.push(`/uploads/${file.filename}`);
+    try {
+      const pubDir = path.resolve(BACKEND_ROOT, '../frontend/public/uploads');
+      if (!fs.existsSync(pubDir)) {
+        fs.mkdirSync(pubDir, { recursive: true });
+      }
+      fs.copyFileSync(file.path, path.join(pubDir, file.filename));
+    } catch {
+      // Ignore mirror error
+    }
   }
 
   res.json({
@@ -380,8 +389,17 @@ export function getMedia(_req: Request, res: Response): void {
 export function deleteMedia(req: Request, res: Response): void {
   const safeFilename = path.basename(req.params.filename);
   const targetPath = path.join(UPLOADS_DIR, safeFilename);
+  const pubTargetPath = path.resolve(BACKEND_ROOT, '../frontend/public/uploads', safeFilename);
+  let deleted = false;
   if (fs.existsSync(targetPath)) {
     fs.unlinkSync(targetPath);
+    deleted = true;
+  }
+  if (fs.existsSync(pubTargetPath)) {
+    fs.unlinkSync(pubTargetPath);
+    deleted = true;
+  }
+  if (deleted) {
     logActivity('admin', 'Deleted Media File', `Removed image ${safeFilename}`);
     res.json({ ok: true });
     return;

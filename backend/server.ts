@@ -45,8 +45,13 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Also check frontend public uploads directory as fallback if present
-const frontendUploads = path.resolve(process.cwd(), '../frontend/public/uploads');
-if (fs.existsSync(frontendUploads)) {
+const frontendUploads = [
+  path.resolve(__dirname, '../frontend/public/uploads'),
+  path.resolve(process.cwd(), '../frontend/public/uploads'),
+  path.resolve(process.cwd(), './frontend/public/uploads'),
+].find((dir) => fs.existsSync(dir));
+
+if (frontendUploads) {
   app.use('/uploads', express.static(frontendUploads));
 }
 
