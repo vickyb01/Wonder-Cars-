@@ -147,11 +147,40 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+
+  const clearFieldError = (fieldName: string) => {
+    setFieldErrors((prev) => {
+      if (!prev[fieldName]) return prev;
+      const copy = { ...prev };
+      delete copy[fieldName];
+      return copy;
+    });
+  };
+
+  const hasTabError = (tabId: ModalTab): boolean => {
+    if (tabId === 'basic') {
+      return Boolean(fieldErrors.brand || fieldErrors.model || fieldErrors.priceInr || fieldErrors.year || fieldErrors.kilometres);
+    }
+    return false;
+  };
+
+  const getInputClass = (fieldName: string, isMono = false) => {
+    const hasErr = Boolean(fieldErrors[fieldName]);
+    return `w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border text-sm text-slate-900 dark:text-white ${
+      isMono ? 'font-mono' : ''
+    } transition-all duration-200 focus:outline-none ${
+      hasErr
+        ? 'border-rose-500 dark:border-rose-500 ring-2 ring-rose-500/20 bg-rose-500/5 dark:bg-rose-500/10 focus:border-rose-500 focus:ring-rose-500'
+        : 'border-slate-200 dark:border-white/[0.1] focus:border-blue-600 dark:focus:border-blue-500'
+    }`;
+  };
 
   useEffect(() => {
     if (!open) return;
     setActiveTab('basic');
     setError('');
+    setFieldErrors({});
 
     if (car) {
       setBrand(car.brand);
@@ -383,18 +412,41 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
     e.preventDefault();
     setError('');
     const isDraft = status === 'Draft';
+    const errors: Record<string, string> = {};
 
-    if (!brand.trim() || !model.trim()) {
-      setError('Brand and Model are required even for Draft listings.');
-      setActiveTab('basic');
-      return;
+    if (!brand.trim()) {
+      errors.brand = 'Brand name is required (e.g. Porsche, BMW)';
+    }
+    if (!model.trim()) {
+      errors.model = 'Model is required (e.g. 911 Carrera S, M4)';
+    }
+    if (!year || Number(year) < 1980 || Number(year) > 2030) {
+      errors.year = 'Please enter a valid Manufacturing Year (e.g. 2022)';
     }
     if (!isDraft && (!priceInr || Number(priceInr) <= 0)) {
-      setError('Please enter a valid Price in INR, or save the listing as Draft.');
-      setActiveTab('basic');
+      errors.priceInr = 'Price in INR is required, or save listing as Draft';
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
+      const firstKey = Object.keys(errors)[0];
+      setError(errors[firstKey]);
+
+      if (['brand', 'model', 'variant', 'year', 'registrationYear', 'priceInr', 'priceType', 'kilometres'].includes(firstKey)) {
+        setActiveTab('basic');
+      }
+
+      setTimeout(() => {
+        const el = document.getElementById(`field-${firstKey}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          el.focus();
+        }
+      }, 60);
       return;
     }
 
+    setFieldErrors({});
     setSaving(true);
     const payload: Partial<Car> = {
       brand: brand.trim(),
@@ -513,20 +565,30 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             { id: 'gallery', label: `2. Photos (${gallery.length}/35)` },
             { id: 'specs', label: '3. Specs & Features' },
             { id: 'inspection', label: '4. Condition & Documents' },
-          ].map((tab) => (
-            <button
-              key={tab.id}
-              type="button"
-              onClick={() => setActiveTab(tab.id as ModalTab)}
-              className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-                activeTab === tab.id
-                  ? 'bg-blue-700 dark:bg-blue-600 text-white'
-                  : 'bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-transparent text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
+          ].map((tab) => {
+            const hasErr = hasTabError(tab.id as ModalTab);
+            return (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => setActiveTab(tab.id as ModalTab)}
+                className={`relative px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap flex items-center gap-1.5 ${
+                  activeTab === tab.id
+                    ? hasErr
+                      ? 'bg-rose-600 text-white'
+                      : 'bg-blue-700 dark:bg-blue-600 text-white'
+                    : hasErr
+                    ? 'bg-rose-500/10 border border-rose-500/60 text-rose-600 dark:text-rose-400'
+                    : 'bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-transparent text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
+                }`}
+              >
+                <span>{tab.label}</span>
+                {hasErr && (
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse inline-block" />
+                )}
+              </button>
+            );
+          })}
         </div>
 
         {/* Form Body */}
@@ -535,26 +597,48 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             <div className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Brand *</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                    Brand <span className="text-rose-500">*</span>
+                  </label>
                   <input
+                    id="field-brand"
                     type="text"
-                    required
                     value={brand}
-                    onChange={(e) => setBrand(e.target.value)}
+                    onChange={(e) => {
+                      setBrand(e.target.value);
+                      clearFieldError('brand');
+                    }}
                     placeholder="Porsche"
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    className={getInputClass('brand')}
                   />
+                  {fieldErrors.brand && (
+                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.brand}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Model *</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                    Model <span className="text-rose-500">*</span>
+                  </label>
                   <input
+                    id="field-model"
                     type="text"
-                    required
                     value={model}
-                    onChange={(e) => setModel(e.target.value)}
+                    onChange={(e) => {
+                      setModel(e.target.value);
+                      clearFieldError('model');
+                    }}
                     placeholder="911 Carrera S"
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    className={getInputClass('model')}
                   />
+                  {fieldErrors.model && (
+                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.model}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Variant</label>
@@ -570,13 +654,25 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Mfg. Year</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                    Mfg. Year <span className="text-rose-500">*</span>
+                  </label>
                   <input
+                    id="field-year"
                     type="number"
                     value={year}
-                    onChange={(e) => setYear(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    onChange={(e) => {
+                      setYear(e.target.value);
+                      clearFieldError('year');
+                    }}
+                    className={getInputClass('year', true)}
                   />
+                  {fieldErrors.year && (
+                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.year}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Reg. Year</label>
@@ -588,15 +684,27 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Price (INR)</label>
+                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                    Price (INR) <span className="text-rose-500">*</span>
+                  </label>
                   <input
+                    id="field-priceInr"
                     type="number"
                     min={0}
                     value={priceInr}
-                    onChange={(e) => setPriceInr(e.target.value)}
+                    onChange={(e) => {
+                      setPriceInr(e.target.value);
+                      clearFieldError('priceInr');
+                    }}
                     placeholder="18800000"
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    className={getInputClass('priceInr', true)}
                   />
+                  {fieldErrors.priceInr && (
+                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.priceInr}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Pricing Mode</label>
@@ -615,12 +723,22 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Kilometres</label>
                   <input
+                    id="field-kilometres"
                     type="number"
                     min={0}
                     value={kilometres}
-                    onChange={(e) => setKilometres(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    onChange={(e) => {
+                      setKilometres(e.target.value);
+                      clearFieldError('kilometres');
+                    }}
+                    className={getInputClass('kilometres', true)}
                   />
+                  {fieldErrors.kilometres && (
+                    <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3 shrink-0" />
+                      <span>{fieldErrors.kilometres}</span>
+                    </p>
+                  )}
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Fuel Type</label>
@@ -1415,7 +1533,12 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             </div>
           )}
 
-          {error && <p className="text-xs font-medium text-rose-700 dark:text-red-400">{error}</p>}
+          {error && (
+            <div className="flex items-center gap-2.5 p-3 sm:p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-semibold">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <span>{error}</span>
+            </div>
+          )}
 
           <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-200 dark:border-white/[0.08]">
             <button
