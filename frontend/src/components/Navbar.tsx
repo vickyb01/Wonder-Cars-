@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from 'motion/react';
 import { useCompare } from '../context/CompareContext';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
-import { useTheme } from '../context/ThemeContext';
 
 export function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -14,10 +13,6 @@ export function Navbar() {
   const { compareCount } = useCompare();
   const { wishlistCount } = useWishlist();
   const { cartCount, openCart } = useCart();
-  const { resolvedTheme, setTheme } = useTheme();
-
-  const isDark = resolvedTheme === 'dark';
-  const toggleTheme = () => setTheme(isDark ? 'light' : 'dark');
 
   useEffect(() => {
     setMobileOpen(false);
@@ -156,51 +151,8 @@ export function Navbar() {
           </NavLink>
         </nav>
 
-        {/* Zone 3: LIGHT / DARK Mode Switch (Matches Screenshot) + Compare + Cart CTA + Mobile Menu */}
+        {/* Zone 3: Compare + Cart CTA + Mobile Menu */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0">
-          {/* Exact LIGHT / DARK Mode Switch matching Amber Cart Box Palette */}
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label={`Switch to ${isDark ? 'Light' : 'Dark'} mode`}
-            className="inline-flex items-center gap-2 sm:gap-2.5 py-1 cursor-pointer select-none shrink-0 group focus-visible:outline-none"
-          >
-            <span
-              className={`text-[11px] sm:text-xs font-bold tracking-widest uppercase transition-colors ${
-                !isDark
-                  ? 'text-amber-500 dark:text-amber-400 font-black'
-                  : 'text-slate-400 dark:text-[#8E9CAE] group-hover:text-slate-200'
-              }`}
-            >
-              LIGHT
-            </span>
-
-            {/* Pill Track with Sliding Amber Knob (Matches Cart Box Theme) */}
-            <div
-              className={`relative inline-flex items-center w-12 sm:w-13 h-6.5 sm:h-7 rounded-full p-0.5 sm:p-1 transition-colors duration-200 ${
-                isDark
-                  ? 'bg-[#181410] border border-amber-600/30'
-                  : 'bg-amber-100/70 border border-amber-200'
-              }`}
-            >
-              <span
-                className={`inline-block w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 shadow-sm shadow-amber-600/40 transform transition-transform duration-200 ease-in-out ${
-                  isDark ? 'translate-x-5.5 sm:translate-x-6' : 'translate-x-0'
-                }`}
-              />
-            </div>
-
-            <span
-              className={`text-[11px] sm:text-xs font-bold tracking-widest uppercase transition-colors ${
-                isDark
-                  ? 'text-amber-500 dark:text-amber-400 font-black'
-                  : 'text-slate-400 dark:text-[#8E9CAE] group-hover:text-slate-700'
-              }`}
-            >
-              DARK
-            </span>
-          </button>
-
           <Link
             to="/compare"
             className={`hidden xs:inline-flex lg:hidden items-center gap-1.5 px-2.5 xs:px-3 py-2 rounded-lg text-xs font-semibold tabular-nums whitespace-nowrap shrink-0 transition-colors ${
@@ -337,42 +289,6 @@ export function Navbar() {
                 <span className="text-sm font-mono text-rose-600 dark:text-rose-400">({wishlistCount})</span>
               </NavLink>
 
-              {/* Mobile Drawer Theme Switch (Matches Amber Cart Palette) */}
-              <div className="mt-2 flex items-center justify-between px-3 py-2.5 rounded-lg bg-slate-100/70 dark:bg-white/[0.04] border border-slate-200/60 dark:border-white/[0.06]">
-                <span className="text-xs font-semibold text-slate-600 dark:text-zinc-400">Theme</span>
-                <div
-                  role="button"
-                  tabIndex={0}
-                  onClick={toggleTheme}
-                  className="inline-flex items-center gap-2 cursor-pointer select-none"
-                >
-                  <span
-                    className={`text-[11px] font-bold tracking-widest uppercase transition-colors ${
-                      !isDark ? 'text-amber-500 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-[#8E9CAE]'
-                    }`}
-                  >
-                    LIGHT
-                  </span>
-                  <div
-                    className={`relative inline-flex items-center w-11 h-6 rounded-full p-0.5 transition-colors ${
-                      isDark ? 'bg-[#181410] border border-amber-600/30' : 'bg-amber-100/70 border border-amber-200'
-                    }`}
-                  >
-                    <span
-                      className={`inline-block w-5 h-5 rounded-full bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 shadow-sm shadow-amber-600/40 transform transition-transform duration-200 ease-in-out ${
-                        isDark ? 'translate-x-5' : 'translate-x-0'
-                      }`}
-                    />
-                  </div>
-                  <span
-                    className={`text-[11px] font-bold tracking-widest uppercase transition-colors ${
-                      isDark ? 'text-amber-500 dark:text-amber-400 font-black' : 'text-slate-400 dark:text-[#8E9CAE]'
-                    }`}
-                  >
-                    DARK
-                  </span>
-                </div>
-              </div>
               <button
                 type="button"
                 onClick={() => {

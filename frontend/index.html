@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -12,16 +12,11 @@
     <script>
       (function () {
         try {
-          var pref = localStorage.getItem('strada_theme') || 'system';
-          var isDark =
-            pref === 'dark' ||
-            (pref === 'system' &&
-              window.matchMedia &&
-              window.matchMedia('(prefers-color-scheme: dark)').matches);
           var root = document.documentElement;
-          root.classList.toggle('dark', isDark);
-          root.dataset.theme = isDark ? 'dark' : 'light';
-          root.style.colorScheme = isDark ? 'dark' : 'light';
+          root.classList.add('dark');
+          root.dataset.theme = 'dark';
+          root.style.colorScheme = 'dark';
+          localStorage.setItem('strada_theme', 'dark');
         } catch (e) {}
       })();
     </script>
