@@ -617,11 +617,11 @@ export function AdminPage() {
     }
   }
 
-  // 16 Sidebar Items strictly defined
+  // 16 Sidebar Items strictly defined - "Add New Car" moved to the very top
   const sidebarNavItems = [
+    { id: 'add-car', label: 'Add New Car', icon: Plus, isButton: true },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'cars', label: 'Cars Management', icon: Car, badge: cars.length },
-    { id: 'add-car', label: 'Add New Car', icon: Plus, isButton: true },
     { id: 'categories-brands', label: 'Categories & Brands', icon: Layers },
     { id: 'enquiries', label: 'Customer Enquiries (CRM)', icon: MessageSquare, badge: enquiries.filter((e) => e.status === 'New').length },
     { id: 'contact-messages', label: 'Contact Messages', icon: Mail, badge: sellRequests.filter((s) => s.status === 'Pending Review').length },
@@ -884,6 +884,20 @@ export function AdminPage() {
 
         {/* Right: Actions, Public Website Link, Notifications & User Avatar */}
         <div className="flex items-center gap-2 sm:gap-3">
+          {/* Top Header Quick Action: Add New Car */}
+          <button
+            type="button"
+            onClick={() => {
+              setEditingCar(null);
+              setCarModalOpen(true);
+            }}
+            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold text-white bg-blue-600 hover:bg-blue-700 shadow-sm shadow-blue-600/25 transition-all cursor-pointer"
+            title="Add a new vehicle to inventory"
+          >
+            <Plus className="w-3.5 h-3.5" />
+            <span>+ Add New Car</span>
+          </button>
+
           {/* View Live Public Website */}
           <Link
             to="/"
