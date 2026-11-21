@@ -285,14 +285,48 @@ export function getOverview(_req: Request, res: Response): void {
   res.json(overviewData);
 }
 
-export function uploadMedia(req: Request, res: Response): void {
+import {
+  isCloudinaryConfigured,
+  testCloudinaryConnection,
+  uploadSingleFileToCloudinary,
+} from '../services/cloudinary.service.ts';
+
+export async function uploadMedia(req: Request, res: Response): Promise<void> {
   const files = req.files as Express.Multer.File[] | undefined;
   if (!files || files.length === 0) {
     res.status(400).json({ error: 'No files were uploaded.' });
     return;
   }
-  const urls = files.map((file) => `/uploads/${file.filename}`);
-  res.json({ urls });
+
+  const urls: string[] = [];
+  const useCloudinary = isCloudinaryConfigured();
+  let cloudinaryError: string | undefined;
+
+  for (const file of files) {
+    if (useCloudinary) {
+      try {
+        const cloudUrl = await uploadSingleFileToCloudinary(file.path, file.originalname);
+        urls.push(cloudUrl);
+        continue;
+      } catch (err) {
+        cloudinaryError = err instanceof Error ? err.message : 'Cloudinary upload error';
+        console.warn(`[Cloudinary] Upload failed for ${file.filename}, falling back to local:`, cloudinaryError);
+      }
+    }
+    // Fallback: local disk URL
+    urls.push(`/uploads/${file.filename}`);
+  }
+
+  res.json({
+    urls,
+    storage: useCloudinary && !cloudinaryError ? 'cloudinary' : 'local',
+    warning: cloudinaryError ? `Cloudinary notice: ${cloudinaryError}. Stored on local server disk.` : undefined,
+  });
+}
+
+export async function getCloudinaryStatus(_req: Request, res: Response): Promise<void> {
+  const status = await testCloudinaryConnection();
+  res.json(status);
 }
 
 export function getNotifications(_req: Request, res: Response): void {

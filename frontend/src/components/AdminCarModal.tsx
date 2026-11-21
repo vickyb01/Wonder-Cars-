@@ -1,5 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ArrowUp, ImagePlus, Plus, Trash2, X } from 'lucide-react';
+import {
+  AlertCircle,
+  ArrowUp,
+  CheckCircle2,
+  Cloud,
+  ImagePlus,
+  Link2,
+  Loader2,
+  Plus,
+  Trash2,
+  UploadCloud,
+  X,
+} from 'lucide-react';
 import type {
   AccidentHistory,
   BatteryDetails,
@@ -18,7 +30,7 @@ import type {
   TyreDetail,
   UsageHistory,
 } from '../types/car';
-import { createCar, updateCar, uploadCarImages } from '../utils/api';
+import { createCar, fetchCloudinaryStatus, updateCar, uploadCarImages } from '../utils/api';
 import {
   createDefaultAccidentHistory,
   createDefaultBattery,
@@ -86,6 +98,13 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [uploadCategory, setUploadCategory] = useState<PhotoCategory>('Exterior');
   const [uploadAngleLabel, setUploadAngleLabel] = useState('Front-Left 45° View');
   const [customImageUrl, setCustomImageUrl] = useState('');
+  const [showUrlInput, setShowUrlInput] = useState(false);
+  const [cloudStatus, setCloudStatus] = useState<{
+    configured: boolean;
+    connected: boolean;
+    cloudName: string;
+    error?: string;
+  } | null>(null);
 
   // Specs & Features
   const [category, setCategory] = useState('Luxury Performance');
@@ -267,6 +286,12 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setTyreDetails(createDefaultTyres());
       setBatteryDetails(createDefaultBattery());
       setDocuments(createDefaultDocuments());
+    }
+
+    if (open) {
+      fetchCloudinaryStatus()
+        .then((st) => setCloudStatus(st))
+        .catch(() => {});
     }
   }, [car, open]);
 
@@ -810,14 +835,74 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
           {activeTab === 'gallery' && (
             <div className="space-y-5">
-              <div className="p-4 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08] space-y-4">
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 items-end">
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Target Category</label>
+              {/* Storage Destination Status Badge */}
+              <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-2.5 rounded-xl bg-slate-100 dark:bg-white/[0.04] border border-slate-200 dark:border-white/[0.08] text-xs">
+                <div className="flex items-center gap-2">
+                  <Cloud className="w-4 h-4 text-amber-500" />
+                  <span className="font-semibold text-slate-800 dark:text-zinc-200">Photo Storage:</span>
+                  {cloudStatus?.connected ? (
+                    <span className="inline-flex items-center gap-1 text-emerald-700 dark:text-emerald-400 font-semibold bg-emerald-500/10 px-2 py-0.5 rounded-md">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Cloudinary CDN Active ({cloudStatus.cloudName})
+                    </span>
+                  ) : cloudStatus?.configured ? (
+                    <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400 font-medium bg-amber-500/10 px-2 py-0.5 rounded-md" title={cloudStatus.error}>
+                      <AlertCircle className="w-3.5 h-3.5" /> Cloud Name Issue ({cloudStatus.cloudName}) - Auto-saving to Local Disk
+                    </span>
+                  ) : (
+                    <span className="inline-flex items-center gap-1 text-slate-600 dark:text-zinc-400 font-medium bg-slate-200/60 dark:bg-white/[0.06] px-2 py-0.5 rounded-md">
+                      Local Server Storage Active
+                    </span>
+                  )}
+                </div>
+                <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
+                  {gallery.length}/35 Photographs
+                </span>
+              </div>
+
+              {/* Large Direct Device Gallery Upload Dropzone */}
+              <label
+                className={`relative border-2 border-dashed rounded-2xl p-6 sm:p-8 flex flex-col items-center justify-center text-center cursor-pointer transition-all duration-200 group ${
+                  uploading
+                    ? 'border-amber-500 bg-amber-50/40 dark:bg-amber-950/20 opacity-80 cursor-wait'
+                    : 'border-slate-300 dark:border-white/15 hover:border-amber-500 dark:hover:border-amber-500 bg-slate-50/80 dark:bg-[#0E1524]/60 hover:bg-amber-50/30 dark:hover:bg-[#131D31]'
+                }`}
+              >
+                <input
+                  type="file"
+                  multiple
+                  accept="image/*"
+                  onChange={handleFileUpload}
+                  className="hidden"
+                  disabled={uploading}
+                />
+                <div className="w-14 h-14 rounded-2xl bg-amber-500/10 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-200">
+                  {uploading ? (
+                    <Loader2 className="w-7 h-7 animate-spin" />
+                  ) : (
+                    <UploadCloud className="w-7 h-7" />
+                  )}
+                </div>
+                <p className="font-display text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-1">
+                  {uploading ? 'Uploading Photographs from Gallery...' : 'Upload Photos from Device Gallery'}
+                </p>
+                <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md">
+                  Click here to open your phone/PC gallery. Select single or multiple photos at once.
+                </p>
+                <span className="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-bold text-xs shadow-md shadow-amber-600/20">
+                  <ImagePlus className="w-4 h-4" />
+                  <span>Choose from Gallery ({gallery.length}/35)</span>
+                </span>
+              </label>
+
+              {/* Upload Presets & Optional URL Toggle */}
+              <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08]">
+                <div className="flex flex-wrap items-center gap-3">
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">Category for new photos:</span>
                     <select
                       value={uploadCategory}
                       onChange={(e) => setUploadCategory(e.target.value as PhotoCategory)}
-                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
+                      className="h-8 px-2.5 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs font-semibold text-slate-900 dark:text-white"
                     >
                       {PHOTO_CATEGORIES.map((cat) => (
                         <option key={cat} value={cat}>
@@ -826,47 +911,48 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                       ))}
                     </select>
                   </div>
-                  <div>
-                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Default Angle Label</label>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">Angle label:</span>
                     <input
                       type="text"
                       value={uploadAngleLabel}
                       onChange={(e) => setUploadAngleLabel(e.target.value)}
-                      placeholder="e.g. Open Engine Bay, Odometer"
-                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
+                      placeholder="e.g. Front 3/4, Cockpit"
+                      className="h-8 px-2.5 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white w-44"
                     />
                   </div>
-                  <label className="h-10 px-4 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold inline-flex items-center justify-center gap-2 cursor-pointer">
-                    <ImagePlus className="w-4 h-4" />
-                    <span>{uploading ? 'Uploading...' : 'Upload Vehicle Photos'}</span>
-                    <input
-                      type="file"
-                      multiple
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      className="hidden"
-                      disabled={uploading}
-                    />
-                  </label>
                 </div>
 
-                <div className="flex gap-2">
+                {/* Optional Collapsible Web URL Link */}
+                <button
+                  type="button"
+                  onClick={() => setShowUrlInput((prev) => !prev)}
+                  className="text-xs text-amber-600 dark:text-amber-400 hover:underline flex items-center gap-1 font-medium cursor-pointer"
+                >
+                  <Link2 className="w-3.5 h-3.5" />
+                  <span>{showUrlInput ? 'Hide URL link input' : 'Or paste web link (Optional)'}</span>
+                </button>
+              </div>
+
+              {/* Collapsible Photo URL Field */}
+              {showUrlInput && (
+                <div className="flex gap-2 p-3 rounded-xl bg-slate-100/60 dark:bg-white/[0.02] border border-slate-200/80 dark:border-white/[0.06]">
                   <input
                     type="text"
                     value={customImageUrl}
                     onChange={(e) => setCustomImageUrl(e.target.value)}
-                    placeholder="Or paste actual vehicle photo URL..."
+                    placeholder="https://example.com/photo.jpg"
                     className="flex-1 h-9 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
                   />
                   <button
                     type="button"
                     onClick={handleAddImageUrl}
-                    className="px-4 h-9 rounded-lg bg-slate-200 dark:bg-white/[0.08] hover:bg-slate-300 dark:hover:bg-white/[0.14] text-xs font-medium text-slate-900 dark:text-white cursor-pointer"
+                    className="px-4 h-9 rounded-lg bg-slate-900 dark:bg-white text-white dark:text-slate-900 text-xs font-semibold cursor-pointer"
                   >
-                    Add Photo URL
+                    Add URL
                   </button>
                 </div>
-              </div>
+              )}
 
               {gallery.length === 0 ? (
                 <div className="p-10 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] text-center text-xs text-slate-500 dark:text-zinc-400">

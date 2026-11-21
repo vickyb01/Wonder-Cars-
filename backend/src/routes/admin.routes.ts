@@ -11,6 +11,7 @@ import {
   deleteUser,
   getOverview,
   uploadMedia,
+  getCloudinaryStatus,
   getNotifications,
   markNotificationRead,
   markAllNotificationsRead,
@@ -41,8 +42,9 @@ router.delete('/admin/users/:id', requireAdmin, deleteUser);
 // Dashboard overview
 router.get('/admin/overview', requireAdmin, getOverview);
 
-// File uploads
+// File uploads & Storage
 router.post('/admin/upload', requireAdmin, upload.array('images', 35), uploadMedia);
+router.get('/admin/cloudinary/status', requireAdmin, getCloudinaryStatus);
 
 // Notifications & Activity
 router.get('/admin/notifications', requireAdmin, getNotifications);

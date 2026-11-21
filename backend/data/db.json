@@ -4132,7 +4132,7 @@
         "media"
       ],
       "active": true,
-      "lastLogin": "2026-11-20T10:30:10.291Z",
+      "lastLogin": "2026-11-21T03:43:26.173Z",
       "createdAt": "2026-11-01T10:00:00.000Z"
     },
     {
@@ -4509,6 +4509,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795232606193-znbp",
+      "userEmail": "admin@wondercars.in",
+      "action": "Admin Sign In",
+      "details": "Naman Jain (Owner & Principal) (admin) signed in.",
+      "timestamp": "2026-11-21T03:43:26.193Z"
+    },
     {
       "id": "act-1795172859625-iwo2",
       "userEmail": "System",

@@ -1,8 +1,12 @@
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import express from 'express';
 import { PORT, UPLOADS_DIR } from './src/config/index.ts';
 import apiRouter from './src/routes/index.ts';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
 

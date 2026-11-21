@@ -237,8 +237,20 @@ export async function uploadCarImages(files: File[]): Promise<string[]> {
     headers: authHeaders(),
     body: formData,
   });
-  const data = await handleJsonResponse<{ urls: string[] }>(res);
+  const data = await handleJsonResponse<{ urls: string[]; storage?: string; warning?: string }>(res);
   return data.urls;
+}
+
+export async function fetchCloudinaryStatus(): Promise<{
+  configured: boolean;
+  connected: boolean;
+  cloudName: string;
+  error?: string;
+}> {
+  const res = await fetch('/api/admin/cloudinary/status', {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse(res);
 }
 
 export async function fetchAdminEnquiries(): Promise<Enquiry[]> {
