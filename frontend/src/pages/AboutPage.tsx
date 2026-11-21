@@ -667,7 +667,7 @@ export function AboutPage() {
 
           {/* Photo Gallery Grid (3 Images Per Row, Uniform Box Sizes & Visible Footers) */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {filteredGallery.map((photo, index) => (
+            {filteredGallery.map((photo: any, index: number) => (
               <div
                 key={photo.id}
                 onClick={() => {

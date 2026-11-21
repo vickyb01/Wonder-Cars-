@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, Search, ShieldCheck, X, Sparkles, Car, ChevronRight } from 'lucide-react';
@@ -218,7 +218,7 @@ export function HomePage() {
       : HERO_SLIDES;
 
   // Comprehensive brand options combining admin settings, current inventory brands, and catalog
-  const brandOptionsList = useMemo(() => {
+  const brandOptionsList = useMemo<string[]>(() => {
     const configured = homepageSettings?.brandOptions && homepageSettings.brandOptions.length > 0
       ? homepageSettings.brandOptions
       : [];
@@ -252,7 +252,7 @@ export function HomePage() {
   const isFiltered = selectedBrand !== 'All' || Boolean(maxPrice) || fuelType !== 'All';
 
   // Real-time matching cars based on the 3 hero search controls
-  const heroFilteredCars = useMemo(() => {
+  const heroFilteredCars = useMemo<CarType[]>(() => {
     if (!isFiltered) return allCars;
     return allCars.filter((car) => {
       // 1. Marque / Brand match
@@ -395,7 +395,7 @@ export function HomePage() {
                 <option value="All" className="bg-[#121215] text-white">
                   {homepageSettings?.brandDefaultText || 'All Brands'}
                 </option>
-                {brandOptionsList.map((brandName) => (
+                {brandOptionsList.map((brandName: string) => (
                   <option key={brandName} value={brandName} className="bg-[#121215] text-white">
                     {brandName}
                   </option>
@@ -535,7 +535,7 @@ export function HomePage() {
 
           {heroFilteredCars.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {heroFilteredCars.map((car, index) => (
+              {heroFilteredCars.map((car: CarType, index: number) => (
                 <CarCard key={car.id} car={car} index={index} />
               ))}
             </div>

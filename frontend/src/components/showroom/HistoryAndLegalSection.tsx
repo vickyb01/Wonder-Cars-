@@ -71,10 +71,10 @@ export function HistoryAndLegalSection({ car }: HistoryAndLegalSectionProps) {
     usageDl.push({ label: 'Disclosed Driving Pattern', value: car.usageHistory.drivingPattern });
   }
   if (isMeaningful(car.usageHistory?.reasonForSelling)) {
-    usageDl.push({ label: 'Reason for Selling (Seller Disclosed)', value: car.usageHistory.reasonForSelling, fullWidth: true });
+    usageDl.push({ label: 'Reason for Selling (Seller Disclosed)', value: car.usageHistory!.reasonForSelling!, fullWidth: true });
   }
   if (isMeaningful(car.usageHistory?.registrationHistoryNote)) {
-    usageDl.push({ label: 'Registration History Summary', value: car.usageHistory.registrationHistoryNote, fullWidth: true });
+    usageDl.push({ label: 'Registration History Summary', value: car.usageHistory!.registrationHistoryNote!, fullWidth: true });
   }
 
   const hasUsageContent = usageStats.length > 0 || usageDl.length > 0;
