@@ -80,13 +80,13 @@ export function Footer() {
               <img
                 src="/assets/wonder-cars-logo.png"
                 alt="Wonder Cars"
-                className="h-12 w-auto object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
+                className="h-16 sm:h-20 w-auto object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
               <img
                 src="/assets/wonder-cars-logo-dark.png"
                 alt="Wonder Cars"
-                className="h-12 w-auto object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
+                className="h-16 sm:h-20 w-auto object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
             </Link>
