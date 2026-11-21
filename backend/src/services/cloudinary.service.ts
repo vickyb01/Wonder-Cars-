@@ -114,3 +114,4 @@ export async function uploadSingleFileToCloudinary(
 
   return data.secure_url || data.url!;
 }
+

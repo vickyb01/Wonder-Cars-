@@ -4,6 +4,8 @@ backend/node_modules/
 dist/
 frontend/dist/
 backend/dist/
+backend/src/uploads/*
+!backend/src/uploads/.gitkeep
 build/
 coverage/
 .DS_Store
