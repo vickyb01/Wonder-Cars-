@@ -54,6 +54,24 @@ app.all('/api/*', (_req, res) => {
   res.status(404).json({ error: 'API route not found' });
 });
 
+// Serve built frontend assets in production / single-service deployment
+const candidateDistDirs = [
+  path.resolve(__dirname, '../frontend/dist'),
+  path.resolve(process.cwd(), '../frontend/dist'),
+  path.resolve(process.cwd(), './frontend/dist'),
+  path.resolve(process.cwd(), './dist'),
+];
+
+const resolvedFrontendDist = candidateDistDirs.find((dir) => fs.existsSync(dir));
+
+if (resolvedFrontendDist) {
+  app.use(express.static(resolvedFrontendDist));
+  // Any non-API route serves the frontend SPA index.html
+  app.get('*', (_req, res) => {
+    res.sendFile(path.resolve(resolvedFrontendDist, 'index.html'));
+  });
+}
+
 // Start listening
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`🚗 Wonder Cars Backend Server running on http://0.0.0.0:${PORT}`);
