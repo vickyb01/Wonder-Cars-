@@ -164,7 +164,9 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [claimedMileage, setClaimedMileage] = useState('');
   const [emissionStandard, setEmissionStandard] = useState('BS6');
   const [registrationState, setRegistrationState] = useState('');
-  const [insuranceValidUntil, setInsuranceValidUntil] = useState('');
+  const [insuranceValidUntil, setInsuranceValidUntil] = useState('Comprehensive (Valid)');
+  const [rcNote, setRcNote] = useState('Original (Verified)');
+  const [keysNote, setKeysNote] = useState('2 Original Keys');
   const [comfortText, setComfortText] = useState('');
   const [entertainmentText, setEntertainmentText] = useState('');
   const [safetyText, setSafetyText] = useState('');
@@ -301,7 +303,11 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setClaimedMileage(car.claimedMileage || '');
       setEmissionStandard(car.emissionStandard || '');
       setRegistrationState(car.registrationState || '');
-      setInsuranceValidUntil(car.insuranceValidUntil || '');
+      setInsuranceValidUntil(car.insuranceValidUntil || 'Comprehensive (Valid)');
+      const rcDoc = car.documents?.find((d) => d.key === 'rc');
+      setRcNote(rcDoc?.note || (rcDoc?.status ? `Original (${rcDoc.status})` : 'Original (Verified)'));
+      const keysDoc = car.documents?.find((d) => d.key === 'keys');
+      setKeysNote(keysDoc?.note || (car.engine ? `${car.engine} · 2 Original Keys` : '2 Original Keys'));
       setComfortText((car.features?.comfort || []).join('\n'));
       setEntertainmentText((car.features?.entertainment || []).join('\n'));
       setSafetyText((car.features?.safety || []).join('\n'));
@@ -370,7 +376,9 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setClaimedMileage('');
       setEmissionStandard('BS6');
       setRegistrationState('');
-      setInsuranceValidUntil('');
+      setInsuranceValidUntil('Comprehensive (Valid)');
+      setRcNote('Original (Verified)');
+      setKeysNote('2 Original Keys');
       setComfortText('');
       setEntertainmentText('');
       setSafetyText('');
@@ -527,6 +535,27 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
     setFieldErrors({});
     setSaving(true);
+
+    const updatedDocs = [...documents];
+    const updateOrAddDoc = (key: string, label: string, note: string) => {
+      const idx = updatedDocs.findIndex((d) => d.key === key);
+      const item: DocumentItem = {
+        key,
+        label,
+        status: 'Verified',
+        note: note.trim() || `${label} Verified`,
+      };
+      if (idx >= 0) {
+        updatedDocs[idx] = { ...updatedDocs[idx], status: 'Verified', note: item.note };
+      } else {
+        updatedDocs.push(item);
+      }
+    };
+
+    updateOrAddDoc('rc', 'Registration Certificate (RC)', rcNote);
+    updateOrAddDoc('insurance', 'Comprehensive Insurance', insuranceValidUntil);
+    updateOrAddDoc('keys', 'Original & Spare Keys', keysNote);
+
     const payload: Partial<Car> = {
       brand: brand.trim(),
       model: model.trim(),
@@ -592,7 +621,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       mechanicalReport,
       tyreDetails,
       batteryDetails,
-      documents,
+      documents: updatedDocs,
     };
 
     try {
@@ -944,6 +973,72 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                     placeholder="https://youtube.com/watch?v=..."
                     className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
                   />
+                </div>
+              </div>
+
+              {/* RTO, RC, Comprehensive Insurance & Engine / Keys Card */}
+              <div className="p-4 sm:p-5 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08] space-y-3.5">
+                <div className="flex items-center justify-between">
+                  <h4 className="text-xs font-bold uppercase tracking-wider text-blue-700 dark:text-blue-400">
+                    RTO, Registration (RC), Insurance &amp; Engine / Keys
+                  </h4>
+                  <span className="text-[11px] text-slate-500 dark:text-zinc-400">
+                    Official Verification Details
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                      Registration RTO
+                    </label>
+                    <input
+                      type="text"
+                      value={registrationState}
+                      onChange={(e) => setRegistrationState(e.target.value)}
+                      placeholder="e.g. MH-02 (Mumbai), DL-03, HR-26"
+                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                      Registration Certificate (RC)
+                    </label>
+                    <input
+                      type="text"
+                      value={rcNote}
+                      onChange={(e) => setRcNote(e.target.value)}
+                      placeholder="e.g. Original (Verified), Available"
+                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                      Comprehensive Insurance
+                    </label>
+                    <input
+                      type="text"
+                      value={insuranceValidUntil}
+                      onChange={(e) => setInsuranceValidUntil(e.target.value)}
+                      placeholder="e.g. Comprehensive (Valid till Dec 2026)"
+                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
+                      Engine &amp; Keys
+                    </label>
+                    <input
+                      type="text"
+                      value={keysNote}
+                      onChange={(e) => setKeysNote(e.target.value)}
+                      placeholder="e.g. 2 Original Keys · 2.0L Turbo Engine"
+                      className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                    />
+                  </div>
                 </div>
               </div>
 
