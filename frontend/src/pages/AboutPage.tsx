@@ -32,6 +32,8 @@ import {
 } from 'lucide-react';
 import { SeoHead } from '../components/SeoHead';
 import { VehicleImage } from '../components/VehicleImage';
+import { fetchAboutSettings } from '../utils/api';
+import type { AboutSettings } from '../types/car';
 import {
   ABOUT_DATA,
   type CertificateItem,
@@ -95,6 +97,21 @@ function getWhyIcon(iconName: string) {
 }
 
 export function AboutPage() {
+  // Live About Settings from Backend
+  const [liveSettings, setLiveSettings] = useState<AboutSettings | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    fetchAboutSettings()
+      .then((data) => {
+        if (active && data) setLiveSettings(data);
+      })
+      .catch(() => null);
+    return () => {
+      active = false;
+    };
+  }, []);
+
   // Gallery Lightbox Modal State
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);
   const [galleryZoom, setGalleryZoom] = useState<number>(1);
@@ -119,8 +136,88 @@ export function AboutPage() {
     }
   }, []);
 
-  // All gallery items (9 images)
-  const filteredGallery = ABOUT_DATA.gallery.items;
+  // Dynamic Content with Graceful Fallbacks to ABOUT_DATA
+  const heroBadge = liveSettings?.heroBadge || ABOUT_DATA.hero.badge;
+  const headline = liveSettings?.headline;
+  const subheadline = liveSettings?.subheadline || ABOUT_DATA.hero.subheadline;
+  const heroBg = liveSettings?.heroBgImage || aboutHeroBg;
+  const heroCarImage = liveSettings?.heroCarImage || '/src/assets/images/car_audi_rs_etron_1794898131413.jpg';
+  const heroCarTitle = liveSettings?.heroCarTitle || 'Wonder Cars Delhi';
+  const heroCarSubtitle = liveSettings?.heroCarSubtitle || 'East Delhi Showroom Gallery';
+  const heroCarRating = liveSettings?.heroCarRating || '★ 4.9 Rating';
+  const heroStats =
+    liveSettings?.heroStats && liveSettings.heroStats.length > 0
+      ? liveSettings.heroStats
+      : ABOUT_DATA.hero.stats;
+
+  const ownerName = liveSettings?.ownerName || ABOUT_DATA.owner.name;
+  const ownerDesignation = liveSettings?.ownerDesignation || ABOUT_DATA.owner.designation;
+  const ownerTagline = liveSettings?.ownerTagline || ABOUT_DATA.owner.tagline;
+  const ownerImage = liveSettings?.ownerImage || ABOUT_DATA.owner.image;
+  const ownerExperience = liveSettings?.ownerExperience || ABOUT_DATA.owner.experienceYears;
+  const ownerBio =
+    liveSettings?.ownerBio && liveSettings.ownerBio.length > 0
+      ? liveSettings.ownerBio
+      : ABOUT_DATA.owner.bioParagraphs;
+  const ownerPhilosophy = liveSettings?.ownerPhilosophy || ABOUT_DATA.owner.philosophy;
+  const ownerSignature = liveSettings?.ownerSignature || ABOUT_DATA.owner.signatureText;
+
+  const whyChooseBadge = liveSettings?.whyChooseBadge || ABOUT_DATA.whyChooseUs.badge;
+  const whyChooseTitle = liveSettings?.whyChooseTitle || ABOUT_DATA.whyChooseUs.title;
+  const whyChooseDesc = liveSettings?.whyChooseDescription || ABOUT_DATA.whyChooseUs.description;
+  const whyChooseItems =
+    liveSettings?.whyChooseItems && liveSettings.whyChooseItems.length > 0
+      ? (liveSettings.whyChooseItems as any)
+      : ABOUT_DATA.whyChooseUs.items;
+
+  const certsBadge = liveSettings?.certificatesBadge || ABOUT_DATA.certificates.badge;
+  const certsTitle = liveSettings?.certificatesTitle || ABOUT_DATA.certificates.title;
+  const certsDesc = liveSettings?.certificatesDescription || ABOUT_DATA.certificates.description;
+  const certsItems =
+    liveSettings?.certificatesItems && liveSettings.certificatesItems.length > 0
+      ? (liveSettings.certificatesItems as any)
+      : ABOUT_DATA.certificates.items;
+
+  const galleryBadge = liveSettings?.galleryBadge || ABOUT_DATA.gallery.badge;
+  const galleryTitle = liveSettings?.galleryTitle || ABOUT_DATA.gallery.title;
+  const galleryDesc = liveSettings?.galleryDescription || ABOUT_DATA.gallery.description;
+  const filteredGallery =
+    liveSettings?.galleryItems && liveSettings.galleryItems.length > 0
+      ? (liveSettings.galleryItems as any)
+      : ABOUT_DATA.gallery.items;
+
+  const videosBadge = liveSettings?.videosBadge || ABOUT_DATA.videos.badge;
+  const videosTitle = liveSettings?.videosTitle || ABOUT_DATA.videos.title;
+  const videosDesc = liveSettings?.videosDescription || ABOUT_DATA.videos.description;
+  const videoItems =
+    liveSettings?.videoItems && liveSettings.videoItems.length > 0
+      ? (liveSettings.videoItems as any)
+      : ABOUT_DATA.videos.items;
+
+  const instagramUrl = liveSettings?.instagramUrl || ABOUT_DATA.social.instagram.url;
+  const instagramHandle = liveSettings?.instagramHandle || ABOUT_DATA.social.instagram.handle;
+  const instagramBio = liveSettings?.instagramBio || ABOUT_DATA.social.instagram.bio;
+
+  const facebookUrl = liveSettings?.facebookUrl || ABOUT_DATA.social.facebook.url;
+  const facebookPageName = liveSettings?.facebookPageName || ABOUT_DATA.social.facebook.pageName;
+  const facebookBio = liveSettings?.facebookBio || ABOUT_DATA.social.facebook.bio;
+
+  const youtubeUrl = liveSettings?.youtubeUrl || ABOUT_DATA.social.youtube.url;
+  const youtubeChannelName = liveSettings?.youtubeChannelName || ABOUT_DATA.social.youtube.channelName;
+  const youtubeBio = liveSettings?.youtubeBio || ABOUT_DATA.social.youtube.bio;
+
+  const showroomName = liveSettings?.showroomName || ABOUT_DATA.showroom.name;
+  const showroomAddress = liveSettings?.showroomAddress || ABOUT_DATA.showroom.address;
+  const showroomLandmark = liveSettings?.showroomLandmark || ABOUT_DATA.showroom.landmark;
+  const showroomCity = liveSettings?.showroomCity || ABOUT_DATA.showroom.city;
+  const showroomState = liveSettings?.showroomState || ABOUT_DATA.showroom.state;
+  const showroomPincode = liveSettings?.showroomPincode || ABOUT_DATA.showroom.pincode;
+  const showroomPhone = liveSettings?.showroomPhone || ABOUT_DATA.showroom.phone;
+  const showroomEmail = liveSettings?.showroomEmail || ABOUT_DATA.showroom.email;
+  const showroomWhatsapp = liveSettings?.showroomWhatsapp || ABOUT_DATA.showroom.whatsapp;
+  const showroomOpeningHours = liveSettings?.showroomOpeningHours || ABOUT_DATA.showroom.openingHours;
+  const showroomDirectionsUrl = liveSettings?.googleMapsDirectionsUrl || ABOUT_DATA.showroom.googleMapsDirectionsUrl;
+  const showroomEmbedUrl = liveSettings?.googleMapsEmbedUrl || ABOUT_DATA.showroom.googleMapsEmbedUrl;
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -165,7 +262,7 @@ export function AboutPage() {
         {/* Cinematic Night Road Background Image */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
           <img
-            src={aboutHeroBg}
+            src={heroBg}
             alt="Wonder Cars Luxury Night Drive"
             className="w-full h-full object-cover object-center"
           />
@@ -190,20 +287,26 @@ export function AboutPage() {
               {/* Badge */}
               <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/20 text-amber-300 text-xs font-semibold tracking-wide uppercase backdrop-blur-sm">
                 <Sparkles className="w-3.5 h-3.5 text-amber-400" />
-                <span>{ABOUT_DATA.hero.badge}</span>
+                <span>{heroBadge}</span>
               </div>
 
               {/* Main Headline */}
-              <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
-                More Than Cars, <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
-                  We Build Trust.
-                </span>
-              </h1>
+              {headline ? (
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+                  {headline}
+                </h1>
+              ) : (
+                <h1 className="font-display text-4xl sm:text-5xl lg:text-6xl font-bold tracking-tight text-white leading-[1.12]">
+                  More Than Cars, <br />
+                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500">
+                    We Build Trust.
+                  </span>
+                </h1>
+              )}
 
               {/* Subheadline */}
               <p className="text-base sm:text-lg text-zinc-300 leading-relaxed max-w-2xl">
-                {ABOUT_DATA.hero.subheadline}
+                {subheadline}
               </p>
 
               {/* CTAs */}
@@ -225,7 +328,7 @@ export function AboutPage() {
                 </Link>
 
                 <a
-                  href={`https://wa.me/${ABOUT_DATA.showroom.whatsapp}?text=${encodeURIComponent(
+                  href={`https://wa.me/${showroomWhatsapp}?text=${encodeURIComponent(
                     'Hello Wonder Cars, I would like to learn more about your pre-owned inventory.'
                   )}`}
                   target="_blank"
@@ -247,8 +350,8 @@ export function AboutPage() {
             >
               <div className="relative rounded-2xl overflow-hidden border border-white/[0.12] shadow-2xl bg-transparent group">
                 <VehicleImage
-                  src="/src/assets/images/car_audi_rs_etron_1794898131413.jpg"
-                  alt="Wonder Cars Flagship Showroom"
+                  src={heroCarImage}
+                  alt={heroCarTitle}
                   loading="eager"
                   className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
                 />
@@ -258,14 +361,14 @@ export function AboutPage() {
                   <div className="flex items-center justify-between gap-3">
                     <div className="min-w-0">
                       <p className="text-xs uppercase tracking-wider text-amber-400 font-semibold truncate drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                        Wonder Cars Delhi
+                        {heroCarTitle}
                       </p>
                       <p className="text-sm font-bold text-white truncate drop-shadow-[0_1px_3px_rgba(0,0,0,0.9)]">
-                        East Delhi Showroom Gallery
+                        {heroCarSubtitle}
                       </p>
                     </div>
                     <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-white/10 backdrop-blur-sm text-amber-300 border border-amber-400/40 shrink-0 drop-shadow-[0_1px_3px_rgba(0,0,0,0.8)]">
-                      ★ 4.9 Rating
+                      {heroCarRating}
                     </span>
                   </div>
                 </div>
@@ -275,9 +378,9 @@ export function AboutPage() {
 
           {/* Key Metrics Strip */}
           <div className="mt-16 pt-10 border-t border-white/[0.08] grid grid-cols-2 md:grid-cols-4 gap-6 lg:gap-8">
-            {ABOUT_DATA.hero.stats.map((stat, idx) => (
+            {heroStats.map((stat, idx) => (
               <motion.div
-                key={stat.label}
+                key={stat.label || idx}
                 initial={{ opacity: 0, y: 16 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.1 * idx }}
@@ -315,21 +418,21 @@ export function AboutPage() {
                 {/* Visual Emblem / Portrait Frame */}
                 <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-full overflow-hidden border-4 border-amber-500/30 shadow-inner bg-white dark:bg-black p-4 flex items-center justify-center">
                   <img
-                    src={ABOUT_DATA.owner.image}
-                    alt={ABOUT_DATA.owner.name}
+                    src={ownerImage}
+                    alt={ownerName}
                     className="w-full h-full object-contain"
                   />
                 </div>
 
                 <div className="mt-6 space-y-1">
                   <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
-                    {ABOUT_DATA.owner.name}
+                    {ownerName}
                   </h3>
                   <p className="text-sm font-semibold text-amber-600 dark:text-amber-400">
-                    {ABOUT_DATA.owner.designation}
+                    {ownerDesignation}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-zinc-400">
-                    {ABOUT_DATA.owner.experienceYears}
+                    {ownerExperience}
                   </p>
                 </div>
 
@@ -357,29 +460,29 @@ export function AboutPage() {
               </h2>
 
               <p className="text-base text-amber-700 dark:text-amber-400 font-medium">
-                {ABOUT_DATA.owner.tagline}
+                {ownerTagline}
               </p>
 
               {/* Bio Paragraphs */}
               <div className="space-y-4 text-slate-600 dark:text-zinc-300 text-sm sm:text-base leading-relaxed">
-                {ABOUT_DATA.owner.bioParagraphs.map((para, i) => (
+                {ownerBio.map((para, i) => (
                   <p key={i}>{para}</p>
                 ))}
               </div>
 
               {/* Philosophy Quote Box */}
               <div className="p-5 sm:p-6 rounded-2xl bg-amber-500/[0.06] border-l-4 border-amber-500 dark:border-amber-400 text-slate-800 dark:text-zinc-200 italic text-sm sm:text-base font-serif">
-                {ABOUT_DATA.owner.philosophy}
+                {ownerPhilosophy}
               </div>
 
               {/* Signature Block */}
               <div className="pt-4 border-t border-slate-200 dark:border-white/[0.08] flex items-center justify-between">
                 <div>
                   <p className="font-['Dancing_Script',cursive] text-3xl sm:text-4xl text-amber-600 dark:text-amber-400 font-bold select-none">
-                    {ABOUT_DATA.owner.signatureText}
+                    {ownerSignature}
                   </p>
                   <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 uppercase tracking-wider font-semibold">
-                    {ABOUT_DATA.owner.name} · {ABOUT_DATA.owner.designation}
+                    {ownerName} · {ownerDesignation}
                   </p>
                 </div>
                 <div className="text-right">
@@ -402,19 +505,19 @@ export function AboutPage() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20 text-emerald-800 dark:text-emerald-300 text-xs font-semibold tracking-wide uppercase">
               <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
-              <span>{ABOUT_DATA.whyChooseUs.badge}</span>
+              <span>{whyChooseBadge}</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-              {ABOUT_DATA.whyChooseUs.title}
+              {whyChooseTitle}
             </h2>
             <p className="text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
-              {ABOUT_DATA.whyChooseUs.description}
+              {whyChooseDesc}
             </p>
           </div>
 
           {/* Feature Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {ABOUT_DATA.whyChooseUs.items.map((item, idx) => (
+            {whyChooseItems.map((item: any, idx: number) => (
               <motion.div
                 key={item.id}
                 initial={{ opacity: 0, y: 20 }}
@@ -457,19 +560,19 @@ export function AboutPage() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold tracking-wide uppercase">
               <Award className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span>{ABOUT_DATA.certificates.badge}</span>
+              <span>{certsBadge}</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-              {ABOUT_DATA.certificates.title}
+              {certsTitle}
             </h2>
             <p className="text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
-              {ABOUT_DATA.certificates.description}
+              {certsDesc}
             </p>
           </div>
 
           {/* Certificate Cards (Single Row 3 Columns) */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-            {ABOUT_DATA.certificates.items.map((cert) => (
+            {certsItems.map((cert: any) => (
               <div
                 key={cert.id}
                 onClick={() => {
@@ -552,13 +655,13 @@ export function AboutPage() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-12">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-50 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20 text-amber-800 dark:text-amber-300 text-xs font-semibold tracking-wide uppercase">
               <Sparkles className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
-              <span>{ABOUT_DATA.gallery.badge}</span>
+              <span>{galleryBadge}</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-              {ABOUT_DATA.gallery.title}
+              {galleryTitle}
             </h2>
             <p className="text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
-              {ABOUT_DATA.gallery.description}
+              {galleryDesc}
             </p>
           </div>
 
@@ -621,19 +724,19 @@ export function AboutPage() {
           <div className="max-w-3xl mx-auto text-center space-y-4 mb-16">
             <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-red-50 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20 text-red-700 dark:text-red-400 text-xs font-semibold tracking-wide uppercase">
               <YoutubeIcon className="w-4 h-4 text-red-600" />
-              <span>{ABOUT_DATA.videos.badge}</span>
+              <span>{videosBadge}</span>
             </div>
             <h2 className="font-display text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-900 dark:text-white tracking-tight">
-              {ABOUT_DATA.videos.title}
+              {videosTitle}
             </h2>
             <p className="text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
-              {ABOUT_DATA.videos.description}
+              {videosDesc}
             </p>
           </div>
 
           {/* Video Cards Grid */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
-            {ABOUT_DATA.videos.items.map((video) => (
+            {videoItems.map((video: any) => (
               <div
                 key={video.id}
                 className="group rounded-2xl overflow-hidden bg-white dark:bg-[#121215] border border-slate-200/80 dark:border-white/[0.08] shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between"
@@ -830,10 +933,10 @@ export function AboutPage() {
                   </div>
                   {/* Large Profile Avatar */}
                   <a
-                    href={ABOUT_DATA.social.instagram.url}
+                    href={instagramUrl}
                     target="_blank"
                     rel="noreferrer"
-                    title="Follow @usedcarsnearby on Instagram"
+                    title={`Follow ${instagramHandle} on Instagram`}
                     className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-pink-500/60 dark:border-pink-500/80 shadow-md p-0.5 bg-slate-950 hover:scale-105 transition-transform shrink-0 cursor-pointer"
                   >
                     <img
@@ -848,17 +951,17 @@ export function AboutPage() {
                     Instagram
                   </h3>
                   <p className="text-xs font-semibold text-pink-600 dark:text-pink-400">
-                    {ABOUT_DATA.social.instagram.handle}
+                    {instagramHandle}
                   </p>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                  {ABOUT_DATA.social.instagram.bio}
+                  {instagramBio}
                 </p>
               </div>
 
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-white/[0.06]">
                 <a
-                  href={ABOUT_DATA.social.instagram.url}
+                  href={instagramUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-pink-600 via-rose-500 to-amber-500 hover:from-pink-700 hover:to-amber-600 text-white text-xs font-semibold transition-all shadow-xs"
@@ -879,10 +982,10 @@ export function AboutPage() {
                   </div>
                   {/* Large Profile Avatar */}
                   <a
-                    href={ABOUT_DATA.social.facebook.url}
+                    href={facebookUrl}
                     target="_blank"
                     rel="noreferrer"
-                    title="Join Used Cars Nearby on Facebook"
+                    title={`Join ${facebookPageName} on Facebook`}
                     className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-blue-500/60 dark:border-blue-500/80 shadow-md p-0.5 bg-slate-950 hover:scale-105 transition-transform shrink-0 cursor-pointer"
                   >
                     <img
@@ -897,17 +1000,17 @@ export function AboutPage() {
                     Facebook
                   </h3>
                   <p className="text-xs font-semibold text-blue-600 dark:text-blue-400">
-                    {ABOUT_DATA.social.facebook.pageName}
+                    {facebookPageName}
                   </p>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                  {ABOUT_DATA.social.facebook.bio}
+                  {facebookBio}
                 </p>
               </div>
 
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-white/[0.06]">
                 <a
-                  href={ABOUT_DATA.social.facebook.url}
+                  href={facebookUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-xs font-semibold transition-all shadow-xs"
@@ -928,10 +1031,10 @@ export function AboutPage() {
                   </div>
                   {/* Large Profile Avatar */}
                   <a
-                    href={ABOUT_DATA.social.youtube.url}
+                    href={youtubeUrl}
                     target="_blank"
                     rel="noreferrer"
-                    title="Used Cars Nearby YouTube Channel"
+                    title={`${youtubeChannelName} YouTube Channel`}
                     className="relative w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden border-2 border-red-500/60 dark:border-red-500/80 shadow-md p-0.5 bg-slate-950 hover:scale-105 transition-transform shrink-0 cursor-pointer"
                   >
                     <img
@@ -946,17 +1049,17 @@ export function AboutPage() {
                     YouTube
                   </h3>
                   <p className="text-xs font-semibold text-red-600 dark:text-red-400">
-                    {ABOUT_DATA.social.youtube.channelName}
+                    {youtubeChannelName}
                   </p>
                 </div>
                 <p className="text-sm text-slate-600 dark:text-zinc-400">
-                  {ABOUT_DATA.social.youtube.bio}
+                  {youtubeBio}
                 </p>
               </div>
 
               <div className="pt-6 mt-6 border-t border-slate-100 dark:border-white/[0.06]">
                 <a
-                  href={ABOUT_DATA.social.youtube.url}
+                  href={youtubeUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-red-600 hover:bg-red-700 text-white text-xs font-semibold transition-all shadow-xs"
@@ -998,10 +1101,10 @@ export function AboutPage() {
               <div className="space-y-6">
                 <div>
                   <h3 className="font-display text-2xl font-bold text-slate-900 dark:text-white">
-                    {ABOUT_DATA.showroom.name}
+                    {showroomName}
                   </h3>
                   <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
-                    {ABOUT_DATA.showroom.city}, {ABOUT_DATA.showroom.state}
+                    {showroomCity}, {showroomState}
                   </p>
                 </div>
 
@@ -1012,10 +1115,10 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Address</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {ABOUT_DATA.showroom.address}, {ABOUT_DATA.showroom.city}, {ABOUT_DATA.showroom.state} {ABOUT_DATA.showroom.pincode}
+                        {showroomAddress}, {showroomCity}, {showroomState} {showroomPincode}
                       </p>
                       <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5 font-medium">
-                        Landmark: {ABOUT_DATA.showroom.landmark}
+                        Landmark: {showroomLandmark}
                       </p>
                     </div>
                   </div>
@@ -1025,7 +1128,7 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Showroom Timings</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {ABOUT_DATA.showroom.openingHours}
+                        {showroomOpeningHours}
                       </p>
                     </div>
                   </div>
@@ -1035,7 +1138,7 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Direct Line</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {ABOUT_DATA.showroom.phone}
+                        {showroomPhone}
                       </p>
                     </div>
                   </div>
@@ -1045,7 +1148,7 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Official Email</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {ABOUT_DATA.showroom.email}
+                        {showroomEmail}
                       </p>
                     </div>
                   </div>
@@ -1055,7 +1158,7 @@ export function AboutPage() {
               {/* Action Buttons */}
               <div className="pt-6 border-t border-slate-200 dark:border-white/[0.08] flex flex-wrap gap-3">
                 <a
-                  href={ABOUT_DATA.showroom.googleMapsDirectionsUrl}
+                  href={showroomDirectionsUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-900 dark:bg-white text-white dark:text-slate-900 font-semibold text-xs hover:bg-slate-800 dark:hover:bg-zinc-200 transition-colors"
@@ -1065,7 +1168,7 @@ export function AboutPage() {
                 </a>
 
                 <a
-                  href={`tel:${ABOUT_DATA.showroom.phone}`}
+                  href={`tel:${showroomPhone}`}
                   className="flex-1 inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-slate-200 dark:bg-white/[0.08] text-slate-900 dark:text-white font-semibold text-xs hover:bg-slate-300 dark:hover:bg-white/[0.14] transition-colors"
                 >
                   <Phone className="w-4 h-4" />
@@ -1073,7 +1176,7 @@ export function AboutPage() {
                 </a>
 
                 <a
-                  href={`https://wa.me/${ABOUT_DATA.showroom.whatsapp}?text=${encodeURIComponent(
+                  href={`https://wa.me/${showroomWhatsapp}?text=${encodeURIComponent(
                     'Hello Naman ji, I want to visit Wonder Cars showroom today.'
                   )}`}
                   target="_blank"
@@ -1090,7 +1193,7 @@ export function AboutPage() {
             <div className="lg:col-span-7 rounded-3xl overflow-hidden border border-slate-200/80 dark:border-white/[0.08] shadow-md min-h-[380px] lg:min-h-full relative bg-slate-100 dark:bg-[#121215]">
               <iframe
                 title="Wonder Cars Location Map"
-                src={ABOUT_DATA.showroom.googleMapsEmbedUrl}
+                src={showroomEmbedUrl}
                 width="100%"
                 height="100%"
                 style={{ border: 0, minHeight: '380px' }}
@@ -1102,7 +1205,7 @@ export function AboutPage() {
               {/* Floating Quick Action Overlay */}
               <div className="absolute top-4 right-4 z-10">
                 <a
-                  href={ABOUT_DATA.showroom.googleMapsDirectionsUrl}
+                  href={showroomDirectionsUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="px-3.5 py-2 rounded-xl bg-slate-900/90 hover:bg-slate-900 text-white text-xs font-semibold backdrop-blur-md border border-white/20 shadow-lg flex items-center gap-1.5 transition-all hover:scale-105 cursor-pointer"
@@ -1468,7 +1571,7 @@ export function AboutPage() {
               <div className="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 text-xs text-zinc-400">
                 <p className="max-w-xl line-clamp-1">{selectedVideo.description}</p>
                 <a
-                  href={ABOUT_DATA.videos.channelUrl}
+                  href={youtubeUrl}
                   target="_blank"
                   rel="noreferrer"
                   className="inline-flex items-center gap-1.5 text-red-400 hover:text-red-300 font-semibold"

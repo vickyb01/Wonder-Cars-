@@ -4873,75 +4873,250 @@
     "heroBadge": "Welcome to Wonder Cars",
     "headline": "More Than Cars, We Build Trust.",
     "subheadline": "Wonder Cars is Delhi-NCR’s premier destination for curated, certified pre-owned luxury and performance automobiles. Founded with an uncompromising commitment to vehicle provenance, forensic quality audits, and transparent customer relationships.",
+    "heroBgImage": "/assets/about-hero-bg.jpg",
+    "heroCarImage": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+    "heroCarTitle": "Wonder Cars Delhi",
+    "heroCarSubtitle": "East Delhi Showroom Gallery",
+    "heroCarRating": "★ 4.9 Rating",
     "heroStats": [
       {
-        "number": "10+",
-        "label": "Years Serving Delhi-NCR"
-      },
-      {
-        "number": "2,500+",
-        "label": "Delighted Clients"
+        "number": "100%",
+        "label": "Certified Pre-Owned"
       },
       {
         "number": "210-Point",
-        "label": "Forensic Quality Check"
+        "label": "Forensic Quality Audit"
       },
       {
-        "number": "4.9 ★",
-        "label": "Average Client Rating"
+        "number": "6-Month",
+        "label": "Assured Warranty"
+      },
+      {
+        "number": "1000+",
+        "label": "Delighted Car Owners"
       }
     ],
     "ownerName": "Naman Jain",
-    "ownerDesignation": "Founder & Managing Director",
-    "ownerTagline": "Curating Delhi-NCR’s finest certified automobiles with forensic mechanical standards and genuine client care.",
-    "ownerExperience": "10+ Years in Luxury Automotive Curation",
+    "ownerDesignation": "Founder & Dealership Principal",
+    "ownerTagline": "Passionate Automotive Specialist & Curator of Delhi-NCR’s Finest Pre-Owned Cars",
+    "ownerExperience": "10+ Years in Automotive Curation",
     "ownerBio": [
-      "With over a decade of deep immersion in India’s pre-owned luxury automotive space, Naman Jain established Wonder Cars in East Delhi with a single uncompromising principle: to eradicate the uncertainty and lack of transparency traditionally associated with pre-owned vehicle purchases.",
-      "Under Naman’s leadership, every automobile that enters the Wonder Cars showroom undergoes a non-negotiable 210-point mechanical, electrical, and forensic chassis audit. Only vehicles with clean documentation, zero structural repairs, and verified authorized service records earn the Wonder Cars certified seal.",
-      "Beyond numbers and transactions, Naman is renowned among Delhi-NCR car collectors and everyday buyers alike for his client-first ethos: transparent, zero-mark-up advisory, end-to-end RTO handling, and assured post-delivery warranty support."
+      "Welcome to Wonder Cars. When I set out to establish this dealership, my goal was clear: transform the pre-owned automobile buying experience into one characterized by total transparency, genuine excitement, and lasting trust.",
+      "Having been an automotive enthusiast and collector for over a decade, I understand the anxiety that often accompanies buying a second-hand car. That is why at Wonder Cars, every single car in our inventory is hand-picked, non-accidental, meter-verified, and subjected to a comprehensive 210-point mechanical and cosmetic audit before it ever touches our showroom floor.",
+      "When you step into our Preet Vihar gallery, you are not just purchasing a vehicle—you are welcoming our dealership into your automotive journey. We look forward to handing you the keys to your dream car."
     ],
-    "ownerPhilosophy": "\"A car is not just a mode of transport—it represents your hard work, your aspirations, and your family’s safety. When you purchase from Wonder Cars, you aren’t just buying an automobile; you are gaining a lifetime partner on the road.\"",
+    "ownerPhilosophy": "“A reputation takes decades to build and seconds to compromise. That is why we treat every client like family and every car like our own.”",
     "ownerSignature": "Naman Jain",
     "ownerImage": "/assets/naman-jain-owner.jpg",
-    "galleryBadge": "Our Flagship Showroom",
-    "galleryTitle": "Experience Wonder Cars in Person",
-    "galleryDescription": "Step into our climate-controlled East Delhi showroom gallery. Explore our hand-picked fleet under architectural lighting.",
+    "whyChooseBadge": "The Wonder Advantage",
+    "whyChooseTitle": "Why Discerning Buyers Choose Wonder Cars",
+    "whyChooseDescription": "From forensic mechanical diagnostics to seamless state-wide RC transfers, see what makes our buying experience second to none.",
+    "whyChooseItems": [
+      {
+        "id": "w1",
+        "title": "Quality Checked Vehicles",
+        "highlight": "210-Point Forensic Audit",
+        "description": "Digital paint depth measurement, OBD diagnostic scans, suspension health checks, and engine compression telemetry on every car.",
+        "badge": "Inspected & Certified",
+        "iconName": "CheckCircle2"
+      },
+      {
+        "id": "w2",
+        "title": "Transparent Pricing",
+        "highlight": "Zero Hidden Charges",
+        "description": "Direct INR price quotes with complete breakdown of taxes, registration transfer, and warranty package. What you see is what you pay.",
+        "badge": "100% Fixed INR Quotes",
+        "iconName": "Scale"
+      },
+      {
+        "id": "w3",
+        "title": "Verified Documentation",
+        "highlight": "Clear Title Guarantee",
+        "description": "Full legal provenance review: NCRP clearance, single-owner history verification, insurance claim scrutiny, and seamless state RC transfer.",
+        "badge": "NOC & RC Cleared",
+        "iconName": "FileCheck"
+      },
+      {
+        "id": "w4",
+        "title": "Customer-Focused Service",
+        "highlight": "Private Concierge Care",
+        "description": "Private showroom viewings, doorstep test drives across Delhi-NCR, custom financing options, and tailored vehicle handover ceremonies.",
+        "badge": "Doorstep Test Drive",
+        "iconName": "UserCheck"
+      },
+      {
+        "id": "w5",
+        "title": "Wide Range of Pre-Owned Cars",
+        "highlight": "Curated Fleet Portfolio",
+        "description": "From sporty sedans and executive grand tourers to high-performance SUVs and luxury electric vehicles, our fleet caters to all driving desires.",
+        "badge": "Multibrand Excellence",
+        "iconName": "Car"
+      },
+      {
+        "id": "w6",
+        "title": "Trusted Buying Experience",
+        "highlight": "6-Month Assured Warranty",
+        "description": "Every vehicle is protected by our comprehensive 6-month engine and transmission coverage, offering total peace of mind on the road.",
+        "badge": "6-Month Assured Warranty",
+        "iconName": "ShieldAlert"
+      }
+    ],
+    "certificatesBadge": "Verified & Certified",
+    "certificatesTitle": "Dealership Certifications & Credentials",
+    "certificatesDescription": "Wonder Cars operates under strict automotive industry compliance, certified inspection standards, and authorized business registration.",
+    "certificatesItems": [
+      {
+        "id": "c1",
+        "title": "Droom Certificate of Excellence · Winner 2024–25",
+        "authority": "Droom Technology · Sandeep Aggarwal (Founder & CEO)",
+        "date": "Winner 2024–25 · Rated 4.3 ★",
+        "description": "Awarded to WONDER CARS for outstanding pre-owned automobile sales excellence, verified pricing transparency, and superior customer rating of 4.3 based on Droom proprietary methodology.",
+        "badge": "Droom Excellence Winner",
+        "image": "/assets/certificates/droom-excellence-certificate.jpg"
+      },
+      {
+        "id": "c2",
+        "title": "CarDekho Certificate of Association",
+        "authority": "CarDekho Certified Automotive Dealer Network",
+        "date": "Authorized Partner Dealer",
+        "description": "Official Certificate of Association recognizing WONDER CARS as an accredited CarDekho Partner Dealer meeting rigorous customer trust and multi-point vehicle standards.",
+        "badge": "CarDekho Partner Dealer",
+        "image": "/assets/certificates/cardekho-partner-certificate.jpg"
+      },
+      {
+        "id": "c3",
+        "title": "OLX Autos Certificate of Recognition",
+        "authority": "OLX Auto India · Amit Kumar (Head - OLX Auto India)",
+        "date": "Valuable Dealer Partner",
+        "description": "Awarded to WONDER CARS for being a Valuable Dealer Partner at OLX Autos, recognizing leadership and excellence in the certified used car marketplace.",
+        "badge": "OLX Autos Partner",
+        "image": "/assets/certificates/olx-autos-recognition-certificate.jpg"
+      }
+    ],
+    "galleryBadge": "Our Atmosphere",
+    "galleryTitle": "Showroom, Fleet & Delivery Moments",
+    "galleryDescription": "Take a visual tour inside our East Delhi gallery, inspect our pristine pre-owned fleet, and witness unforgettable vehicle delivery celebrations.",
     "galleryItems": [
       {
-        "id": "gallery-1",
-        "title": "Flagship Showroom Floor",
-        "caption": "Main display floor hosting certified performance coupes and luxury SUVs.",
-        "image": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+        "id": "g1",
+        "title": "Showroom Showcase & Vehicle Display",
+        "caption": "Premium vehicle showcase and architectural display at our East Delhi showroom.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.12.29%20AM.jpeg",
         "category": "Showroom"
       },
       {
-        "id": "gallery-2",
-        "title": "Worli & East Delhi Fleet Bay",
-        "caption": "Client inspection bays with forensic lighting and paint-depth inspection tools.",
-        "image": "/src/assets/images/hero_luxury_coupe_1794898128860.jpg",
+        "id": "g2",
+        "title": "Certified Pre-Owned Fleet Lineup",
+        "caption": "Curated selection of verified second-hand luxury vehicles ready for inspection.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.12.46%20AM.jpeg",
+        "category": "Premium Fleet"
+      },
+      {
+        "id": "g3",
+        "title": "Showroom Floor & Presentation Zone",
+        "caption": "Pristine detailing and lighting inside our climate-controlled showroom.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.13.08%20AM.jpeg",
         "category": "Showroom"
       },
       {
-        "id": "gallery-3",
-        "title": "Delivery Lounge",
-        "caption": "Private delivery suite celebrating new vehicle handovers with paperwork concierge.",
-        "image": "/src/assets/images/car_interior_cockpit_1794898131578.jpg",
+        "id": "g4",
+        "title": "Customer Vehicle Delivery Moment",
+        "caption": "Key handover celebration with verified documents and celebratory ceremony.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.13.27%20AM.jpeg",
+        "category": "Deliveries"
+      },
+      {
+        "id": "g5",
+        "title": "Luxury Fleet Inspection & Detailing",
+        "caption": "Forensic evaluation and multi-point quality check of incoming vehicles.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.14.13%20AM.jpeg",
+        "category": "Premium Fleet"
+      },
+      {
+        "id": "g6",
+        "title": "Dealership Atmosphere & Customer Lounge",
+        "caption": "Transparent consultation space and customer relationship lounge.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.16.23%20AM.jpeg",
         "category": "Showroom"
+      },
+      {
+        "id": "g7",
+        "title": "Happy Family Vehicle Delivery",
+        "caption": "Milestone delivery ceremony celebrating another happy car owner.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.17.09%20AM.jpeg",
+        "category": "Deliveries"
+      },
+      {
+        "id": "g8",
+        "title": "Second-Hand Luxury Car Collection",
+        "caption": "Handpicked certified luxury cars prepared for their next long journey.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-18%20at%2010.21.08%20AM.jpeg",
+        "category": "Premium Fleet"
+      },
+      {
+        "id": "g9",
+        "title": "Delighted Customer Car Delivery & Celebration",
+        "caption": "Celebrating another proud car owner taking delivery from Wonder Cars.",
+        "image": "/assets/Showroom,%20Fleet%20&%20Delivery%20Moments/WhatsApp%20Image%202026-11-19%20at%202.44.20%20PM.jpeg",
+        "category": "Deliveries"
       }
     ],
     "videosBadge": "Watch Our Journey",
-    "videosTitle": "Vehicle Walkthroughs & Showroom Stories",
-    "videosDescription": "Catch detailed video walk-arounds, exhaust sound clips, and buyer inspection guides on our official YouTube channel.",
+    "videosTitle": "Experience Wonder Cars in Motion",
+    "videosDescription": "Watch our comprehensive showroom tours, detailed car inspections, client vehicle deliveries, and automotive highlights.",
     "videoItems": [
       {
-        "id": "video-1",
-        "title": "2023 Audi RS e-tron GT Full Walkthrough & Inspection",
-        "description": "Complete battery state-of-health test, launch control demonstration, and interior features overview.",
-        "youtubeId": "dQw4w9WgXcQ",
-        "category": "Walkthrough",
+        "id": "v1",
+        "title": "Mahindra Scorpio 2021 😱😱 — Price, Specs & Walkaround",
+        "description": "Detailed walkthrough, condition inspection, price breakdown and features of Mahindra Scorpio 2021 by Used Cars Nearby.",
+        "youtubeId": "lBqEQDq77ow",
+        "duration": "Walkaround",
+        "category": "Featured Walkaround",
+        "thumbnailUrl": "https://img.youtube.com/vi/lBqEQDq77ow/hqdefault.jpg",
+        "autoPlayLive": true
+      },
+      {
+        "id": "v2",
+        "title": "Mahindra Thar Earth Edition — Off-road Review & Detailed Tour",
+        "description": "Complete inspection of the special edition Thar Earth Edition with off-road telemetry and interior condition review.",
+        "youtubeId": "xPjL4hK848s",
+        "duration": "In-Depth Review",
+        "category": "SUV Spotlight",
+        "thumbnailUrl": "https://img.youtube.com/vi/xPjL4hK848s/hqdefault.jpg",
+        "autoPlayLive": false
+      },
+      {
+        "id": "v3",
+        "title": "Top 5 Certified Pre-Owned Cars Under ₹15 Lakhs in Delhi-NCR",
+        "description": "Curated selection of reliable, certified, high-value second-hand cars with complete documentation and warranty.",
+        "youtubeId": "q7v1L_gA9qY",
+        "duration": "Buyer Guide",
+        "category": "Buyer Guide",
+        "thumbnailUrl": "https://img.youtube.com/vi/q7v1L_gA9qY/hqdefault.jpg",
         "autoPlayLive": false
       }
-    ]
+    ],
+    "instagramUrl": "https://www.instagram.com/usedcarsnearby/",
+    "instagramHandle": "@usedcarsnearby",
+    "instagramBio": "Delhi-NCR’s Certified Pre-Owned Luxury Cars. 210-Point Forensic Audits, Transparent Pricing & 6-Month Assured Warranty.",
+    "facebookUrl": "https://www.facebook.com/usedcarsnearby/",
+    "facebookPageName": "Used Cars Nearby",
+    "facebookBio": "Official Facebook community for Wonder Cars & Used Cars Nearby. Verified inventory updates and client celebrations.",
+    "youtubeUrl": "https://youtube.com/@usedcarsnearby?si=rLhUh-H6HIdMfBQ5",
+    "youtubeChannelName": "Used Cars Nearby",
+    "youtubeBio": "Comprehensive car walkarounds, mechanical condition reports, delivery celebrations, and automotive advice.",
+    "showroomName": "Wonder Cars Flagship Gallery",
+    "showroomAddress": "Plot No. 12, Main Vikas Marg, Near Preet Vihar Metro Station",
+    "showroomLandmark": "Opposite Pillar 104, Preet Vihar",
+    "showroomCity": "Delhi",
+    "showroomState": "Delhi",
+    "showroomPincode": "110092",
+    "showroomPhone": "+91 98101 23456",
+    "showroomEmail": "contact@wondercars.in",
+    "showroomWhatsapp": "919810123456",
+    "showroomOpeningHours": "Monday – Sunday: 10:00 AM – 8:30 PM",
+    "googleMapsDirectionsUrl": "https://maps.google.com/?q=Wonder+Cars+Preet+Vihar+Delhi",
+    "googleMapsEmbedUrl": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14006.182417772396!2d77.291771!3d28.643387!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x390cfb5c00000001%3A0x89abcdef12345678!2sPreet%20Vihar%2C%20Delhi!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
   },
   "testimonials": [
     {

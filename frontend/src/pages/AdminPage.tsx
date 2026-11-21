@@ -6,6 +6,7 @@ import {
   ArrowRight,
   ArrowUp,
   ArrowUpRight,
+  Award,
   BarChart3,
   Bell,
   Calendar,
@@ -264,6 +265,37 @@ export function AdminPage() {
   const [newBudgetValue, setNewBudgetValue] = useState('');
   const [newFuelType, setNewFuelType] = useState('');
   const [savingHomepage, setSavingHomepage] = useState(false);
+
+  // About Us Management State
+  const [uploadingHeroBg, setUploadingHeroBg] = useState(false);
+  const [uploadingHeroCar, setUploadingHeroCar] = useState(false);
+  const [uploadingOwnerImg, setUploadingOwnerImg] = useState(false);
+  const [savingAbout, setSavingAbout] = useState(false);
+
+  // Gallery Add State
+  const [newGalleryTitle, setNewGalleryTitle] = useState('');
+  const [newGalleryCategory, setNewGalleryCategory] = useState<'Showroom' | 'Premium Fleet' | 'Deliveries'>('Showroom');
+  const [newGalleryCaption, setNewGalleryCaption] = useState('');
+  const [newGalleryUrl, setNewGalleryUrl] = useState('');
+  const [uploadingGallery, setUploadingGallery] = useState(false);
+
+  // Certificate Add State
+  const [newCertTitle, setNewCertTitle] = useState('');
+  const [newCertAuthority, setNewCertAuthority] = useState('');
+  const [newCertDate, setNewCertDate] = useState('');
+  const [newCertDesc, setNewCertDesc] = useState('');
+  const [newCertBadge, setNewCertBadge] = useState('');
+  const [newCertUrl, setNewCertUrl] = useState('');
+  const [uploadingCert, setUploadingCert] = useState(false);
+
+  // Video Add State
+  const [newVideoTitle, setNewVideoTitle] = useState('');
+  const [newVideoDesc, setNewVideoDesc] = useState('');
+  const [newVideoId, setNewVideoId] = useState('');
+  const [newVideoCategory, setNewVideoCategory] = useState('Featured Walkaround');
+
+  // Bio Paragraph Add State
+  const [newBioParagraph, setNewBioParagraph] = useState('');
 
   const unreadNotifsCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
@@ -2621,33 +2653,88 @@ export function AdminPage() {
           {/* TAB 8: ABOUT US MANAGEMENT */}
           {/* ========================================================================= */}
           {activeTab === 'about' && (
-            <div className="space-y-6 max-w-4xl">
-              <div>
-                <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">About Us & Owner Profile</h1>
-                <p className="text-xs text-slate-500 mt-1">Manage founder Naman Jain’s biography, showroom story, and YouTube video gallery.</p>
+            <div className="space-y-8 max-w-5xl pb-16">
+              {/* TOP HEADER & QUICK ACTIONS BAR */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                      Live About Us CMS
+                    </span>
+                    <span className="text-xs text-slate-400">Wonder Cars Delhi</span>
+                  </div>
+                  <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight mt-1">About Us & Showcase Management</h1>
+                  <p className="text-xs text-slate-500 mt-0.5">
+                    Customize every section of the About page: hero banner, founder profile, showroom photo gallery, certificates, videos, advantages, and contact info.
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2.5 shrink-0">
+                  <a
+                    href="/about"
+                    target="_blank"
+                    rel="noreferrer"
+                    className="px-4 py-2.5 rounded-xl border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 flex items-center gap-1.5 transition-colors"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5" />
+                    <span>Preview Page</span>
+                  </a>
+
+                  <button
+                    type="button"
+                    disabled={savingAbout}
+                    onClick={async () => {
+                      if (!aboutSettings) return;
+                      setSavingAbout(true);
+                      try {
+                        const updated = await updateAboutSettings(aboutSettings);
+                        setAboutSettings(updated);
+                        setSaveFeedback({ type: 'success', text: 'All About Us page changes saved and live!' });
+                      } catch (err: unknown) {
+                        setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to update About settings' });
+                      } finally {
+                        setSavingAbout(false);
+                      }
+                    }}
+                    className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/25 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-60"
+                  >
+                    {savingAbout ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                    <span>Save All Changes</span>
+                  </button>
+                </div>
               </div>
 
-              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-4">
-                <h3 className="font-bold text-sm text-[#0B1528] pb-2 border-b border-slate-100">Owner Details & Bio</h3>
+              {/* CARD 1: HERO SECTION & FEATURED SHOWROOM CAR CARD */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Sparkles className="w-4 h-4 text-amber-500" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">1. Hero Section & Showcase Feature</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Top Banner & Cinematic Showcase</span>
+                </div>
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className={labelCls}>Founder / Owner Name</label>
+                    <label className={labelCls}>Hero Badge Text</label>
                     <input
                       type="text"
-                      value={aboutSettings?.ownerName || ''}
+                      value={aboutSettings?.heroBadge || ''}
+                      placeholder="e.g. Delhi-NCR Premier Pre-Owned Destination"
                       onChange={(e) =>
-                        setAboutSettings((prev) => (prev ? { ...prev, ownerName: e.target.value } : null))
+                        setAboutSettings((prev) => (prev ? { ...prev, heroBadge: e.target.value } : null))
                       }
                       className={inputCls}
                     />
                   </div>
                   <div>
-                    <label className={labelCls}>Designation</label>
+                    <label className={labelCls}>Hero Main Headline</label>
                     <input
                       type="text"
-                      value={aboutSettings?.ownerDesignation || ''}
+                      value={aboutSettings?.headline || ''}
+                      placeholder="e.g. More Than Cars, We Build Trust."
                       onChange={(e) =>
-                        setAboutSettings((prev) => (prev ? { ...prev, ownerDesignation: e.target.value } : null))
+                        setAboutSettings((prev) => (prev ? { ...prev, headline: e.target.value } : null))
                       }
                       className={inputCls}
                     />
@@ -2655,31 +2742,1469 @@ export function AdminPage() {
                 </div>
 
                 <div>
-                  <label className={labelCls}>Owner Philosophy Quote</label>
+                  <label className={labelCls}>Hero Subheadline / Introduction</label>
                   <textarea
                     rows={2}
-                    value={aboutSettings?.ownerPhilosophy || ''}
+                    value={aboutSettings?.subheadline || ''}
+                    placeholder="Brief intro highlighting Wonder Cars values and legacy..."
                     onChange={(e) =>
-                      setAboutSettings((prev) => (prev ? { ...prev, ownerPhilosophy: e.target.value } : null))
+                      setAboutSettings((prev) => (prev ? { ...prev, subheadline: e.target.value } : null))
                     }
                     className="w-full p-3 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-blue-600"
                   />
                 </div>
 
+                {/* Hero Background Image Upload */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+                  <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                    <span>Cinematic Hero Background Image</span>
+                    <span className="text-[11px] font-normal text-slate-500">Dark luxury road or showroom backdrop</span>
+                  </label>
+                  <div className="flex flex-col sm:flex-row items-center gap-4">
+                    {aboutSettings?.heroBgImage && (
+                      <div className="w-28 h-16 rounded-lg overflow-hidden border border-slate-300 shrink-0 bg-black">
+                        <img src={aboutSettings.heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
+                      </div>
+                    )}
+                    <div className="flex-1 w-full space-y-2">
+                      <input
+                        type="text"
+                        value={aboutSettings?.heroBgImage || ''}
+                        placeholder="Paste image URL (e.g. /uploads/... or https://...)"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, heroBgImage: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                      <label className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 cursor-pointer shadow-2xs">
+                        {uploadingHeroBg ? <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" /> : <Upload className="w-3.5 h-3.5 text-blue-600" />}
+                        <span>{uploadingHeroBg ? 'Uploading...' : 'Upload Background from PC'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = e.target.files;
+                            if (!files || files.length === 0) return;
+                            setUploadingHeroBg(true);
+                            try {
+                              const urls = await uploadCarImages(Array.from(files));
+                              if (urls && urls[0]) {
+                                setAboutSettings((prev) => (prev ? { ...prev, heroBgImage: urls[0] } : null));
+                                setSaveFeedback({ type: 'success', text: 'Hero background uploaded!' });
+                              }
+                            } catch (err: unknown) {
+                              setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                            } finally {
+                              setUploadingHeroBg(false);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </label>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Featured Showroom Car Visual Card */}
+                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-3">
+                  <label className="text-xs font-bold text-slate-800 flex items-center justify-between">
+                    <span>Right-Side Featured Vehicle Showcase Card</span>
+                    <span className="text-[11px] font-normal text-slate-500">Image, showroom caption & rating</span>
+                  </label>
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 items-center">
+                    <div className="sm:col-span-3">
+                      {aboutSettings?.heroCarImage ? (
+                        <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-slate-300 bg-black">
+                          <img src={aboutSettings.heroCarImage} alt="Hero Car" className="w-full h-full object-cover" />
+                        </div>
+                      ) : (
+                        <div className="w-full aspect-[4/3] rounded-lg border border-dashed border-slate-300 bg-white flex items-center justify-center text-slate-400 text-xs">
+                          No Image
+                        </div>
+                      )}
+                    </div>
+                    <div className="sm:col-span-9 space-y-2.5">
+                      <div className="flex gap-2">
+                        <input
+                          type="text"
+                          value={aboutSettings?.heroCarImage || ''}
+                          placeholder="Car photo URL or upload below"
+                          onChange={(e) =>
+                            setAboutSettings((prev) => (prev ? { ...prev, heroCarImage: e.target.value } : null))
+                          }
+                          className={inputCls}
+                        />
+                        <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 cursor-pointer shadow-2xs shrink-0">
+                          {uploadingHeroCar ? <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" /> : <Upload className="w-3.5 h-3.5 text-blue-600" />}
+                          <span>{uploadingHeroCar ? 'Uploading...' : 'Upload Car Photo'}</span>
+                          <input
+                            type="file"
+                            accept="image/*"
+                            className="hidden"
+                            onChange={async (e) => {
+                              const files = e.target.files;
+                              if (!files || files.length === 0) return;
+                              setUploadingHeroCar(true);
+                              try {
+                                const urls = await uploadCarImages(Array.from(files));
+                                if (urls && urls[0]) {
+                                  setAboutSettings((prev) => (prev ? { ...prev, heroCarImage: urls[0] } : null));
+                                  setSaveFeedback({ type: 'success', text: 'Hero car photo uploaded!' });
+                                }
+                              } catch (err: unknown) {
+                                setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                              } finally {
+                                setUploadingHeroCar(false);
+                                e.target.value = '';
+                              }
+                            }}
+                          />
+                        </label>
+                      </div>
+
+                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-600">Card Title</label>
+                          <input
+                            type="text"
+                            value={aboutSettings?.heroCarTitle || ''}
+                            placeholder="Wonder Cars Delhi"
+                            onChange={(e) =>
+                              setAboutSettings((prev) => (prev ? { ...prev, heroCarTitle: e.target.value } : null))
+                            }
+                            className={inputCls}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-600">Card Subtitle</label>
+                          <input
+                            type="text"
+                            value={aboutSettings?.heroCarSubtitle || ''}
+                            placeholder="East Delhi Showroom Gallery"
+                            onChange={(e) =>
+                              setAboutSettings((prev) => (prev ? { ...prev, heroCarSubtitle: e.target.value } : null))
+                            }
+                            className={inputCls}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[11px] font-semibold text-slate-600">Rating Badge</label>
+                          <input
+                            type="text"
+                            value={aboutSettings?.heroCarRating || ''}
+                            placeholder="★ 4.9 Rating"
+                            onChange={(e) =>
+                              setAboutSettings((prev) => (prev ? { ...prev, heroCarRating: e.target.value } : null))
+                            }
+                            className={inputCls}
+                          />
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Hero Key Metrics Strip (4 Counters) */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-xs font-bold text-slate-800">Key Metrics Strip (4 Stat Boxes)</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                    {(aboutSettings?.heroStats || [
+                      { number: '500+', label: 'Delivered Cars' },
+                      { number: '100%', label: 'Non-Accidental Certified' },
+                      { number: '4.9★', label: 'Customer Trust Rating' },
+                      { number: '12+', label: 'Years Automotive Legacy' },
+                    ]).map((stat, idx) => (
+                      <div key={idx} className="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1.5">
+                        <label className="text-[10px] font-bold uppercase text-slate-500">Stat #{idx + 1}</label>
+                        <input
+                          type="text"
+                          value={stat.number}
+                          placeholder="e.g. 500+"
+                          onChange={(e) => {
+                            const newNumber = e.target.value;
+                            setAboutSettings((prev) => {
+                              const currentStats = [...(prev?.heroStats || [
+                                { number: '500+', label: 'Delivered Cars' },
+                                { number: '100%', label: 'Non-Accidental Certified' },
+                                { number: '4.9★', label: 'Customer Trust Rating' },
+                                { number: '12+', label: 'Years Automotive Legacy' },
+                              ])];
+                              currentStats[idx] = { ...currentStats[idx], number: newNumber };
+                              return prev ? { ...prev, heroStats: currentStats } : null;
+                            });
+                          }}
+                          className={inputCls}
+                        />
+                        <input
+                          type="text"
+                          value={stat.label}
+                          placeholder="e.g. Delivered Cars"
+                          onChange={(e) => {
+                            const newLabel = e.target.value;
+                            setAboutSettings((prev) => {
+                              const currentStats = [...(prev?.heroStats || [
+                                { number: '500+', label: 'Delivered Cars' },
+                                { number: '100%', label: 'Non-Accidental Certified' },
+                                { number: '4.9★', label: 'Customer Trust Rating' },
+                                { number: '12+', label: 'Years Automotive Legacy' },
+                              ])];
+                              currentStats[idx] = { ...currentStats[idx], label: newLabel };
+                              return prev ? { ...prev, heroStats: currentStats } : null;
+                            });
+                          }}
+                          className="w-full h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white"
+                        />
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 2: FOUNDER & PRINCIPAL PROFILE (NAMAN JAIN) */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <UserCheck className="w-4 h-4 text-blue-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">2. Founder & Principal Profile</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Portrait, Philosophy & Bio</span>
+                </div>
+
+                {/* Founder Photo & Top Info */}
+                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-start">
+                  <div className="sm:col-span-4 flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center space-y-3">
+                    <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-amber-500/40 p-1 bg-white shadow-inner">
+                      <img
+                        src={aboutSettings?.ownerImage || '/assets/naman-jain-portrait.png'}
+                        alt="Owner"
+                        className="w-full h-full object-contain rounded-full"
+                      />
+                    </div>
+                    <div className="w-full space-y-2">
+                      <label className="inline-flex items-center justify-center gap-1.5 w-full py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 cursor-pointer shadow-2xs">
+                        {uploadingOwnerImg ? <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" /> : <Upload className="w-3.5 h-3.5 text-blue-600" />}
+                        <span>{uploadingOwnerImg ? 'Uploading...' : 'Upload Photo'}</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={async (e) => {
+                            const files = e.target.files;
+                            if (!files || files.length === 0) return;
+                            setUploadingOwnerImg(true);
+                            try {
+                              const urls = await uploadCarImages(Array.from(files));
+                              if (urls && urls[0]) {
+                                setAboutSettings((prev) => (prev ? { ...prev, ownerImage: urls[0] } : null));
+                                setSaveFeedback({ type: 'success', text: 'Founder portrait uploaded!' });
+                              }
+                            } catch (err: unknown) {
+                              setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                            } finally {
+                              setUploadingOwnerImg(false);
+                              e.target.value = '';
+                            }
+                          }}
+                        />
+                      </label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.ownerImage || ''}
+                        placeholder="Or direct image URL"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, ownerImage: e.target.value } : null))
+                        }
+                        className="w-full h-8 px-2 text-[11px] rounded border border-slate-300 bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="sm:col-span-8 space-y-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelCls}>Founder / Owner Name</label>
+                        <input
+                          type="text"
+                          value={aboutSettings?.ownerName || ''}
+                          placeholder="e.g. Naman Jain"
+                          onChange={(e) =>
+                            setAboutSettings((prev) => (prev ? { ...prev, ownerName: e.target.value } : null))
+                          }
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Designation</label>
+                        <input
+                          type="text"
+                          value={aboutSettings?.ownerDesignation || ''}
+                          placeholder="Founder & Managing Director"
+                          onChange={(e) =>
+                            setAboutSettings((prev) => (prev ? { ...prev, ownerDesignation: e.target.value } : null))
+                          }
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                      <div>
+                        <label className={labelCls}>Experience Tag</label>
+                        <input
+                          type="text"
+                          value={aboutSettings?.ownerExperience || ''}
+                          placeholder="12+ Years Luxury Automotive Experience"
+                          onChange={(e) =>
+                            setAboutSettings((prev) => (prev ? { ...prev, ownerExperience: e.target.value } : null))
+                          }
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Signature Text</label>
+                        <input
+                          type="text"
+                          value={aboutSettings?.ownerSignature || ''}
+                          placeholder="Naman Jain"
+                          onChange={(e) =>
+                            setAboutSettings((prev) => (prev ? { ...prev, ownerSignature: e.target.value } : null))
+                          }
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className={labelCls}>Personal Tagline</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.ownerTagline || ''}
+                        placeholder="Guiding every client with forensic quality and heartfelt transparency."
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, ownerTagline: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Founder Bio Paragraphs */}
+                <div className="space-y-3 pt-2">
+                  <label className="text-xs font-bold text-slate-800">Founder Biography Paragraphs</label>
+                  <div className="space-y-3">
+                    {(aboutSettings?.ownerBio || []).map((paragraph, idx) => (
+                      <div key={idx} className="flex gap-2.5 items-start">
+                        <span className="w-6 h-6 rounded-full bg-slate-100 text-slate-600 text-xs font-bold flex items-center justify-center shrink-0 mt-2">
+                          {idx + 1}
+                        </span>
+                        <textarea
+                          rows={2}
+                          value={paragraph}
+                          onChange={(e) => {
+                            const newText = e.target.value;
+                            setAboutSettings((prev) => {
+                              if (!prev) return null;
+                              const currentBio = [...(prev.ownerBio || [])];
+                              currentBio[idx] = newText;
+                              return { ...prev, ownerBio: currentBio };
+                            });
+                          }}
+                          className="flex-1 p-2.5 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-blue-600"
+                        />
+                        <button
+                          type="button"
+                          title="Delete paragraph"
+                          onClick={() => {
+                            setAboutSettings((prev) => {
+                              if (!prev) return null;
+                              const currentBio = [...(prev.ownerBio || [])];
+                              currentBio.splice(idx, 1);
+                              return { ...prev, ownerBio: currentBio };
+                            });
+                          }}
+                          className="p-2 rounded-lg text-red-500 hover:bg-red-50 cursor-pointer shrink-0 mt-1"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  {/* Add Paragraph Input */}
+                  <div className="flex gap-2 pt-1">
+                    <input
+                      type="text"
+                      value={newBioParagraph}
+                      placeholder="Type a new biography paragraph..."
+                      onChange={(e) => setNewBioParagraph(e.target.value)}
+                      className={inputCls}
+                    />
+                    <button
+                      type="button"
+                      disabled={!newBioParagraph.trim()}
+                      onClick={() => {
+                        if (!newBioParagraph.trim()) return;
+                        setAboutSettings((prev) => {
+                          const currentBio = prev?.ownerBio || [];
+                          return {
+                            ...(prev || {} as AboutSettings),
+                            ownerBio: [...currentBio, newBioParagraph.trim()],
+                          };
+                        });
+                        setNewBioParagraph('');
+                      }}
+                      className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shrink-0 cursor-pointer disabled:opacity-50"
+                    >
+                      + Add Paragraph
+                    </button>
+                  </div>
+                </div>
+
+                {/* Philosophy Quote Box */}
+                <div>
+                  <label className={labelCls}>Founder Philosophy Quote</label>
+                  <textarea
+                    rows={2}
+                    value={aboutSettings?.ownerPhilosophy || ''}
+                    placeholder="In luxury automobiles, there are no shortcuts..."
+                    onChange={(e) =>
+                      setAboutSettings((prev) => (prev ? { ...prev, ownerPhilosophy: e.target.value } : null))
+                    }
+                    className="w-full p-3 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-blue-600 italic"
+                  />
+                </div>
+              </div>
+
+              {/* CARD 3: SHOWROOM & FLEET PHOTO GALLERY */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Camera className="w-4 h-4 text-emerald-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">3. Showroom & Fleet Photo Gallery</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">
+                    {aboutSettings?.galleryItems?.length || 9} Photos Published
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className={labelCls}>Gallery Badge</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.galleryBadge || ''}
+                      placeholder="Showroom Experience"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, galleryBadge: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Gallery Section Title</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.galleryTitle || ''}
+                      placeholder="Where Luxury Meets Integrity"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, galleryTitle: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                {/* Existing Gallery Photos Grid */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-800">Current Gallery Photos</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                    {(aboutSettings?.galleryItems || []).map((item, idx) => (
+                      <div
+                        key={item.id || idx}
+                        className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden shadow-2xs flex flex-col justify-between"
+                      >
+                        <div className="relative aspect-[4/3] bg-black">
+                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                          <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-black/75 text-amber-300 backdrop-blur-sm">
+                            {item.category}
+                          </span>
+                        </div>
+                        <div className="p-3 space-y-1">
+                          <p className="text-xs font-bold text-slate-900 truncate">{item.title}</p>
+                          <p className="text-[11px] text-slate-500 line-clamp-1">{item.caption}</p>
+                          <div className="pt-2 flex items-center justify-between border-t border-slate-200/80">
+                            <span className="text-[10px] text-slate-400">Photo #{idx + 1}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setAboutSettings((prev) => {
+                                  if (!prev) return null;
+                                  const list = [...(prev.galleryItems || [])];
+                                  list.splice(idx, 1);
+                                  return { ...prev, galleryItems: list };
+                                });
+                              }}
+                              className="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                              <span>Remove</span>
+                            </button>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Add New Gallery Photo Form */}
+                <div className="p-5 rounded-xl bg-amber-500/[0.04] border border-amber-500/20 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                      <Plus className="w-4 h-4 text-amber-600" />
+                      Add New Photo to Gallery
+                    </span>
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold cursor-pointer shadow-xs">
+                      {uploadingGallery ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                      <span>{uploadingGallery ? 'Uploading...' : 'Upload from PC'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const files = e.target.files;
+                          if (!files || files.length === 0) return;
+                          setUploadingGallery(true);
+                          try {
+                            const urls = await uploadCarImages(Array.from(files));
+                            if (urls && urls[0]) {
+                              setNewGalleryUrl(urls[0]);
+                              setSaveFeedback({ type: 'success', text: 'Photo uploaded! Fill details and click Add Photo.' });
+                            }
+                          } catch (err: unknown) {
+                            setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                          } finally {
+                            setUploadingGallery(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-6">
+                      <label className="text-[11px] font-semibold text-slate-700">Photo URL</label>
+                      <input
+                        type="text"
+                        value={newGalleryUrl}
+                        placeholder="Image URL or upload from PC button above"
+                        onChange={(e) => setNewGalleryUrl(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="text-[11px] font-semibold text-slate-700">Category</label>
+                      <select
+                        value={newGalleryCategory}
+                        onChange={(e) => setNewGalleryCategory(e.target.value as any)}
+                        className={inputCls}
+                      >
+                        <option value="Showroom">Showroom</option>
+                        <option value="Premium Fleet">Premium Fleet</option>
+                        <option value="Deliveries">Deliveries</option>
+                      </select>
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="text-[11px] font-semibold text-slate-700">Photo Title</label>
+                      <input
+                        type="text"
+                        value={newGalleryTitle}
+                        placeholder="e.g. VIP Delivery Lounge"
+                        onChange={(e) => setNewGalleryTitle(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="flex-1 w-full">
+                      <label className="text-[11px] font-semibold text-slate-700">Caption / Description</label>
+                      <input
+                        type="text"
+                        value={newGalleryCaption}
+                        placeholder="e.g. Celebrating memorable handover moments with happy owners"
+                        onChange={(e) => setNewGalleryCaption(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!newGalleryUrl.trim() || !newGalleryTitle.trim()}
+                      onClick={() => {
+                        if (!newGalleryUrl.trim() || !newGalleryTitle.trim()) return;
+                        const newItem = {
+                          id: 'gal-' + Date.now(),
+                          title: newGalleryTitle.trim(),
+                          category: newGalleryCategory,
+                          caption: newGalleryCaption.trim() || newGalleryTitle.trim(),
+                          image: newGalleryUrl.trim(),
+                        };
+                        setAboutSettings((prev) => {
+                          const current = prev?.galleryItems || [];
+                          return {
+                            ...(prev || {} as AboutSettings),
+                            galleryItems: [...current, newItem],
+                          };
+                        });
+                        setNewGalleryUrl('');
+                        setNewGalleryTitle('');
+                        setNewGalleryCaption('');
+                        setSaveFeedback({ type: 'success', text: 'Photo added to gallery! Remember to click Save All Changes.' });
+                      }}
+                      className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shrink-0 cursor-pointer disabled:opacity-50"
+                    >
+                      + Add Photo to Gallery
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 4: OFFICIAL CERTIFICATIONS & CREDENTIALS */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Award className="w-4 h-4 text-amber-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">4. Official Certifications & Credentials</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Audits & Legal Credentials</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className={labelCls}>Section Badge</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.certificatesBadge || ''}
+                      placeholder="Trust & Credentials"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, certificatesBadge: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Section Title</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.certificatesTitle || ''}
+                      placeholder="Official Certifications & Verification"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, certificatesTitle: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                {/* Existing Certificates List */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-800">Current Certificates</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {(aboutSettings?.certificatesItems || []).map((cert, idx) => (
+                      <div
+                        key={cert.id || idx}
+                        className="rounded-xl border border-slate-200 bg-slate-50 p-4 space-y-3 flex flex-col justify-between"
+                      >
+                        <div className="space-y-2">
+                          <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-slate-300 bg-black flex items-center justify-center p-2">
+                            <img src={cert.image} alt={cert.title} className="max-h-full max-w-full object-contain" />
+                            <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-white">
+                              {cert.badge}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-xs text-slate-900">{cert.title}</h4>
+                          <p className="text-[11px] text-amber-700 font-medium">Authority: {cert.authority}</p>
+                          <p className="text-[10px] text-slate-400">Date: {cert.date}</p>
+                          <p className="text-[11px] text-slate-600 line-clamp-2">{cert.description}</p>
+                        </div>
+
+                        <div className="pt-2 border-t border-slate-200 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAboutSettings((prev) => {
+                                if (!prev) return null;
+                                const list = [...(prev.certificatesItems || [])];
+                                list.splice(idx, 1);
+                                return { ...prev, certificatesItems: list };
+                              });
+                            }}
+                            className="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Remove</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Add New Certificate Form */}
+                <div className="p-5 rounded-xl bg-amber-500/[0.04] border border-amber-500/20 space-y-4">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                      <Plus className="w-4 h-4 text-amber-600" />
+                      Add New Official Certificate
+                    </span>
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1 rounded-lg bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold cursor-pointer shadow-xs">
+                      {uploadingCert ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Upload className="w-3.5 h-3.5" />}
+                      <span>{uploadingCert ? 'Uploading...' : 'Upload Document from PC'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const files = e.target.files;
+                          if (!files || files.length === 0) return;
+                          setUploadingCert(true);
+                          try {
+                            const urls = await uploadCarImages(Array.from(files));
+                            if (urls && urls[0]) {
+                              setNewCertUrl(urls[0]);
+                              setSaveFeedback({ type: 'success', text: 'Document uploaded! Fill details and click Add Certificate.' });
+                            }
+                          } catch (err: unknown) {
+                            setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                          } finally {
+                            setUploadingCert(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-6">
+                      <label className="text-[11px] font-semibold text-slate-700">Document Image URL</label>
+                      <input
+                        type="text"
+                        value={newCertUrl}
+                        placeholder="Image URL or upload document above"
+                        onChange={(e) => setNewCertUrl(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div className="sm:col-span-6">
+                      <label className="text-[11px] font-semibold text-slate-700">Certificate Title</label>
+                      <input
+                        type="text"
+                        value={newCertTitle}
+                        placeholder="e.g. ISO 9001:2015 Quality Management"
+                        onChange={(e) => setNewCertTitle(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700">Issuing Authority</label>
+                      <input
+                        type="text"
+                        value={newCertAuthority}
+                        placeholder="e.g. TUV SUD South Asia"
+                        onChange={(e) => setNewCertAuthority(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700">Issue / Audit Date</label>
+                      <input
+                        type="text"
+                        value={newCertDate}
+                        placeholder="e.g. Verified 2026"
+                        onChange={(e) => setNewCertDate(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-700">Badge Text</label>
+                      <input
+                        type="text"
+                        value={newCertBadge}
+                        placeholder="e.g. Quality Standard"
+                        onChange={(e) => setNewCertBadge(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="flex-1 w-full">
+                      <label className="text-[11px] font-semibold text-slate-700">Description</label>
+                      <input
+                        type="text"
+                        value={newCertDesc}
+                        placeholder="Audited for pre-owned vehicle quality assurance..."
+                        onChange={(e) => setNewCertDesc(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!newCertUrl.trim() || !newCertTitle.trim()}
+                      onClick={() => {
+                        if (!newCertUrl.trim() || !newCertTitle.trim()) return;
+                        const newCert = {
+                          id: 'cert-' + Date.now(),
+                          title: newCertTitle.trim(),
+                          authority: newCertAuthority.trim() || 'Official Verification Body',
+                          date: newCertDate.trim() || 'Verified 2026',
+                          badge: newCertBadge.trim() || 'ISO Certified',
+                          image: newCertUrl.trim(),
+                          description: newCertDesc.trim() || newCertTitle.trim(),
+                        };
+                        setAboutSettings((prev) => {
+                          const current = prev?.certificatesItems || [];
+                          return {
+                            ...(prev || {} as AboutSettings),
+                            certificatesItems: [...current, newCert],
+                          };
+                        });
+                        setNewCertUrl('');
+                        setNewCertTitle('');
+                        setNewCertAuthority('');
+                        setNewCertDate('');
+                        setNewCertBadge('');
+                        setNewCertDesc('');
+                        setSaveFeedback({ type: 'success', text: 'Certificate added! Click Save All Changes.' });
+                      }}
+                      className="px-5 py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shrink-0 cursor-pointer disabled:opacity-50"
+                    >
+                      + Add Certificate
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 5: YOUTUBE VIDEO STORIES */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Video className="w-4 h-4 text-red-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">5. YouTube Video Stories & Walkarounds</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Video Player & Theater</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className={labelCls}>Video Badge</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.videosBadge || ''}
+                      placeholder="Watch Our Journey"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, videosBadge: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Video Section Title</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.videosTitle || ''}
+                      placeholder="Experience Wonder Cars In Action"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, videosTitle: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                {/* Existing Videos List */}
+                <div className="space-y-3">
+                  <label className="text-xs font-bold text-slate-800">Current YouTube Videos</label>
+                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    {(aboutSettings?.videoItems || []).map((video, idx) => (
+                      <div
+                        key={video.id || idx}
+                        className="rounded-xl border border-slate-200 bg-slate-50 p-3 space-y-2 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1.5">
+                          <div className="relative aspect-video rounded-lg overflow-hidden bg-black">
+                            <img
+                              src={video.thumbnailUrl || `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
+                              alt={video.title}
+                              className="w-full h-full object-cover"
+                            />
+                            <span className="absolute top-1.5 left-1.5 px-2 py-0.5 rounded text-[10px] font-bold bg-black/80 text-amber-300">
+                              {video.category}
+                            </span>
+                          </div>
+                          <h4 className="font-bold text-xs text-slate-900 truncate">{video.title}</h4>
+                          <p className="text-[11px] text-slate-500 line-clamp-1">{video.description}</p>
+                          <p className="text-[10px] font-mono text-slate-400">ID: {video.youtubeId}</p>
+                        </div>
+                        <div className="pt-2 border-t border-slate-200 flex justify-end">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setAboutSettings((prev) => {
+                                if (!prev) return null;
+                                const list = [...(prev.videoItems || [])];
+                                list.splice(idx, 1);
+                                return { ...prev, videoItems: list };
+                              });
+                            }}
+                            className="text-red-500 hover:text-red-700 text-xs font-semibold flex items-center gap-1 cursor-pointer"
+                          >
+                            <Trash2 className="w-3.5 h-3.5" />
+                            <span>Remove</span>
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Add New Video Form */}
+                <div className="p-5 rounded-xl bg-red-500/[0.04] border border-red-500/20 space-y-4">
+                  <span className="text-xs font-bold text-red-900 flex items-center gap-1.5">
+                    <Plus className="w-4 h-4 text-red-600" />
+                    Add New YouTube Video
+                  </span>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-3">
+                    <div className="sm:col-span-6">
+                      <label className="text-[11px] font-semibold text-slate-700">YouTube URL or Video ID</label>
+                      <input
+                        type="text"
+                        value={newVideoId}
+                        placeholder="e.g. https://www.youtube.com/watch?v=... or ID"
+                        onChange={(e) => {
+                          const val = e.target.value.trim();
+                          const match = val.match(/(?:youtu\.be\/|youtube\.com\/(?:embed\/|v\/|watch\?v=|watch\?.+&v=))([\w-]{11})/);
+                          setNewVideoId(match ? match[1] : val);
+                        }}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="text-[11px] font-semibold text-slate-700">Category</label>
+                      <input
+                        type="text"
+                        value={newVideoCategory}
+                        placeholder="Featured Walkaround"
+                        onChange={(e) => setNewVideoCategory(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <div className="sm:col-span-3">
+                      <label className="text-[11px] font-semibold text-slate-700">Video Title</label>
+                      <input
+                        type="text"
+                        value={newVideoTitle}
+                        placeholder="e.g. 2023 Porsche 911 GT3 Walkaround"
+                        onChange={(e) => setNewVideoTitle(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex flex-col sm:flex-row gap-3 items-end">
+                    <div className="flex-1 w-full">
+                      <label className="text-[11px] font-semibold text-slate-700">Description</label>
+                      <input
+                        type="text"
+                        value={newVideoDesc}
+                        placeholder="Detailed inspection of chassis, engine sound, and showroom handover"
+                        onChange={(e) => setNewVideoDesc(e.target.value)}
+                        className={inputCls}
+                      />
+                    </div>
+                    <button
+                      type="button"
+                      disabled={!newVideoId.trim() || !newVideoTitle.trim()}
+                      onClick={() => {
+                        if (!newVideoId.trim() || !newVideoTitle.trim()) return;
+                        const newItem = {
+                          id: 'vid-' + Date.now(),
+                          title: newVideoTitle.trim(),
+                          category: newVideoCategory.trim() || 'Featured Walkaround',
+                          youtubeId: newVideoId.trim(),
+                          description: newVideoDesc.trim() || newVideoTitle.trim(),
+                          thumbnailUrl: `https://img.youtube.com/vi/${newVideoId.trim()}/hqdefault.jpg`,
+                          duration: '4:30',
+                        };
+                        setAboutSettings((prev) => {
+                          const current = prev?.videoItems || [];
+                          return {
+                            ...(prev || {} as AboutSettings),
+                            videoItems: [...current, newItem],
+                          };
+                        });
+                        setNewVideoId('');
+                        setNewVideoTitle('');
+                        setNewVideoDesc('');
+                        setSaveFeedback({ type: 'success', text: 'Video added! Click Save All Changes.' });
+                      }}
+                      className="px-5 py-2.5 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs shrink-0 cursor-pointer disabled:opacity-50"
+                    >
+                      + Add Video
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 6: WHY CHOOSE US ADVANTAGES */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">6. Why Choose Wonder Cars Advantages</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">6 Core Value Pillars</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div>
+                    <label className={labelCls}>Section Badge</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.whyChooseBadge || ''}
+                      placeholder="The Wonder Cars Advantage"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, whyChooseBadge: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="sm:col-span-2">
+                    <label className={labelCls}>Section Title</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.whyChooseTitle || ''}
+                      placeholder="Built on Integrity, Driven by Quality"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, whyChooseTitle: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  {(aboutSettings?.whyChooseItems || [
+                    { id: '1', title: '150-Point Forensic Inspection', highlight: 'Zero Compromise Quality', description: 'Every mechanical and structural component undergoes rigorous multi-point audit.', badge: '100% Certified', iconName: 'ShieldCheck' },
+                    { id: '2', title: 'Verified Ownership & Clear Title', highlight: '100% Legal Transparency', description: 'Complete documentation guarantee with RTO verification.', badge: 'Clean History', iconName: 'FileCheck' },
+                    { id: '3', title: 'Curated Luxury Fleet', highlight: 'Hand-Selected Perfection', description: 'Only prime condition vehicles with complete service records make it.', badge: 'Top 5% Selection', iconName: 'Car' },
+                    { id: '4', title: 'Transparent Fair Pricing', highlight: 'No Hidden Costs', description: 'Fixed transparent prices reflecting honest market valuation.', badge: 'Best Value', iconName: 'Tag' },
+                    { id: '5', title: 'Fast Paperwork & RTO Support', highlight: 'Hassle-Free Transfer', description: 'End-to-end RTO transfer, loan assistance, and RC delivery handled.', badge: 'Doorstep Delivery', iconName: 'Zap' },
+                    { id: '6', title: 'After-Sales Relationship', highlight: 'Lifelong Support', description: 'Dedicated assistance for detailing, insurance renewals, and upgrades.', badge: 'Trusted Relationship', iconName: 'HeartHandshake' },
+                  ]).map((item, idx) => (
+                    <div key={item.id || idx} className="p-4 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-amber-700 uppercase">Pillar #{idx + 1}</span>
+                        <input
+                          type="text"
+                          value={item.badge}
+                          placeholder="Badge"
+                          onChange={(e) => {
+                            const newBadge = e.target.value;
+                            setAboutSettings((prev) => {
+                              const current = [...(prev?.whyChooseItems || [])];
+                              current[idx] = { ...current[idx], badge: newBadge };
+                              return prev ? { ...prev, whyChooseItems: current } : null;
+                            });
+                          }}
+                          className="w-28 h-6 px-1.5 text-[10px] font-bold rounded border border-slate-300 bg-white"
+                        />
+                      </div>
+                      <input
+                        type="text"
+                        value={item.title}
+                        placeholder="Advantage Title"
+                        onChange={(e) => {
+                          const newTitle = e.target.value;
+                          setAboutSettings((prev) => {
+                            const current = [...(prev?.whyChooseItems || [])];
+                            current[idx] = { ...current[idx], title: newTitle };
+                            return prev ? { ...prev, whyChooseItems: current } : null;
+                          });
+                        }}
+                        className="w-full h-8 px-2 text-xs font-bold rounded border border-slate-300 bg-white"
+                      />
+                      <input
+                        type="text"
+                        value={item.highlight}
+                        placeholder="Highlight subtitle"
+                        onChange={(e) => {
+                          const newHighlight = e.target.value;
+                          setAboutSettings((prev) => {
+                            const current = [...(prev?.whyChooseItems || [])];
+                            current[idx] = { ...current[idx], highlight: newHighlight };
+                            return prev ? { ...prev, whyChooseItems: current } : null;
+                          });
+                        }}
+                        className="w-full h-7 px-2 text-[11px] font-semibold text-amber-700 rounded border border-slate-300 bg-white"
+                      />
+                      <textarea
+                        rows={2}
+                        value={item.description}
+                        placeholder="Description"
+                        onChange={(e) => {
+                          const newDesc = e.target.value;
+                          setAboutSettings((prev) => {
+                            const current = [...(prev?.whyChooseItems || [])];
+                            current[idx] = { ...current[idx], description: newDesc };
+                            return prev ? { ...prev, whyChooseItems: current } : null;
+                          });
+                        }}
+                        className="w-full p-2 text-xs rounded border border-slate-300 bg-white"
+                      />
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {/* CARD 7: SOCIAL MEDIA CHANNELS */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <Globe className="w-4 h-4 text-blue-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">7. Social Media Channels</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Instagram, Facebook & YouTube</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                  {/* Instagram */}
+                  <div className="p-4 rounded-xl bg-pink-500/[0.03] border border-pink-500/20 space-y-3">
+                    <p className="font-bold text-xs text-pink-700 flex items-center gap-1.5">
+                      <span>📸 Instagram Profile</span>
+                    </p>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Handle</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.instagramHandle || ''}
+                        placeholder="@usedcarsnearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, instagramHandle: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Profile URL</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.instagramUrl || ''}
+                        placeholder="https://www.instagram.com/usedcarsnearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, instagramUrl: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Bio</label>
+                      <textarea
+                        rows={2}
+                        value={aboutSettings?.instagramBio || ''}
+                        placeholder="Daily luxury stock drops, delivery reels & walkarounds"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, instagramBio: e.target.value } : null))
+                        }
+                        className="w-full p-2 text-xs rounded border border-slate-300 bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* Facebook */}
+                  <div className="p-4 rounded-xl bg-blue-500/[0.03] border border-blue-500/20 space-y-3">
+                    <p className="font-bold text-xs text-blue-700 flex items-center gap-1.5">
+                      <span>👥 Facebook Page</span>
+                    </p>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Page Name</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.facebookPageName || ''}
+                        placeholder="Wonder Cars - Used Cars Nearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, facebookPageName: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Page URL</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.facebookUrl || ''}
+                        placeholder="https://facebook.com/usedcarsnearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, facebookUrl: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Bio</label>
+                      <textarea
+                        rows={2}
+                        value={aboutSettings?.facebookBio || ''}
+                        placeholder="Customer delivery stories and dealership news"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, facebookBio: e.target.value } : null))
+                        }
+                        className="w-full p-2 text-xs rounded border border-slate-300 bg-white"
+                      />
+                    </div>
+                  </div>
+
+                  {/* YouTube */}
+                  <div className="p-4 rounded-xl bg-red-500/[0.03] border border-red-500/20 space-y-3">
+                    <p className="font-bold text-xs text-red-700 flex items-center gap-1.5">
+                      <span>▶️ YouTube Channel</span>
+                    </p>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Channel Name</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.youtubeChannelName || ''}
+                        placeholder="Used Cars Nearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, youtubeChannelName: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Channel URL</label>
+                      <input
+                        type="text"
+                        value={aboutSettings?.youtubeUrl || ''}
+                        placeholder="https://youtube.com/@usedcarsnearby"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, youtubeUrl: e.target.value } : null))
+                        }
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className="text-[11px] font-semibold text-slate-600">Bio</label>
+                      <textarea
+                        rows={2}
+                        value={aboutSettings?.youtubeBio || ''}
+                        placeholder="In-depth video reviews, test drives & walkarounds"
+                        onChange={(e) =>
+                          setAboutSettings((prev) => (prev ? { ...prev, youtubeBio: e.target.value } : null))
+                        }
+                        className="w-full p-2 text-xs rounded border border-slate-300 bg-white"
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 8: SHOWROOM LOCATION & CONTACT INFORMATION */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2">
+                    <MapPin className="w-4 h-4 text-amber-600" />
+                    <h3 className="font-bold text-sm text-[#0B1528]">8. Showroom Location & Contact Details</h3>
+                  </div>
+                  <span className="text-[11px] text-slate-400 font-medium">Address, Timing & Google Maps</span>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+                  <div>
+                    <label className={labelCls}>Dealership Name</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomName || ''}
+                      placeholder="Wonder Cars"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomName: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div className="md:col-span-2">
+                    <label className={labelCls}>Street Address</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomAddress || ''}
+                      placeholder="Showroom No. 4, Main Vikas Marg, Nirman Vihar"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomAddress: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className={labelCls}>Landmark</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomLandmark || ''}
+                      placeholder="Opposite Metro Pillar 68"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomLandmark: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>City</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomCity || ''}
+                      placeholder="New Delhi"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomCity: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>State</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomState || ''}
+                      placeholder="Delhi"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomState: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Pincode</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomPincode || ''}
+                      placeholder="110092"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomPincode: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+                  <div>
+                    <label className={labelCls}>Phone Number</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomPhone || ''}
+                      placeholder="+91 98111 22233"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomPhone: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>WhatsApp Number</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomWhatsapp || ''}
+                      placeholder="919811122233"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomWhatsapp: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Official Email</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomEmail || ''}
+                      placeholder="contact@wondercars.in"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomEmail: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Showroom Timings</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.showroomOpeningHours || ''}
+                      placeholder="Mon - Sun: 10:00 AM - 8:00 PM"
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, showroomOpeningHours: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className={labelCls}>Google Maps Directions URL</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.googleMapsDirectionsUrl || ''}
+                      placeholder="https://maps.google.com/?q=..."
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, googleMapsDirectionsUrl: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                  <div>
+                    <label className={labelCls}>Google Maps Embed Iframe URL</label>
+                    <input
+                      type="text"
+                      value={aboutSettings?.googleMapsEmbedUrl || ''}
+                      placeholder="https://www.google.com/maps/embed?pb=..."
+                      onChange={(e) =>
+                        setAboutSettings((prev) => (prev ? { ...prev, googleMapsEmbedUrl: e.target.value } : null))
+                      }
+                      className={inputCls}
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* BOTTOM SAVE BUTTON BAR */}
+              <div className="flex justify-end pt-2 pb-6">
                 <button
                   type="button"
+                  disabled={savingAbout}
                   onClick={async () => {
                     if (!aboutSettings) return;
+                    setSavingAbout(true);
                     try {
-                      await updateAboutSettings(aboutSettings);
-                      setSaveFeedback({ type: 'success', text: 'About Us settings saved successfully.' });
+                      const updated = await updateAboutSettings(aboutSettings);
+                      setAboutSettings(updated);
+                      setSaveFeedback({ type: 'success', text: 'All About Us page changes saved and live!' });
                     } catch (err: unknown) {
                       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to update About settings' });
+                    } finally {
+                      setSavingAbout(false);
                     }
                   }}
-                  className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm cursor-pointer"
+                  className="px-8 py-3.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-lg shadow-blue-600/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-60"
                 >
-                  Save About Us Changes
+                  {savingAbout ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  <span>Save All About Us Settings</span>
                 </button>
               </div>
             </div>

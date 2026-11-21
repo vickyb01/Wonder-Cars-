@@ -289,6 +289,11 @@ export interface AboutSettings {
   heroBadge: string;
   headline: string;
   subheadline: string;
+  heroBgImage?: string;
+  heroCarImage?: string;
+  heroCarTitle?: string;
+  heroCarSubtitle?: string;
+  heroCarRating?: string;
   heroStats: Array<{ number: string; label: string }>;
   ownerName: string;
   ownerDesignation: string;
@@ -298,14 +303,55 @@ export interface AboutSettings {
   ownerPhilosophy: string;
   ownerSignature: string;
   ownerImage: string;
+
+  // Why Choose Us
+  whyChooseBadge?: string;
+  whyChooseTitle?: string;
+  whyChooseDescription?: string;
+  whyChooseItems?: Array<{ id: string; title: string; highlight: string; description: string; badge: string; iconName: string }>;
+
+  // Certifications
+  certificatesBadge?: string;
+  certificatesTitle?: string;
+  certificatesDescription?: string;
+  certificatesItems?: Array<{ id: string; title: string; authority: string; date: string; description: string; badge: string; image: string }>;
+
+  // Showroom & Car Gallery
   galleryBadge: string;
   galleryTitle: string;
   galleryDescription: string;
   galleryItems: Array<{ id: string; title: string; caption: string; image: string; category: string }>;
+
+  // YouTube Videos
   videosBadge: string;
   videosTitle: string;
   videosDescription: string;
-  videoItems: Array<{ id: string; title: string; description: string; youtubeId: string; category: string; autoPlayLive?: boolean }>;
+  videoItems: Array<{ id: string; title: string; description: string; youtubeId: string; duration?: string; category: string; thumbnailUrl?: string; autoPlayLive?: boolean }>;
+
+  // Social Channels
+  instagramUrl?: string;
+  instagramHandle?: string;
+  instagramBio?: string;
+  facebookUrl?: string;
+  facebookPageName?: string;
+  facebookBio?: string;
+  youtubeUrl?: string;
+  youtubeChannelName?: string;
+  youtubeBio?: string;
+
+  // Showroom Contact & Location Info
+  showroomName?: string;
+  showroomAddress?: string;
+  showroomLandmark?: string;
+  showroomCity?: string;
+  showroomState?: string;
+  showroomPincode?: string;
+  showroomPhone?: string;
+  showroomEmail?: string;
+  showroomWhatsapp?: string;
+  showroomOpeningHours?: string;
+  googleMapsDirectionsUrl?: string;
+  googleMapsEmbedUrl?: string;
 }
 
 export interface TestimonialItem {
