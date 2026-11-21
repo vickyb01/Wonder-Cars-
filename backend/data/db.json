@@ -4139,7 +4139,7 @@
       "id": "user-admin-2",
       "name": "Strada Executive Admin",
       "email": "admin@stradamotors.in",
-      "passwordHash": "f96e2dfe2c5784ec58ce2ad40e6d01933460ed896488a5648d21e3446d2d7f02",
+      "passwordHash": "f9f66343193e0d81e6e257e07e2107eb7760e9232206935ddb2db0b20ce41860",
       "role": "admin",
       "permissions": [
         "cars",
