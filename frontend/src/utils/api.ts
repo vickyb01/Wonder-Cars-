@@ -70,6 +70,16 @@ export function normalizeMediaUrl(url?: string): string {
     return url;
   }
   if (url.startsWith('/uploads/')) {
+    const isLocal =
+      typeof window !== 'undefined' &&
+      (window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1' ||
+        window.location.hostname.startsWith('192.168.') ||
+        window.location.hostname.startsWith('10.') ||
+        window.location.hostname.endsWith('.local'));
+    if (isLocal) {
+      return url;
+    }
     const base = API_BASE || LIVE_BACKEND_URL;
     return `${base}${url}`;
   }
