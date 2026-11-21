@@ -234,7 +234,7 @@ export function ComparePage() {
           {
             id: 'variant',
             label: 'Variant',
-            values: compareCars.map((c) => ({ text: c.variant || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.variant || '—' })),
           },
           {
             id: 'mfg-year',
@@ -245,7 +245,7 @@ export function ComparePage() {
             id: 'reg-year',
             label: 'Registration Year',
             values: compareCars.map((c) => ({
-              text: c.registrationYear ? String(c.registrationYear) : 'Not Provided',
+              text: c.registrationYear ? String(c.registrationYear) : '—',
             })),
           },
           {
@@ -258,18 +258,18 @@ export function ComparePage() {
           {
             id: 'body-type',
             label: 'Body Type',
-            values: compareCars.map((c) => ({ text: c.bodyType || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.bodyType || '—' })),
           },
           {
             id: 'colour',
             label: 'Colour',
-            values: compareCars.map((c) => ({ text: c.color || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.color || '—' })),
           },
           {
             id: 'seating',
             label: 'Seating Capacity',
             values: compareCars.map((c) => ({
-              text: c.seatingCapacity ? `${c.seatingCapacity} Seats` : 'Not Provided',
+              text: c.seatingCapacity ? `${c.seatingCapacity} Seats` : '—',
             })),
           },
         ],
@@ -342,17 +342,17 @@ export function ComparePage() {
           {
             id: 'engine-cc',
             label: 'Engine Capacity (CC)',
-            values: compareCars.map((c) => ({ text: c.engineCc || c.engine || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.engineCc || c.engine || '—' })),
           },
           {
             id: 'mileage',
             label: 'Mileage',
-            values: compareCars.map((c) => ({ text: c.claimedMileage || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.claimedMileage || '—' })),
           },
           {
             id: 'power',
             label: 'Power',
-            values: compareCars.map((c) => ({ text: c.power || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.power || '—' })),
           },
         ],
       },
@@ -372,20 +372,20 @@ export function ComparePage() {
           {
             id: 'ownership-count',
             label: 'Ownership Count',
-            values: compareCars.map((c) => ({ text: c.ownership || 'Not Provided' })),
+            values: compareCars.map((c) => ({ text: c.ownership || '—' })),
           },
           {
             id: 'usage-type',
             label: 'Personal or Commercial Use',
             values: compareCars.map((c) => ({
-              text: c.usageHistory?.usageType || 'Not Disclosed',
+              text: c.usageHistory?.usageType || '—',
             })),
           },
           {
             id: 'reg-location',
             label: 'Registration Location',
             values: compareCars.map((c) => ({
-              text: c.registrationState || c.location || 'Not Provided',
+              text: c.registrationState || c.location || '—',
             })),
           },
           {

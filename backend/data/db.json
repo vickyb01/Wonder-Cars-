@@ -1,118 +1,130 @@
 {
   "cars": [
     {
-      "id": "car-1795263102767",
-      "listingCode": "WC-2767",
-      "slug": "2023-4yjrh-911-2767",
-      "brand": "Mg",
-      "model": "911",
-      "variant": "yus",
-      "year": 2023,
-      "registrationYear": 2023,
+      "id": "car-1795284037654",
+      "listingCode": "WC-7654",
+      "slug": "2025-mahindra-scorpio-n-7654",
+      "brand": "Mahindra",
+      "model": "Scorpio-N",
+      "variant": "Z8 S Diesel AT",
+      "year": 2025,
+      "registrationYear": 2025,
       "registrationDate": "",
-      "priceInr": 9999999,
+      "priceInr": 2050000,
       "priceType": "Negotiable",
-      "priceLastUpdated": "2026-11-21",
+      "priceLastUpdated": "2026-11-21T18:00:37.654Z",
       "priceExplanation": "",
       "discountNote": "",
       "marketComparisonNote": "",
       "kilometres": 25000,
-      "fuelType": "Petrol",
+      "fuelType": "Diesel",
       "transmission": "Automatic",
       "ownership": "1st Owner",
-      "location": "Mumbai, MH",
+      "location": "Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.",
       "status": "Available",
       "featured": false,
       "category": "Luxury Sedan",
       "bodyType": "Sedan",
-      "color": "Not Provided",
-      "interiorColor": "Not Provided",
+      "color": "",
+      "interiorColor": "",
       "seatingCapacity": 5,
       "doors": 4,
       "engineCc": "",
-      "engine": "Not Provided",
+      "engine": "",
       "cylinders": "",
-      "power": "Not Provided",
-      "torque": "Not Provided",
-      "drivetrain": "Not Provided",
+      "power": "",
+      "torque": "",
+      "drivetrain": "",
       "claimedMileage": "",
       "emissionStandard": "BS6",
-      "registrationState": "Not Provided",
-      "insuranceValidUntil": "Not Provided",
-      "warrantyPeriod": "1 Year",
+      "registrationState": "HR",
+      "insuranceValidUntil": "Comprehensive (Valid)",
+      "warrantyPeriod": "6 Months",
       "warrantyDetails": "Engine, Gearbox, Electronics & 24×7 Roadside Assistance",
       "images": [
-        "/uploads/1795262909584-7.jpeg",
-        "/uploads/1795262909604-6.jpeg",
-        "/uploads/1795262909612-5.jpeg",
-        "/uploads/1795262909623-4.jpeg",
-        "/uploads/1795262909638-3.jpeg",
-        "/uploads/1795262909655-2.jpeg",
-        "/uploads/1795262909688-1.jpeg",
-        "/uploads/1795262909705-whatsapp-image-2026-11-20-at-3-5.jpeg"
+        "/uploads/1795283917244-3.jpeg",
+        "/uploads/1795283917256-2.jpeg",
+        "/uploads/1795283917238-4.jpeg",
+        "/uploads/1795283917290-1.jpeg",
+        "/uploads/1795283917299-whatsapp-image-2026-11-20-at-3-5.jpeg",
+        "/uploads/1795283917221-6.jpeg",
+        "/uploads/1795283917226-5.jpeg",
+        "/uploads/1795283917208-7.jpeg",
+        "/uploads/1795283917194-8.jpeg"
       ],
       "gallery": [
         {
-          "id": "photo-1795262919871-1",
-          "url": "/uploads/1795262909584-7.jpeg",
+          "id": "photo-1795283943474-5",
+          "url": "/uploads/1795283917244-3.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 0
         },
         {
-          "id": "photo-1795262919871-2",
-          "url": "/uploads/1795262909604-6.jpeg",
+          "id": "photo-1795283943474-6",
+          "url": "/uploads/1795283917256-2.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 1
         },
         {
-          "id": "photo-1795262919871-3",
-          "url": "/uploads/1795262909612-5.jpeg",
+          "id": "photo-1795283943474-4",
+          "url": "/uploads/1795283917238-4.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 2
         },
         {
-          "id": "photo-1795262919871-4",
-          "url": "/uploads/1795262909623-4.jpeg",
+          "id": "photo-1795283943474-7",
+          "url": "/uploads/1795283917290-1.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 3
         },
         {
-          "id": "photo-1795262919871-5",
-          "url": "/uploads/1795262909638-3.jpeg",
+          "id": "photo-1795283943474-8",
+          "url": "/uploads/1795283917299-whatsapp-image-2026-11-20-at-3-5.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 4
         },
         {
-          "id": "photo-1795262919871-6",
-          "url": "/uploads/1795262909655-2.jpeg",
+          "id": "photo-1795283943474-2",
+          "url": "/uploads/1795283917221-6.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 5
         },
         {
-          "id": "photo-1795262919871-7",
-          "url": "/uploads/1795262909688-1.jpeg",
+          "id": "photo-1795283943474-3",
+          "url": "/uploads/1795283917226-5.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 6
         },
         {
-          "id": "photo-1795262919871-8",
-          "url": "/uploads/1795262909705-whatsapp-image-2026-11-20-at-3-5.jpeg",
+          "id": "photo-1795283943474-1",
+          "url": "/uploads/1795283917208-7.jpeg",
           "category": "Exterior",
           "angleLabel": "Front-Left 45° View",
           "order": 7
+        },
+        {
+          "id": "photo-1795283943474-0",
+          "url": "/uploads/1795283917194-8.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 8
         }
       ],
       "videoWalkthroughUrl": "",
-      "description": "fgdertyujhvfcvh",
+      "description": "Well-maintained 2025 Mahindra Scorpio-N Z8S Diesel Automatic in Black color. Single owner vehicle with 25,000 km driven and complete service record (WSR). Equipped with electric sunroof and top-tier features.",
       "highlights": [
-        "tyuytfdfh"
+        "Single Owner",
+        "25,000 km with Complete Service Record (WSR)",
+        "Z8S Diesel Automatic Variant",
+        "Electric Sunroof",
+        "Black Exterior"
       ],
       "features": {
         "comfort": [],
@@ -443,14 +455,14 @@
         {
           "key": "rc",
           "label": "Registration Certificate (RC)",
-          "status": "Not Verified",
-          "note": ""
+          "status": "Verified",
+          "note": "Original (Verified)"
         },
         {
           "key": "insurance",
           "label": "Comprehensive Insurance",
-          "status": "Not Verified",
-          "note": ""
+          "status": "Verified",
+          "note": "Comprehensive (Valid)"
         },
         {
           "key": "puc",
@@ -500,7 +512,7 @@
       "sellerProfile": "Curated pre-owned automotive dealership in East Delhi with 210-point inspection and warranty.",
       "sellerPhone": "+91 98204 51090",
       "sellerWhatsapp": "919820451090",
-      "createdAt": "2026-11-21T12:11:42.767Z"
+      "createdAt": "2026-11-21T18:00:37.654Z"
     },
     {
       "id": "car-911-carrera-s-2022",
@@ -2641,7 +2653,7 @@
       "power": "715 bhp @ 6,500 rpm",
       "torque": "900 Nm @ 1,800 rpm",
       "drivetrain": "Rear-Wheel Drive",
-      "claimedMileage": "Not Provided",
+      "claimedMileage": "",
       "emissionStandard": "BS6",
       "registrationState": "DL-02 New Delhi",
       "insuranceValidUntil": "January 2027",
@@ -4851,6 +4863,35 @@
     "searchPlaceholder": "e.g. 911, G63, Mumbai",
     "brandLabel": "Marque / Brand",
     "brandDefaultText": "All Brands",
+    "budgetLabel": "Max Budget (INR)",
+    "budgetDefaultText": "Any Budget",
+    "budgetOptions": [
+      {
+        "label": "Up to ₹1.50 Cr",
+        "value": "15000000"
+      },
+      {
+        "label": "Up to ₹2.00 Cr",
+        "value": "20000000"
+      },
+      {
+        "label": "Up to ₹3.00 Cr",
+        "value": "30000000"
+      },
+      {
+        "label": "Up to ₹4.00 Cr",
+        "value": "40000000"
+      }
+    ],
+    "fuelLabel": "Powertrain",
+    "fuelDefaultText": "All Fuel Types",
+    "fuelOptions": [
+      "Petrol",
+      "Diesel",
+      "Electric",
+      "Hybrid"
+    ],
+    "searchButtonText": "Search Cars",
     "brandOptions": [
       "Porsche",
       "Range Rover",
@@ -4864,34 +4905,12 @@
       "Rolls-Royce",
       "Ferrari",
       "Lamborghini"
-    ],
-    "budgetLabel": "Max Budget (INR)",
-    "budgetDefaultText": "Any Budget",
-    "budgetOptions": [
-      { "label": "Up to ₹1.50 Cr", "value": "15000000" },
-      { "label": "Up to ₹2.00 Cr", "value": "20000000" },
-      { "label": "Up to ₹3.00 Cr", "value": "30000000" },
-      { "label": "Up to ₹4.00 Cr", "value": "40000000" }
-    ],
-    "fuelLabel": "Powertrain",
-    "fuelDefaultText": "All Fuel Types",
-    "fuelOptions": [
-      "Petrol",
-      "Diesel",
-      "Electric",
-      "Hybrid"
-    ],
-    "searchButtonText": "Search Cars"
+    ]
   },
   "aboutSettings": {
     "heroBadge": "Welcome to Wonder Cars",
     "headline": "More Than Cars, We Build Trust.",
     "subheadline": "Wonder Cars is Delhi-NCR’s premier destination for curated, certified pre-owned luxury and performance automobiles. Founded with an uncompromising commitment to vehicle provenance, forensic quality audits, and transparent customer relationships.",
-    "heroBgImage": "/assets/about-hero-bg.jpg",
-    "heroCarImage": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
-    "heroCarTitle": "Wonder Cars Delhi",
-    "heroCarSubtitle": "East Delhi Showroom Gallery",
-    "heroCarRating": "★ 4.9 Rating",
     "heroStats": [
       {
         "number": "100%",
@@ -4922,91 +4941,6 @@
     "ownerPhilosophy": "“A reputation takes decades to build and seconds to compromise. That is why we treat every client like family and every car like our own.”",
     "ownerSignature": "Naman Jain",
     "ownerImage": "/assets/naman-jain-owner.jpg",
-    "whyChooseBadge": "The Wonder Advantage",
-    "whyChooseTitle": "Why Discerning Buyers Choose Wonder Cars",
-    "whyChooseDescription": "From forensic mechanical diagnostics to seamless state-wide RC transfers, see what makes our buying experience second to none.",
-    "whyChooseItems": [
-      {
-        "id": "w1",
-        "title": "Quality Checked Vehicles",
-        "highlight": "210-Point Forensic Audit",
-        "description": "Digital paint depth measurement, OBD diagnostic scans, suspension health checks, and engine compression telemetry on every car.",
-        "badge": "Inspected & Certified",
-        "iconName": "CheckCircle2"
-      },
-      {
-        "id": "w2",
-        "title": "Transparent Pricing",
-        "highlight": "Zero Hidden Charges",
-        "description": "Direct INR price quotes with complete breakdown of taxes, registration transfer, and warranty package. What you see is what you pay.",
-        "badge": "100% Fixed INR Quotes",
-        "iconName": "Scale"
-      },
-      {
-        "id": "w3",
-        "title": "Verified Documentation",
-        "highlight": "Clear Title Guarantee",
-        "description": "Full legal provenance review: NCRP clearance, single-owner history verification, insurance claim scrutiny, and seamless state RC transfer.",
-        "badge": "NOC & RC Cleared",
-        "iconName": "FileCheck"
-      },
-      {
-        "id": "w4",
-        "title": "Customer-Focused Service",
-        "highlight": "Private Concierge Care",
-        "description": "Private showroom viewings, doorstep test drives across Delhi-NCR, custom financing options, and tailored vehicle handover ceremonies.",
-        "badge": "Doorstep Test Drive",
-        "iconName": "UserCheck"
-      },
-      {
-        "id": "w5",
-        "title": "Wide Range of Pre-Owned Cars",
-        "highlight": "Curated Fleet Portfolio",
-        "description": "From sporty sedans and executive grand tourers to high-performance SUVs and luxury electric vehicles, our fleet caters to all driving desires.",
-        "badge": "Multibrand Excellence",
-        "iconName": "Car"
-      },
-      {
-        "id": "w6",
-        "title": "Trusted Buying Experience",
-        "highlight": "6-Month Assured Warranty",
-        "description": "Every vehicle is protected by our comprehensive 6-month engine and transmission coverage, offering total peace of mind on the road.",
-        "badge": "6-Month Assured Warranty",
-        "iconName": "ShieldAlert"
-      }
-    ],
-    "certificatesBadge": "Verified & Certified",
-    "certificatesTitle": "Dealership Certifications & Credentials",
-    "certificatesDescription": "Wonder Cars operates under strict automotive industry compliance, certified inspection standards, and authorized business registration.",
-    "certificatesItems": [
-      {
-        "id": "c1",
-        "title": "Droom Certificate of Excellence · Winner 2024–25",
-        "authority": "Droom Technology · Sandeep Aggarwal (Founder & CEO)",
-        "date": "Winner 2024–25 · Rated 4.3 ★",
-        "description": "Awarded to WONDER CARS for outstanding pre-owned automobile sales excellence, verified pricing transparency, and superior customer rating of 4.3 based on Droom proprietary methodology.",
-        "badge": "Droom Excellence Winner",
-        "image": "/assets/certificates/droom-excellence-certificate.jpg"
-      },
-      {
-        "id": "c2",
-        "title": "CarDekho Certificate of Association",
-        "authority": "CarDekho Certified Automotive Dealer Network",
-        "date": "Authorized Partner Dealer",
-        "description": "Official Certificate of Association recognizing WONDER CARS as an accredited CarDekho Partner Dealer meeting rigorous customer trust and multi-point vehicle standards.",
-        "badge": "CarDekho Partner Dealer",
-        "image": "/assets/certificates/cardekho-partner-certificate.jpg"
-      },
-      {
-        "id": "c3",
-        "title": "OLX Autos Certificate of Recognition",
-        "authority": "OLX Auto India · Amit Kumar (Head - OLX Auto India)",
-        "date": "Valuable Dealer Partner",
-        "description": "Awarded to WONDER CARS for being a Valuable Dealer Partner at OLX Autos, recognizing leadership and excellence in the certified used car marketplace.",
-        "badge": "OLX Autos Partner",
-        "image": "/assets/certificates/olx-autos-recognition-certificate.jpg"
-      }
-    ],
     "galleryBadge": "Our Atmosphere",
     "galleryTitle": "Showroom, Fleet & Delivery Moments",
     "galleryDescription": "Take a visual tour inside our East Delhi gallery, inspect our pristine pre-owned fleet, and witness unforgettable vehicle delivery celebrations.",
@@ -5108,6 +5042,96 @@
         "category": "Buyer Guide",
         "thumbnailUrl": "https://img.youtube.com/vi/q7v1L_gA9qY/hqdefault.jpg",
         "autoPlayLive": false
+      }
+    ],
+    "heroBgImage": "/assets/about-hero-bg.jpg",
+    "heroCarImage": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+    "heroCarTitle": "Wonder Cars Delhi",
+    "heroCarSubtitle": "East Delhi Showroom Gallery",
+    "heroCarRating": "★ 4.9 Rating",
+    "whyChooseBadge": "The Wonder Advantage",
+    "whyChooseTitle": "Why Discerning Buyers Choose Wonder Cars",
+    "whyChooseDescription": "From forensic mechanical diagnostics to seamless state-wide RC transfers, see what makes our buying experience second to none.",
+    "whyChooseItems": [
+      {
+        "id": "w1",
+        "title": "Quality Checked Vehicles",
+        "highlight": "210-Point Forensic Audit",
+        "description": "Digital paint depth measurement, OBD diagnostic scans, suspension health checks, and engine compression telemetry on every car.",
+        "badge": "Inspected & Certified",
+        "iconName": "CheckCircle2"
+      },
+      {
+        "id": "w2",
+        "title": "Transparent Pricing",
+        "highlight": "Zero Hidden Charges",
+        "description": "Direct INR price quotes with complete breakdown of taxes, registration transfer, and warranty package. What you see is what you pay.",
+        "badge": "100% Fixed INR Quotes",
+        "iconName": "Scale"
+      },
+      {
+        "id": "w3",
+        "title": "Verified Documentation",
+        "highlight": "Clear Title Guarantee",
+        "description": "Full legal provenance review: NCRP clearance, single-owner history verification, insurance claim scrutiny, and seamless state RC transfer.",
+        "badge": "NOC & RC Cleared",
+        "iconName": "FileCheck"
+      },
+      {
+        "id": "w4",
+        "title": "Customer-Focused Service",
+        "highlight": "Private Concierge Care",
+        "description": "Private showroom viewings, doorstep test drives across Delhi-NCR, custom financing options, and tailored vehicle handover ceremonies.",
+        "badge": "Doorstep Test Drive",
+        "iconName": "UserCheck"
+      },
+      {
+        "id": "w5",
+        "title": "Wide Range of Pre-Owned Cars",
+        "highlight": "Curated Fleet Portfolio",
+        "description": "From sporty sedans and executive grand tourers to high-performance SUVs and luxury electric vehicles, our fleet caters to all driving desires.",
+        "badge": "Multibrand Excellence",
+        "iconName": "Car"
+      },
+      {
+        "id": "w6",
+        "title": "Trusted Buying Experience",
+        "highlight": "6-Month Assured Warranty",
+        "description": "Every vehicle is protected by our comprehensive 6-month engine and transmission coverage, offering total peace of mind on the road.",
+        "badge": "6-Month Assured Warranty",
+        "iconName": "ShieldAlert"
+      }
+    ],
+    "certificatesBadge": "Verified & Certified",
+    "certificatesTitle": "Dealership Certifications & Credentials",
+    "certificatesDescription": "Wonder Cars operates under strict automotive industry compliance, certified inspection standards, and authorized business registration.",
+    "certificatesItems": [
+      {
+        "id": "c1",
+        "title": "Droom Certificate of Excellence · Winner 2024–25",
+        "authority": "Droom Technology · Sandeep Aggarwal (Founder & CEO)",
+        "date": "Winner 2024–25 · Rated 4.3 ★",
+        "description": "Awarded to WONDER CARS for outstanding pre-owned automobile sales excellence, verified pricing transparency, and superior customer rating of 4.3 based on Droom proprietary methodology.",
+        "badge": "Droom Excellence Winner",
+        "image": "/assets/certificates/droom-excellence-certificate.jpg"
+      },
+      {
+        "id": "c2",
+        "title": "CarDekho Certificate of Association",
+        "authority": "CarDekho Certified Automotive Dealer Network",
+        "date": "Authorized Partner Dealer",
+        "description": "Official Certificate of Association recognizing WONDER CARS as an accredited CarDekho Partner Dealer meeting rigorous customer trust and multi-point vehicle standards.",
+        "badge": "CarDekho Partner Dealer",
+        "image": "/assets/certificates/cardekho-partner-certificate.jpg"
+      },
+      {
+        "id": "c3",
+        "title": "OLX Autos Certificate of Recognition",
+        "authority": "OLX Auto India · Amit Kumar (Head - OLX Auto India)",
+        "date": "Valuable Dealer Partner",
+        "description": "Awarded to WONDER CARS for being a Valuable Dealer Partner at OLX Autos, recognizing leadership and excellence in the certified used car marketplace.",
+        "badge": "OLX Autos Partner",
+        "image": "/assets/certificates/olx-autos-recognition-certificate.jpg"
       }
     ],
     "instagramUrl": "https://www.instagram.com/usedcarsnearby/",
@@ -5228,6 +5252,265 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795284521039-ut80",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235119844-8.jpeg",
+      "timestamp": "2026-11-21T18:08:41.040Z"
+    },
+    {
+      "id": "act-1795284519651-8fui",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235119877-7.jpeg",
+      "timestamp": "2026-11-21T18:08:39.651Z"
+    },
+    {
+      "id": "act-1795284505142-3225",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712973-4.jpeg",
+      "timestamp": "2026-11-21T18:08:25.142Z"
+    },
+    {
+      "id": "act-1795284504915-4hrb",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268713055-whatsapp-image-2026-11-20-at-3-5.jpeg",
+      "timestamp": "2026-11-21T18:08:24.915Z"
+    },
+    {
+      "id": "act-1795284504679-w7t8",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917194-8.jpeg",
+      "timestamp": "2026-11-21T18:08:24.679Z"
+    },
+    {
+      "id": "act-1795284504458-z01x",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917208-7.jpeg",
+      "timestamp": "2026-11-21T18:08:24.458Z"
+    },
+    {
+      "id": "act-1795284504233-83pc",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917221-6.jpeg",
+      "timestamp": "2026-11-21T18:08:24.233Z"
+    },
+    {
+      "id": "act-1795284503991-2kaj",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917226-5.jpeg",
+      "timestamp": "2026-11-21T18:08:23.991Z"
+    },
+    {
+      "id": "act-1795284503439-p0ix",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917238-4.jpeg",
+      "timestamp": "2026-11-21T18:08:23.440Z"
+    },
+    {
+      "id": "act-1795284503173-ji30",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917244-3.jpeg",
+      "timestamp": "2026-11-21T18:08:23.173Z"
+    },
+    {
+      "id": "act-1795284502872-xedr",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917256-2.jpeg",
+      "timestamp": "2026-11-21T18:08:22.872Z"
+    },
+    {
+      "id": "act-1795284502275-xg9f",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917290-1.jpeg",
+      "timestamp": "2026-11-21T18:08:22.275Z"
+    },
+    {
+      "id": "act-1795284501555-ts4e",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795283917299-whatsapp-image-2026-11-20-at-3-5.jpeg",
+      "timestamp": "2026-11-21T18:08:21.555Z"
+    },
+    {
+      "id": "act-1795284141423-ndq6",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712999-3.jpeg",
+      "timestamp": "2026-11-21T18:02:21.423Z"
+    },
+    {
+      "id": "act-1795284140861-lcvg",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268713018-2.jpeg",
+      "timestamp": "2026-11-21T18:02:20.861Z"
+    },
+    {
+      "id": "act-1795284140634-dgeu",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268713039-1.jpeg",
+      "timestamp": "2026-11-21T18:02:20.634Z"
+    },
+    {
+      "id": "act-1795284140403-cbfb",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712875-8.jpeg",
+      "timestamp": "2026-11-21T18:02:20.403Z"
+    },
+    {
+      "id": "act-1795284140181-1i8n",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712905-7.jpeg",
+      "timestamp": "2026-11-21T18:02:20.182Z"
+    },
+    {
+      "id": "act-1795284139963-fraz",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712920-6.jpeg",
+      "timestamp": "2026-11-21T18:02:19.963Z"
+    },
+    {
+      "id": "act-1795284139726-bi9a",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795268712955-5.jpeg",
+      "timestamp": "2026-11-21T18:02:19.726Z"
+    },
+    {
+      "id": "act-1795284138131-9oge",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235119923-5.jpeg",
+      "timestamp": "2026-11-21T18:02:18.131Z"
+    },
+    {
+      "id": "act-1795284137937-zusj",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235119955-4.jpeg",
+      "timestamp": "2026-11-21T18:02:17.937Z"
+    },
+    {
+      "id": "act-1795284137732-49y8",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235120006-3.jpeg",
+      "timestamp": "2026-11-21T18:02:17.732Z"
+    },
+    {
+      "id": "act-1795284137548-7frw",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235120036-2.jpeg",
+      "timestamp": "2026-11-21T18:02:17.548Z"
+    },
+    {
+      "id": "act-1795284137337-sybt",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235120049-1.jpeg",
+      "timestamp": "2026-11-21T18:02:17.337Z"
+    },
+    {
+      "id": "act-1795284137133-nb42",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795235120055-whatsapp-image-2026-11-20-at-3-5.jpeg",
+      "timestamp": "2026-11-21T18:02:17.133Z"
+    },
+    {
+      "id": "act-1795284136935-hu06",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909561-8.jpeg",
+      "timestamp": "2026-11-21T18:02:16.935Z"
+    },
+    {
+      "id": "act-1795284136717-rgk5",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909584-7.jpeg",
+      "timestamp": "2026-11-21T18:02:16.717Z"
+    },
+    {
+      "id": "act-1795284136522-n2le",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909604-6.jpeg",
+      "timestamp": "2026-11-21T18:02:16.522Z"
+    },
+    {
+      "id": "act-1795284136320-nrtu",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909612-5.jpeg",
+      "timestamp": "2026-11-21T18:02:16.320Z"
+    },
+    {
+      "id": "act-1795284136134-534u",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909623-4.jpeg",
+      "timestamp": "2026-11-21T18:02:16.134Z"
+    },
+    {
+      "id": "act-1795284135583-g9kw",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909638-3.jpeg",
+      "timestamp": "2026-11-21T18:02:15.583Z"
+    },
+    {
+      "id": "act-1795284134981-dar4",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909655-2.jpeg",
+      "timestamp": "2026-11-21T18:02:14.981Z"
+    },
+    {
+      "id": "act-1795284134296-8hea",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909688-1.jpeg",
+      "timestamp": "2026-11-21T18:02:14.296Z"
+    },
+    {
+      "id": "act-1795284133334-klw5",
+      "userEmail": "admin",
+      "action": "Deleted Media File",
+      "details": "Removed image 1795262909705-whatsapp-image-2026-11-20-at-3-5.jpeg",
+      "timestamp": "2026-11-21T18:02:13.334Z"
+    },
+    {
+      "id": "act-1795284121727-xudv",
+      "userEmail": "admin",
+      "action": "Deleted Car",
+      "details": "Deleted 2023 Mg 911 (WC-2767)",
+      "timestamp": "2026-11-21T18:02:01.727Z"
+    },
+    {
+      "id": "act-1795284037671-13lb",
+      "userEmail": "admin",
+      "action": "Created Car",
+      "details": "Added 2025 Mahindra Scorpio-N (WC-7654)",
+      "timestamp": "2026-11-21T18:00:37.671Z"
+    },
     {
       "id": "act-1795269279788-i8k2",
       "userEmail": "admin@stradamotors.in",

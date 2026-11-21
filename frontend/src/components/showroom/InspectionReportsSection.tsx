@@ -39,23 +39,72 @@ function StatusIcon({ status }: { status: InspectionCondition }) {
   return <HelpCircle className="w-4 h-4 shrink-0 text-slate-400 dark:text-zinc-500" />;
 }
 
+function isMeaningful(val: unknown): boolean {
+  if (val === undefined || val === null) return false;
+  const s = String(val).trim();
+  if (!s) return false;
+  const lower = s.toLowerCase();
+  return (
+    lower !== 'not provided' &&
+    lower !== 'not disclosed' &&
+    lower !== 'not available' &&
+    lower !== 'not inspected' &&
+    lower !== 'verification pending' &&
+    lower !== 'none'
+  );
+}
+
 export function InspectionReportsSection({
-  exteriorReport,
-  interiorReport,
-  mechanicalReport,
-  tyreDetails,
+  exteriorReport = [],
+  interiorReport = [],
+  mechanicalReport = [],
+  tyreDetails = [],
   batteryDetails,
 }: InspectionReportsSectionProps) {
-  const [activeTab, setActiveTab] = useState<InspectionTab>('exterior');
-  const [expanded, setExpanded] = useState(true);
   const [photoPreview, setPhotoPreview] = useState<InspectionItem | null>(null);
 
+  const validExterior = (exteriorReport || []).filter(
+    (i) => (i.status && i.status !== 'Not Inspected') || isMeaningful(i.notes) || Boolean(i.photoUrl)
+  );
+  const validInterior = (interiorReport || []).filter(
+    (i) => (i.status && i.status !== 'Not Inspected') || isMeaningful(i.notes) || Boolean(i.photoUrl)
+  );
+  const validMechanical = (mechanicalReport || []).filter(
+    (i) => (i.status && i.status !== 'Not Inspected') || isMeaningful(i.notes) || Boolean(i.photoUrl)
+  );
+  const validTyres = (tyreDetails || []).filter(
+    (t) => (t.treadCondition && t.treadCondition !== 'Not Inspected') || isMeaningful(t.brand) || isMeaningful(t.replacementNote)
+  );
+  const hasBattery =
+    isMeaningful(batteryDetails?.brand) ||
+    isMeaningful(batteryDetails?.age) ||
+    (batteryDetails?.condition && batteryDetails.condition !== 'Not Inspected') ||
+    isMeaningful(batteryDetails?.replacementHistory);
+
+  const availableTabs: { id: InspectionTab; label: string }[] = [];
+  if (validExterior.length > 0) availableTabs.push({ id: 'exterior', label: `Exterior (${validExterior.length})` });
+  if (validInterior.length > 0) availableTabs.push({ id: 'interior', label: `Interior (${validInterior.length})` });
+  if (validMechanical.length > 0) availableTabs.push({ id: 'mechanical', label: `Engine & Mechanical (${validMechanical.length})` });
+  if (validTyres.length > 0 || hasBattery) availableTabs.push({ id: 'tyres', label: 'Tyres & Battery' });
+
+  const [activeTab, setActiveTab] = useState<InspectionTab>(
+    availableTabs.length > 0 ? availableTabs[0].id : 'exterior'
+  );
+  const [expanded, setExpanded] = useState(true);
+
+  // If no inspection records were provided by admin, hide the entire section!
+  if (availableTabs.length === 0) {
+    return null;
+  }
+
+  const currentTab = availableTabs.some((t) => t.id === activeTab) ? activeTab : availableTabs[0].id;
+
   const activeList =
-    activeTab === 'exterior'
-      ? exteriorReport
-      : activeTab === 'interior'
-      ? interiorReport
-      : mechanicalReport;
+    currentTab === 'exterior'
+      ? validExterior
+      : currentTab === 'interior'
+      ? validInterior
+      : validMechanical;
 
   const inspectedCount = activeList.filter((i) => i.status !== 'Not Inspected').length;
   const attentionCount = activeList.filter((i) => i.status === 'Needs Attention').length;
@@ -71,7 +120,7 @@ export function InspectionReportsSection({
             Condition, Mechanical &amp; Tyre Audit
           </h2>
           <p className="text-xs text-slate-600 dark:text-zinc-400 mt-1">
-            Items not yet physically verified are transparently marked Not Inspected.
+            Verified physical inspection checklist and component report.
           </p>
         </div>
 
@@ -86,96 +135,109 @@ export function InspectionReportsSection({
       </div>
 
       {/* Category Switcher */}
-      <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08]">
-        {[
-          { id: 'exterior', label: `Exterior (${exteriorReport.length})` },
-          { id: 'interior', label: `Interior (${interiorReport.length})` },
-          { id: 'mechanical', label: `Engine & Mechanical (${mechanicalReport.length})` },
-          { id: 'tyres', label: 'Tyres & Battery' },
-        ].map((tab) => (
-          <button
-            key={tab.id}
-            type="button"
-            onClick={() => {
-              setActiveTab(tab.id as InspectionTab);
-              setExpanded(true);
-            }}
-            className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
-              activeTab === tab.id
-                ? 'bg-blue-700 dark:bg-blue-600 text-white'
-                : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
-            }`}
-          >
-            {tab.label}
-          </button>
-        ))}
-      </div>
+      {availableTabs.length > 1 && (
+        <div className="flex flex-wrap gap-1.5 p-1 rounded-xl bg-slate-100 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08]">
+          {availableTabs.map((tab) => (
+            <button
+              key={tab.id}
+              type="button"
+              onClick={() => {
+                setActiveTab(tab.id);
+                setExpanded(true);
+              }}
+              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+                currentTab === tab.id
+                  ? 'bg-blue-700 dark:bg-blue-600 text-white'
+                  : 'text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
+              }`}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+      )}
 
       {expanded && (
         <>
-          {activeTab === 'tyres' ? (
+          {currentTab === 'tyres' ? (
             <div className="space-y-6">
-              <div>
-                <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
-                  Tyre Tread &amp; Fitment Check
-                </h3>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                  {tyreDetails.map((tyre) => (
-                    <div
-                      key={tyre.position}
-                      className="p-4 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] space-y-1.5"
-                    >
-                      <div className="flex items-center justify-between gap-2">
-                        <span className="text-sm font-semibold text-slate-900 dark:text-white">{tyre.position}</span>
-                        <span className="text-xs font-semibold text-blue-700 dark:text-blue-400">
-                          {tyre.treadCondition || 'Not Inspected'}
-                        </span>
-                      </div>
-                      <p className="text-xs text-slate-600 dark:text-zinc-400">
-                        Brand: <span className="text-slate-800 dark:text-zinc-200">{tyre.brand || 'Not Provided'}</span>
-                      </p>
-                      {tyre.replacementNote && (
-                        <p className="text-xs text-slate-500 dark:text-zinc-500">{tyre.replacementNote}</p>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="p-5 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] space-y-3">
-                <div className="flex items-center gap-2">
-                  <Wrench className="w-4 h-4 text-blue-700 dark:text-blue-400" />
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
-                    Battery &amp; Power Unit Health
+              {validTyres.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">
+                    Tyre Tread &amp; Fitment Check
                   </h3>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    {validTyres.map((tyre) => (
+                      <div
+                        key={tyre.position}
+                        className="p-4 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] space-y-1.5"
+                      >
+                        <div className="flex items-center justify-between gap-2">
+                          <span className="text-sm font-semibold text-slate-900 dark:text-white">{tyre.position}</span>
+                          {tyre.treadCondition && tyre.treadCondition !== 'Not Inspected' && (
+                            <span className="text-xs font-semibold text-blue-700 dark:text-blue-400">
+                              {tyre.treadCondition}
+                            </span>
+                          )}
+                        </div>
+                        {isMeaningful(tyre.brand) && (
+                          <p className="text-xs text-slate-600 dark:text-zinc-400">
+                            Brand: <span className="text-slate-800 dark:text-zinc-200">{tyre.brand}</span>
+                          </p>
+                        )}
+                        {isMeaningful(tyre.replacementNote) && (
+                          <p className="text-xs text-slate-500 dark:text-zinc-500">{tyre.replacementNote}</p>
+                        )}
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-                  <div>
-                    <dt className="text-slate-500 dark:text-zinc-500">Battery Brand / Spec</dt>
-                    <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
-                      {batteryDetails.brand || 'Not Provided'}
-                    </dd>
+              )}
+
+              {hasBattery && batteryDetails && (
+                <div className="p-5 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] space-y-3">
+                  <div className="flex items-center gap-2">
+                    <Wrench className="w-4 h-4 text-blue-700 dark:text-blue-400" />
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white">
+                      Battery &amp; Power Unit Health
+                    </h3>
                   </div>
-                  <div>
-                    <dt className="text-slate-500 dark:text-zinc-500">Estimated Age</dt>
-                    <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
-                      {batteryDetails.age || 'Not Provided'}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-slate-500 dark:text-zinc-500">Condition Rating</dt>
-                    <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
-                      {batteryDetails.condition || 'Not Inspected'}
-                    </dd>
-                  </div>
-                  <div>
-                    <dt className="text-slate-500 dark:text-zinc-500">Replacement History</dt>
-                    <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
-                      {batteryDetails.replacementHistory || 'Not Provided'}
-                    </dd>
-                  </div>
-                </dl>
-              </div>
+                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+                    {isMeaningful(batteryDetails.brand) && (
+                      <div>
+                        <dt className="text-slate-500 dark:text-zinc-500">Battery Brand / Spec</dt>
+                        <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
+                          {batteryDetails.brand}
+                        </dd>
+                      </div>
+                    )}
+                    {isMeaningful(batteryDetails.age) && (
+                      <div>
+                        <dt className="text-slate-500 dark:text-zinc-500">Estimated Age</dt>
+                        <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
+                          {batteryDetails.age}
+                        </dd>
+                      </div>
+                    )}
+                    {batteryDetails.condition && batteryDetails.condition !== 'Not Inspected' && (
+                      <div>
+                        <dt className="text-slate-500 dark:text-zinc-500">Condition Rating</dt>
+                        <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
+                          {batteryDetails.condition}
+                        </dd>
+                      </div>
+                    )}
+                    {isMeaningful(batteryDetails.replacementHistory) && (
+                      <div>
+                        <dt className="text-slate-500 dark:text-zinc-500">Replacement History</dt>
+                        <dd className="text-slate-900 dark:text-zinc-200 font-medium mt-0.5">
+                          {batteryDetails.replacementHistory}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
+                </div>
+              )}
             </div>
           ) : (
             <div className="space-y-4">

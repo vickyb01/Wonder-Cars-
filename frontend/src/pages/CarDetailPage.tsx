@@ -31,6 +31,21 @@ import { EmiCalculatorSection } from '../components/showroom/EmiCalculatorSectio
 import { useWishlist } from '../context/WishlistContext';
 import { estimateCarEmiWithConfig } from '../utils/emi';
 
+function isMeaningful(val: unknown): boolean {
+  if (val === undefined || val === null) return false;
+  const s = String(val).trim();
+  if (!s) return false;
+  const lower = s.toLowerCase();
+  return (
+    lower !== 'not provided' &&
+    lower !== 'not disclosed' &&
+    lower !== 'not available' &&
+    lower !== 'not inspected' &&
+    lower !== 'verification pending' &&
+    lower !== 'none'
+  );
+}
+
 export function CarDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [car, setCar] = useState<Car | null>(null);
@@ -134,30 +149,31 @@ export function CarDetailPage() {
     { label: 'Brand', value: car.brand },
     { label: 'Model', value: car.model },
     { label: 'Variant', value: car.variant },
-    { label: 'Manufacturing Year', value: String(car.year) },
-    { label: 'Registration Year', value: car.registrationYear ? String(car.registrationYear) : 'Not Provided' },
+    { label: 'Manufacturing Year', value: car.year ? String(car.year) : '' },
+    { label: 'Registration Year', value: car.registrationYear ? String(car.registrationYear) : '' },
     { label: 'Registration Date', value: formatReadableDate(car.registrationDate) },
-    { label: 'Vehicle Category', value: car.category || 'Not Provided' },
-    { label: 'Body Type', value: car.bodyType || 'Not Provided' },
-    { label: 'Exterior Colour', value: car.color || 'Not Provided' },
-    { label: 'Interior Colour', value: car.interiorColor || 'Not Provided' },
-    { label: 'Seating Capacity', value: car.seatingCapacity ? `${car.seatingCapacity} Seats` : 'Not Provided' },
-    { label: 'Number of Doors', value: car.doors ? `${car.doors} Doors` : 'Not Provided' },
-    { label: 'Warranty & Guarantee', value: car.warrantyPeriod || '1 Year' },
-  ];
+    { label: 'Vehicle Category', value: car.category },
+    { label: 'Body Type', value: car.bodyType },
+    { label: 'Exterior Colour', value: car.color },
+    { label: 'Interior Colour', value: car.interiorColor },
+    { label: 'Seating Capacity', value: car.seatingCapacity ? `${car.seatingCapacity} Seats` : '' },
+    { label: 'Number of Doors', value: car.doors ? `${car.doors} Doors` : '' },
+    { label: 'Registration State / RTO', value: car.registrationState },
+    { label: 'Warranty & Guarantee', value: car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' ? car.warrantyPeriod : '' },
+  ].filter((s) => isMeaningful(s.value));
 
   const engineSpecs = [
-    { label: 'Engine Capacity', value: car.engineCc || 'Not Provided' },
-    { label: 'Engine Type', value: car.engine || 'Not Provided' },
-    { label: 'Cylinders', value: car.cylinders || 'Not Provided' },
-    { label: 'Maximum Power', value: car.power || 'Not Provided' },
-    { label: 'Maximum Torque', value: car.torque || 'Not Provided' },
+    { label: 'Engine Capacity', value: car.engineCc },
+    { label: 'Engine Type', value: car.engine },
+    { label: 'Cylinders', value: car.cylinders },
+    { label: 'Maximum Power', value: car.power },
+    { label: 'Maximum Torque', value: car.torque },
     { label: 'Fuel Type', value: car.fuelType },
     { label: 'Transmission', value: car.transmission },
-    { label: 'Drivetrain', value: car.drivetrain || 'Not Provided' },
-    { label: 'Claimed Mileage / Range', value: car.claimedMileage || 'Not Provided' },
-    { label: 'Emission Standard', value: car.emissionStandard || 'Not Provided' },
-  ];
+    { label: 'Drivetrain', value: car.drivetrain },
+    { label: 'Claimed Mileage / Range', value: car.claimedMileage },
+    { label: 'Emission Standard', value: car.emissionStandard },
+  ].filter((s) => isMeaningful(s.value));
 
   const featureCategories = [
     { title: 'Comfort & Convenience', items: car.features.comfort },
@@ -228,28 +244,38 @@ export function CarDetailPage() {
                 {car.year} {car.brand} {car.model} <span className="text-slate-500 dark:text-zinc-400 font-medium">{car.variant}</span>
               </h1>
 
-              <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-slate-600 dark:text-zinc-300 tabular-nums">
-                <span>{car.year} Model</span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                <span>Reg. {car.registrationYear || car.year}</span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                <span>{formatKm(car.kilometres)} Driven</span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                <span>{car.fuelType}</span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                <span>{car.transmission}</span>
-                <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                <span>{car.ownership}</span>
-                {car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && (
-                  <>
-                    <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>
-                    <span className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
+              {(() => {
+                const headerBadges: React.ReactNode[] = [];
+                if (car.year) headerBadges.push(<span key="year">{car.year} Model</span>);
+                if (car.registrationYear) headerBadges.push(<span key="regyear">Reg. {car.registrationYear}</span>);
+                if (car.kilometres !== undefined && car.kilometres !== null && car.kilometres > 0) {
+                  headerBadges.push(<span key="km">{formatKm(car.kilometres)} Driven</span>);
+                }
+                if (car.fuelType && isMeaningful(car.fuelType)) headerBadges.push(<span key="fuel">{car.fuelType}</span>);
+                if (car.transmission && isMeaningful(car.transmission)) headerBadges.push(<span key="trans">{car.transmission}</span>);
+                if (car.ownership && isMeaningful(car.ownership)) headerBadges.push(<span key="owner">{car.ownership}</span>);
+                if (car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && isMeaningful(car.warrantyPeriod)) {
+                  headerBadges.push(
+                    <span key="warranty" className="inline-flex items-center gap-1 font-semibold text-emerald-700 dark:text-emerald-400">
                       <ShieldCheck className="w-3.5 h-3.5" />
                       <span>{car.warrantyPeriod} Guarantee Included</span>
                     </span>
-                  </>
-                )}
-              </div>
+                  );
+                }
+
+                if (headerBadges.length === 0) return null;
+
+                return (
+                  <div className="flex flex-wrap items-center gap-x-2.5 gap-y-1 text-sm text-slate-600 dark:text-zinc-300 tabular-nums">
+                    {headerBadges.map((badge, idx) => (
+                      <span key={idx} className="flex items-center gap-x-2.5">
+                        {idx > 0 && <span aria-hidden="true" className="text-slate-300 dark:text-zinc-600">|</span>}
+                        {badge}
+                      </span>
+                    ))}
+                  </div>
+                );
+              })()}
             </div>
 
             <div className="flex flex-wrap items-center justify-between lg:justify-end gap-4 shrink-0">
@@ -302,89 +328,98 @@ export function CarDetailPage() {
           <div className="lg:col-span-8 space-y-8">
 
             {/* Vehicle Description & Key Highlights */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-5">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Showroom Overview</p>
-                <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">About This Vehicle</h2>
-              </div>
-              <p className="text-sm sm:text-base text-slate-700 dark:text-zinc-300 leading-relaxed">
-                {car.description || 'Detailed vehicle overview not provided.'}
-              </p>
+            {(isMeaningful(car.description) || (car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && isMeaningful(car.warrantyPeriod)) || (car.highlights && car.highlights.filter((h) => isMeaningful(h)).length > 0)) && (
+              <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-5">
+                <div>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Showroom Overview</p>
+                  <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">About This Vehicle</h2>
+                </div>
+                {isMeaningful(car.description) && (
+                  <p className="text-sm sm:text-base text-slate-700 dark:text-zinc-300 leading-relaxed">
+                    {car.description}
+                  </p>
+                )}
 
-              {car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && (
-                <div className="p-4 sm:p-5 rounded-xl bg-emerald-50/80 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                  <div className="flex items-start gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
-                      <ShieldCheck className="w-5 h-5" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
-                        {car.warrantyPeriod} Strada Guarantee &amp; Warranty Included
-                      </p>
-                      <p className="text-xs text-emerald-800/85 dark:text-emerald-300/80 mt-0.5 leading-relaxed">
-                        {car.warrantyDetails || 'Comprehensive coverage for Engine, Transmission, Drivetrain & Electrical Systems.'}
-                      </p>
+                {car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && isMeaningful(car.warrantyPeriod) && (
+                  <div className="p-4 sm:p-5 rounded-xl bg-emerald-50/80 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                    <div className="flex items-start gap-3">
+                      <div className="w-10 h-10 rounded-xl bg-emerald-100 dark:bg-emerald-500/20 border border-emerald-200 dark:border-emerald-500/30 flex items-center justify-center text-emerald-700 dark:text-emerald-400 shrink-0">
+                        <ShieldCheck className="w-5 h-5" />
+                      </div>
+                      <div>
+                        <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
+                          {car.warrantyPeriod} Strada Guarantee &amp; Warranty Included
+                        </p>
+                        {isMeaningful(car.warrantyDetails) && (
+                          <p className="text-xs text-emerald-800/85 dark:text-emerald-300/80 mt-0.5 leading-relaxed">
+                            {car.warrantyDetails}
+                          </p>
+                        )}
+                      </div>
                     </div>
                   </div>
-                  <div className="text-xs font-mono font-semibold text-emerald-700 dark:text-emerald-400 shrink-0">
-                    Plans: 6 Months · 1 Year · 2 Years
-                  </div>
-                </div>
-              )}
+                )}
 
-              {car.highlights.length > 0 && (
-                <div className="pt-4 border-t border-slate-200 dark:border-white/[0.07]">
-                  <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Key Equipment Highlights</h3>
-                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                    {car.highlights.map((item) => (
-                      <li key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-zinc-300">
-                        <Check className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
-                        <span>{item}</span>
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </section>
+                {car.highlights && car.highlights.filter((h) => isMeaningful(h)).length > 0 && (
+                  <div className="pt-4 border-t border-slate-200 dark:border-white/[0.07]">
+                    <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-3">Key Equipment Highlights</h3>
+                    <ul className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                      {car.highlights.filter((h) => isMeaningful(h)).map((item) => (
+                        <li key={item} className="flex items-start gap-2 text-sm text-slate-700 dark:text-zinc-300">
+                          <Check className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
+                          <span>{item}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </section>
+            )}
 
             {/* Interactive Monthly EMI Calculator */}
             <EmiCalculatorSection carPriceInr={car.priceInr} carTitle={carTitle} />
 
             {/* 3. Complete Vehicle Specifications */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Factory Data</p>
-                <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
-                  Complete Technical Specifications
-                </h2>
-              </div>
-
-              <div className="space-y-6">
+            {(basicSpecs.length > 0 || engineSpecs.length > 0) && (
+              <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-8">
                 <div>
-                  <h3 className="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-3">Basic Information</h3>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 text-sm">
-                    {basicSpecs.map((spec) => (
-                      <div key={spec.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
-                        <dt className="text-slate-500 dark:text-zinc-400">{spec.label}</dt>
-                        <dd className="text-slate-900 dark:text-white font-medium text-right font-mono tabular-nums">{spec.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                  <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Factory Data</p>
+                  <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
+                    Complete Technical Specifications
+                  </h2>
                 </div>
 
-                <div>
-                  <h3 className="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-3">Engine &amp; Drivetrain</h3>
-                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 text-sm">
-                    {engineSpecs.map((spec) => (
-                      <div key={spec.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
-                        <dt className="text-slate-500 dark:text-zinc-400">{spec.label}</dt>
-                        <dd className="text-slate-900 dark:text-white font-medium text-right font-mono tabular-nums">{spec.value}</dd>
-                      </div>
-                    ))}
-                  </dl>
+                <div className="space-y-6">
+                  {basicSpecs.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-3">Basic Information</h3>
+                      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 text-sm">
+                        {basicSpecs.map((spec) => (
+                          <div key={spec.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
+                            <dt className="text-slate-500 dark:text-zinc-400">{spec.label}</dt>
+                            <dd className="text-slate-900 dark:text-white font-medium text-right font-mono tabular-nums">{spec.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
+
+                  {engineSpecs.length > 0 && (
+                    <div>
+                      <h3 className="text-sm font-semibold text-slate-800 dark:text-zinc-200 mb-3">Engine &amp; Drivetrain</h3>
+                      <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-2.5 text-sm">
+                        {engineSpecs.map((spec) => (
+                          <div key={spec.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
+                            <dt className="text-slate-500 dark:text-zinc-400">{spec.label}</dt>
+                            <dd className="text-slate-900 dark:text-white font-medium text-right font-mono tabular-nums">{spec.value}</dd>
+                          </div>
+                        ))}
+                      </dl>
+                    </div>
+                  )}
                 </div>
-              </div>
-            </section>
+              </section>
+            )}
 
             {/* 4, 9, 10, 11. Usage History, Accident Disclosure, Service Timeline, Legal Docs */}
             <HistoryAndLegalSection car={car} />
@@ -429,50 +464,68 @@ export function CarDetailPage() {
             )}
 
             {/* 16. Complete Price & Vehicle Summary */}
-            <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-5">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Dossier Recap</p>
-                <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
-                  Complete Price &amp; Vehicle Summary
-                </h2>
-              </div>
+            {(() => {
+              const summaryRows = [
+                { label: 'Vehicle Model', value: `${car.year} ${car.brand} ${car.model} (${car.variant})` },
+                { label: 'Vehicle Age', value: age.label },
+                { label: 'Total Kilometres', value: car.kilometres > 0 ? formatKm(car.kilometres) : '' },
+                { label: 'Ownership Count', value: car.ownership },
+                { label: 'Fuel & Transmission', value: [car.fuelType, car.transmission].filter((x) => isMeaningful(x)).join(' · ') },
+                {
+                  label: 'Overall Condition',
+                  value: (car.exteriorReport && car.exteriorReport.filter((i) => i.status === 'Excellent' || i.status === 'Good').length > 0)
+                    ? `${car.exteriorReport.filter((i) => i.status === 'Excellent' || i.status === 'Good').length}/${car.exteriorReport.filter((i) => i.status !== 'Not Inspected').length} Exterior Checked Good+`
+                    : '',
+                },
+                {
+                  label: 'Insurance Status',
+                  value: isMeaningful(car.insuranceValidUntil)
+                    ? (insuranceDoc?.note || car.insuranceValidUntil)
+                    : (insuranceDoc?.note || ''),
+                },
+                {
+                  label: 'Service History',
+                  value: car.serviceHistory?.records?.length > 0
+                    ? `${car.serviceHistory.records.length} Log(s) · Last ${formatReadableDate(car.serviceHistory.lastServiceDate)}`
+                    : (isMeaningful(car.serviceHistory?.lastServiceDate) ? `Last ${formatReadableDate(car.serviceHistory.lastServiceDate)}` : ''),
+                },
+                {
+                  label: 'Accident Disclosure',
+                  value: isMeaningful(car.accidentHistory?.overallStatus) ? car.accidentHistory.overallStatus : '',
+                },
+                {
+                  label: 'Warranty & Guarantee',
+                  value: car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty' && isMeaningful(car.warrantyPeriod)
+                    ? `${car.warrantyPeriod} Included`
+                    : '',
+                },
+                { label: 'Asking Price', value: car.priceInr > 0 ? `${formatINR(car.priceInr)} (${car.priceType})` : '' },
+                { label: 'Seller', value: [car.sellerName, car.location].filter((x) => isMeaningful(x)).join(' · ') },
+                { label: 'Availability', value: car.status },
+              ].filter((row) => isMeaningful(row.value));
 
-              <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
-                {[
-                  { label: 'Vehicle Model', value: `${car.year} ${car.brand} ${car.model} (${car.variant})` },
-                  { label: 'Vehicle Age', value: age.label },
-                  { label: 'Total Kilometres', value: formatKm(car.kilometres) },
-                  { label: 'Ownership Count', value: car.ownership },
-                  { label: 'Fuel & Transmission', value: `${car.fuelType} · ${car.transmission}` },
-                  {
-                    label: 'Overall Condition',
-                    value: `${car.exteriorReport.filter((i) => i.status === 'Excellent' || i.status === 'Good').length}/${car.exteriorReport.length} Exterior Checked Good+`,
-                  },
-                  { label: 'Insurance Status', value: insuranceDoc ? `${insuranceDoc.status} (${car.insuranceValidUntil})` : car.insuranceValidUntil },
-                  {
-                    label: 'Service History',
-                    value: car.serviceHistory.records.length > 0
-                      ? `${car.serviceHistory.records.length} Log(s) · Last ${formatReadableDate(car.serviceHistory.lastServiceDate)}`
-                      : 'Verification Pending',
-                  },
-                  { label: 'Accident Disclosure', value: car.accidentHistory.overallStatus },
-                  {
-                    label: 'Warranty & Guarantee',
-                    value: car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty'
-                      ? `${car.warrantyPeriod} Included`
-                      : 'Inspection Verified',
-                  },
-                  { label: 'Asking Price', value: `${formatINR(car.priceInr)} (${car.priceType})` },
-                  { label: 'Seller', value: `${car.sellerName} · ${car.location}` },
-                  { label: 'Availability', value: car.status },
-                ].map((row) => (
-                  <div key={row.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
-                    <dt className="text-slate-500 dark:text-zinc-400">{row.label}</dt>
-                    <dd className="text-slate-900 dark:text-white font-medium text-right">{row.value}</dd>
+              if (summaryRows.length === 0) return null;
+
+              return (
+                <section className="p-6 sm:p-8 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-5">
+                  <div>
+                    <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Dossier Recap</p>
+                    <h2 className="font-display text-xl sm:text-2xl font-semibold text-slate-900 dark:text-white">
+                      Complete Price &amp; Vehicle Summary
+                    </h2>
                   </div>
-                ))}
-              </dl>
-            </section>
+
+                  <dl className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                    {summaryRows.map((row) => (
+                      <div key={row.label} className="flex justify-between gap-4 py-2 border-b border-slate-100 dark:border-white/[0.06]">
+                        <dt className="text-slate-500 dark:text-zinc-400">{row.label}</dt>
+                        <dd className="text-slate-900 dark:text-white font-medium text-right">{row.value}</dd>
+                      </div>
+                    ))}
+                  </dl>
+                </section>
+              );
+            })()}
           </div>
 
           {/* Right 4 Columns: Sticky Price, Seller & Booking Sidebar */}
