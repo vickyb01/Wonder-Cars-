@@ -46,6 +46,7 @@ export function CarDetailPage() {
   const [shareFeedback, setShareFeedback] = useState('');
   const [activeFormMode, setActiveFormMode] = useState<'test-drive' | 'inspection' | 'offer'>('test-drive');
   const formContainerRef = useRef<HTMLDivElement | null>(null);
+  const similarScrollRef = useRef<HTMLDivElement | null>(null);
   const { isCompared, toggleCompare, compareCount } = useCompare();
 
   useEffect(() => {
@@ -516,19 +517,38 @@ export function CarDetailPage() {
         {/* 17. Similar Available Vehicles */}
         {similar.length > 0 && (
           <section className="pt-12 border-t border-slate-200 dark:border-white/[0.08]">
-            <div className="flex items-end justify-between gap-4 mb-8">
-              <div>
-                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-1">Comparable Stock</p>
-                <h2 className="font-display text-2xl font-bold text-slate-900 dark:text-white">Similar Available Vehicles</h2>
-              </div>
-              <Link to="/cars" className="text-xs font-semibold text-slate-600 dark:text-zinc-300 hover:text-blue-700 dark:hover:text-blue-400">
-                Browse Full Inventory
-              </Link>
+            <div className="mb-6 sm:mb-8">
+              <h2 className="font-display text-xl sm:text-2xl font-bold text-slate-900 dark:text-white whitespace-nowrap">
+                Similar Related Vehicles
+              </h2>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {similar.map((item, idx) => (
+
+            {/* Desktop UI: EXACTLY SAME (NOT CHANGED) */}
+            <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+              {similar.slice(0, 3).map((item, idx) => (
                 <CarCard key={item.id} car={item} index={idx} />
               ))}
+            </div>
+
+            {/* Mobile & Tablet: Horizontal Swipe Slider (Baaju me sarka ke slide) */}
+            <div className="lg:hidden">
+              <div
+                ref={similarScrollRef}
+                className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar -mx-4 px-4 sm:-mx-6 sm:px-6"
+                style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+              >
+                {similar.map((item, idx) => (
+                  <div
+                    key={item.id}
+                    className="w-[84vw] max-w-[340px] shrink-0 snap-start"
+                  >
+                    <CarCard car={item} index={idx} />
+                  </div>
+                ))}
+              </div>
+              <p className="text-[11px] text-slate-400 dark:text-zinc-500 text-center mt-2">
+                ← Swipe sideways to see more vehicles →
+              </p>
             </div>
           </section>
         )}

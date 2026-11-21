@@ -73,10 +73,10 @@ export function Footer() {
   return (
     <footer className="bg-slate-50 dark:bg-[#09090B] border-t border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-zinc-400 transition-colors duration-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 sm:py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 text-center lg:text-left">
           {/* Brand Column */}
-          <div className="space-y-4">
-            <Link to="/" className="inline-flex items-center group" aria-label="Wonder Cars Home">
+          <div className="space-y-4 flex flex-col items-center lg:items-start">
+            <Link to="/" className="inline-flex items-center justify-center lg:justify-start group" aria-label="Wonder Cars Home">
               <img
                 src="/assets/wonder-cars-logo.png"
                 alt="Wonder Cars"
@@ -90,15 +90,15 @@ export function Footer() {
                 loading="lazy"
               />
             </Link>
-            <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400">
+            <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 max-w-sm lg:max-w-none">
               Curated pre-owned luxury and performance automobiles across India. Every vehicle undergoes a 210–point forensic audit before entering our galleries.
             </p>
           </div>
 
           {/* Marketplace Links */}
-          <div>
+          <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Marketplace</h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm flex flex-col items-center lg:items-start">
               <li>
                 <Link to="/cars" className="hover:text-blue-700 dark:hover:text-white transition-colors">
                   Browse Inventory
@@ -128,32 +128,32 @@ export function Footer() {
           </div>
 
           {/* Showrooms */}
-          <div>
+          <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Galleries</h3>
-            <ul className="space-y-3 text-sm">
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
+            <ul className="space-y-3 text-sm flex flex-col items-center lg:items-start">
+              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
+                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
                 <span>Preet Vihar, East Delhi 110092</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
+              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
+                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
                 <span>Worli Sea Face, Mumbai 400018</span>
               </li>
-              <li className="flex items-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5" />
+              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
+                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
                 <span>Lavelle Road, Bengaluru 560001</span>
               </li>
             </ul>
           </div>
 
           {/* Direct Contact & Social Icons */}
-          <div>
+          <div className="flex flex-col items-center lg:items-start">
             <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Concierge</h3>
-            <ul className="space-y-2.5 text-sm">
+            <ul className="space-y-2.5 text-sm flex flex-col items-center lg:items-start">
               <li>
                 <a
                   href={`tel:${displayPhone.replace(/\s+/g, '')}`}
-                  className="inline-flex items-center gap-2 hover:text-blue-700 dark:hover:text-white transition-colors tabular-nums"
+                  className="inline-flex items-center justify-center lg:justify-start gap-2 hover:text-blue-700 dark:hover:text-white transition-colors tabular-nums"
                 >
                   <Phone className="w-4 h-4 text-blue-700 dark:text-blue-400" />
                   <span>{displayPhone}</span>
@@ -162,17 +162,17 @@ export function Footer() {
               <li>
                 <a
                   href={`mailto:${displayEmail}`}
-                  className="inline-flex items-center gap-2 hover:text-blue-700 dark:hover:text-white transition-colors break-all"
+                  className="inline-flex items-center justify-center lg:justify-start gap-2 hover:text-blue-700 dark:hover:text-white transition-colors break-all"
                 >
                   <Mail className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
                   <span>{displayEmail}</span>
                 </a>
               </li>
-              <li className="pt-1 text-xs text-slate-500 dark:text-zinc-500">{displayHours}</li>
+              <li className="pt-1 text-xs text-slate-500 dark:text-zinc-500 text-center lg:text-left">{displayHours}</li>
             </ul>
 
             {/* Social & Direct Icons: Instagram, Facebook, WhatsApp, YouTube, Email */}
-            <div className="flex flex-wrap items-center gap-2 pt-4">
+            <div className="flex flex-wrap items-center justify-center lg:justify-start gap-2 pt-4">
               <a
                 href={instagramUrl}
                 target="_blank"

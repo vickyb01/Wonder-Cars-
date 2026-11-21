@@ -121,7 +121,7 @@ export function SellCarPage() {
           </motion.div>
 
           {/* Right Valuation Form */}
-          <div className="lg:col-span-7 bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-6 sm:p-10 shadow-sm dark:shadow-none">
+          <div className="lg:col-span-7 bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] rounded-2xl p-4 sm:p-8 lg:p-10 shadow-sm dark:shadow-none">
             {submittedId ? (
               <div className="py-10 text-center space-y-4">
                 <CheckCircle2 className="w-12 h-12 text-emerald-600 dark:text-emerald-400 mx-auto" />

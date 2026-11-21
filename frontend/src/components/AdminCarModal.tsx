@@ -484,22 +484,22 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   }
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 dark:bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-5xl max-h-[92vh] flex flex-col rounded-2xl bg-white dark:bg-[#121215] text-slate-900 dark:text-white border border-slate-200 dark:border-white/[0.1] overflow-hidden shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-slate-900/50 dark:bg-black/80 backdrop-blur-sm">
+      <div className="w-full max-w-5xl max-h-[94vh] flex flex-col rounded-2xl bg-white dark:bg-[#121215] text-slate-900 dark:text-white border border-slate-200 dark:border-white/[0.1] overflow-hidden shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200 dark:border-white/[0.08] shrink-0">
-          <div>
-            <h2 className="font-display text-xl font-bold text-slate-900 dark:text-white">
+        <div className="flex items-center justify-between px-4 sm:px-6 py-3.5 sm:py-4 border-b border-slate-200 dark:border-white/[0.08] shrink-0">
+          <div className="min-w-0 pr-2">
+            <h2 className="font-display text-lg sm:text-xl font-bold text-slate-900 dark:text-white truncate">
               {car ? `Edit ${car.year} ${car.brand} ${car.model}` : 'Add New Showroom Listing'}
             </h2>
-            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5">
+            <p className="text-xs text-slate-500 dark:text-zinc-400 mt-0.5 truncate">
               Save as Draft anytime to complete inspection &amp; photos later.
             </p>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="w-10 h-10 rounded-lg bg-slate-100 dark:bg-white/[0.05] hover:bg-slate-200 dark:hover:bg-white/[0.1] flex items-center justify-center text-slate-600 dark:text-zinc-300 cursor-pointer"
+            className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-slate-100 dark:bg-white/[0.05] hover:bg-slate-200 dark:hover:bg-white/[0.1] flex items-center justify-center text-slate-600 dark:text-zinc-300 cursor-pointer shrink-0"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />
@@ -507,7 +507,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
         </div>
 
         {/* Section Tabs */}
-        <div className="px-6 py-3 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-[#09090B]/60 flex flex-wrap gap-1.5 shrink-0">
+        <div className="px-3.5 sm:px-6 py-2.5 sm:py-3 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-[#09090B]/60 flex flex-wrap gap-1.5 shrink-0">
           {[
             { id: 'basic', label: '1. Basic & Pricing' },
             { id: 'gallery', label: `2. Photos (${gallery.length}/35)` },
@@ -518,7 +518,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
               key={tab.id}
               type="button"
               onClick={() => setActiveTab(tab.id as ModalTab)}
-              className={`px-3.5 py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
+              className={`px-3 sm:px-3.5 py-1.5 sm:py-2 rounded-lg text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap ${
                 activeTab === tab.id
                   ? 'bg-blue-700 dark:bg-blue-600 text-white'
                   : 'bg-white dark:bg-white/[0.04] border border-slate-200 dark:border-transparent text-slate-600 dark:text-zinc-400 hover:text-slate-900 dark:hover:text-white'
@@ -530,7 +530,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-6 space-y-6">
+        <form onSubmit={handleSubmit} className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-5 sm:space-y-6">
           {activeTab === 'basic' && (
             <div className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
@@ -1417,18 +1417,18 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
           {error && <p className="text-xs font-medium text-rose-700 dark:text-red-400">{error}</p>}
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 dark:border-white/[0.08]">
+          <div className="flex flex-col-reverse sm:flex-row items-stretch sm:items-center justify-end gap-2 sm:gap-3 pt-4 border-t border-slate-200 dark:border-white/[0.08]">
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] text-sm font-medium text-slate-700 dark:text-zinc-200 cursor-pointer"
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] text-sm font-medium text-slate-700 dark:text-zinc-200 cursor-pointer text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={saving}
-              className="px-6 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-60 text-sm font-semibold text-white cursor-pointer"
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-60 text-sm font-semibold text-white cursor-pointer text-center"
             >
               {saving ? 'Saving...' : status === 'Draft' ? 'Save Draft Listing' : car ? 'Update Listing' : 'Publish Vehicle'}
             </button>

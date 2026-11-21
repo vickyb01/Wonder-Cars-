@@ -142,8 +142,9 @@ export function getCarByIdOrSlug(req: Request, res: Response): void {
     .sort((a, b) => {
       const score = (c: Car) => {
         let s = 0;
-        if (c.brand === car.brand) s += 3;
-        if (c.model === car.model) s += 2;
+        // Prioritize same brand / company cars first
+        if (c.brand?.toLowerCase() === car.brand?.toLowerCase()) s += 20;
+        if (c.model?.toLowerCase() === car.model?.toLowerCase()) s += 5;
         if (c.bodyType === car.bodyType) s += 2;
         if (c.fuelType === car.fuelType) s += 1;
         if (Math.abs(c.year - car.year) <= 2) s += 1;
@@ -152,7 +153,7 @@ export function getCarByIdOrSlug(req: Request, res: Response): void {
       };
       return score(b) - score(a);
     })
-    .slice(0, 3);
+    .slice(0, 8);
 
   const sellerOtherCars = availableOthers
     .filter((c) => c.sellerName === car.sellerName)

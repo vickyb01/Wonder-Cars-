@@ -327,10 +327,10 @@ export function HomePage() {
 
           <form
             onSubmit={handleHeroSearch}
-            className="bg-[#121215]/85 backdrop-blur-xl border border-white/[0.1] rounded-xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end shadow-2xl"
+            className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
           >
             <div>
-              <label htmlFor="hero-search" className="block text-xs font-medium text-zinc-400 mb-1.5">
+              <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 Search Model or City
               </label>
               <input
@@ -339,19 +339,19 @@ export function HomePage() {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="e.g. 911, G63, Mumbai"
-                className="w-full h-11 px-3.5 rounded-lg bg-[#09090B]/90 border border-white/[0.1] text-sm text-white placeholder:text-zinc-500 focus:outline-none focus:border-amber-400 transition-colors"
+                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200"
               />
             </div>
 
             <div>
-              <label htmlFor="hero-brand" className="block text-xs font-medium text-zinc-400 mb-1.5">
+              <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 Marque / Brand
               </label>
               <select
                 id="hero-brand"
                 value={selectedBrand}
                 onChange={(e) => setSelectedBrand(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-lg bg-[#09090B]/90 border border-white/[0.1] text-sm text-white focus:outline-none focus:border-amber-400 transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8"
+                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
                 <option value="All" className="bg-[#121215] text-white">All Brands</option>
                 {HERO_BRAND_OPTIONS.map((brandName) => (
@@ -363,14 +363,14 @@ export function HomePage() {
             </div>
 
             <div>
-              <label htmlFor="hero-budget" className="block text-xs font-medium text-zinc-400 mb-1.5">
+              <label htmlFor="hero-budget" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 Max Budget (INR)
               </label>
               <select
                 id="hero-budget"
                 value={maxPrice}
                 onChange={(e) => setMaxPrice(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-lg bg-[#09090B]/90 border border-white/[0.1] text-sm text-white focus:outline-none focus:border-amber-400 transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8"
+                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
                 <option value="" className="bg-[#121215] text-white">Any Budget</option>
                 <option value="15000000" className="bg-[#121215] text-white">Up to ₹1.50 Cr</option>
@@ -381,14 +381,14 @@ export function HomePage() {
             </div>
 
             <div>
-              <label htmlFor="hero-fuel" className="block text-xs font-medium text-zinc-400 mb-1.5">
+              <label htmlFor="hero-fuel" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 Powertrain
               </label>
               <select
                 id="hero-fuel"
                 value={fuelType}
                 onChange={(e) => setFuelType(e.target.value)}
-                className="w-full h-11 px-3.5 rounded-lg bg-[#09090B]/90 border border-white/[0.1] text-sm text-white focus:outline-none focus:border-amber-400 transition-colors appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%239CA3AF%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8"
+                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
                 <option value="All" className="bg-[#121215] text-white">All Fuel Types</option>
                 <option value="Petrol" className="bg-[#121215] text-white">Petrol</option>
@@ -400,7 +400,7 @@ export function HomePage() {
 
             <button
               type="submit"
-              className="w-full h-11 px-6 rounded-lg bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-md shadow-amber-600/25"
+              className="w-full h-11 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-lg shadow-amber-600/30"
             >
               <Search className="w-4 h-4" />
               <span>Search Cars</span>

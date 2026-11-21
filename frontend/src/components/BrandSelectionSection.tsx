@@ -213,11 +213,31 @@ export function BrandSelectionSection({ cars = [] }: BrandSelectionSectionProps)
 
               {/* Cars Grid for Selected Brand */}
               {matchingCars.length > 0 ? (
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                  {matchingCars.map((car, idx) => (
-                    <CarCard key={car.id} car={car} index={idx} />
-                  ))}
-                </div>
+                <>
+                  {/* Desktop: EXACT SAME 3-Column Grid */}
+                  <div className="hidden lg:grid lg:grid-cols-3 gap-6">
+                    {matchingCars.map((car, idx) => (
+                      <CarCard key={car.id} car={car} index={idx} />
+                    ))}
+                  </div>
+
+                  {/* Mobile & Tablet: Horizontal Swipe Slider */}
+                  <div className="lg:hidden">
+                    <div
+                      className="flex gap-4 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth no-scrollbar -mx-5 px-5 sm:-mx-8 sm:px-8"
+                      style={{ scrollbarWidth: 'none', WebkitOverflowScrolling: 'touch' }}
+                    >
+                      {matchingCars.map((car, idx) => (
+                        <div key={car.id} className="w-[84vw] max-w-[340px] shrink-0 snap-start">
+                          <CarCard car={car} index={idx} />
+                        </div>
+                      ))}
+                    </div>
+                    <p className="text-[11px] text-slate-400 dark:text-zinc-500 text-center mt-2">
+                      ← Swipe sideways to explore more {selectedBrand.name} cars →
+                    </p>
+                  </div>
+                </>
               ) : (
                 /* Empty state when 0 cars in stock for selected brand */
                 <div className="p-8 sm:p-14 rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] text-center space-y-4">

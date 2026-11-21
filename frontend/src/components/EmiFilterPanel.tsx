@@ -302,7 +302,7 @@ export function EmiFilterPanel({
 
             <div>
               <span className="block text-slate-600 dark:text-zinc-400 mb-1.5">Loan Tenure</span>
-              <div className="grid grid-cols-4 gap-1">
+              <div className="grid grid-cols-3 sm:grid-cols-6 gap-1">
                 {[24, 36, 48, 60, 72, 84].map((m) => (
                   <button
                     key={m}

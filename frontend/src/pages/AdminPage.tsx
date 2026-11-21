@@ -944,10 +944,19 @@ export function AdminPage() {
       </header>
 
       {/* WORKSPACE LAYOUT (Navy Sidebar + White Content) */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
+        {/* Mobile sidebar overlay backdrop */}
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/60 backdrop-blur-xs z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
+
         {/* PROFESSIONAL LEFT SIDEBAR (Navy Blue #0B1528) */}
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-30 w-64 bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 ${
+          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
         >
@@ -1347,7 +1356,7 @@ export function AdminPage() {
               {/* Cars Table */}
               <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                  <table className="w-full min-w-[800px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase tracking-wider">
                       <tr>
                         <th className="py-3 px-4">Car Details</th>
@@ -1816,7 +1825,7 @@ export function AdminPage() {
 
               <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
                 <div className="overflow-x-auto">
-                  <table className="w-full text-left text-xs">
+                  <table className="w-full min-w-[720px] text-left text-xs">
                     <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                       <tr>
                         <th className="py-3 px-4">Owner Name</th>
@@ -2280,7 +2289,8 @@ export function AdminPage() {
               </div>
 
               <div className="bg-white rounded-2xl border border-slate-200/90 shadow-xs overflow-hidden">
-                <table className="w-full text-left text-xs">
+                <div className="overflow-x-auto">
+                  <table className="w-full min-w-[560px] text-left text-xs">
                   <thead className="bg-slate-50 border-b border-slate-200 text-slate-600 font-semibold uppercase">
                     <tr>
                       <th className="py-3 px-4">Name & Email</th>
@@ -2328,6 +2338,7 @@ export function AdminPage() {
                   </tbody>
                 </table>
               </div>
+            </div>
 
               {/* Add User Modal */}
               {newUserModalOpen && (
