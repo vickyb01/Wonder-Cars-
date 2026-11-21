@@ -1,10 +1,11 @@
 services:
   - type: web
-    name: wonder-cars
+    name: wonder-cars-backend
     env: node
     plan: free
-    buildCommand: npm run build
-    startCommand: npm run start
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production

@@ -54,6 +54,35 @@ export function toggleWishlistId(carId: string): { ids: string[]; saved: boolean
   return { ids: next, saved: !exists };
 }
 
+export const API_BASE = ((import.meta.env.VITE_API_URL as string) || '').replace(/\/$/, '');
+
+export function normalizeMediaUrl(url?: string): string {
+  if (!url) return '';
+  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
+    return url;
+  }
+  if (url.startsWith('/uploads/') && API_BASE) {
+    return `${API_BASE}${url}`;
+  }
+  return url;
+}
+
+export function normalizeCarImages(car: Car): Car {
+  if (!car) return car;
+  return {
+    ...car,
+    images: (car.images || []).map((img) => normalizeMediaUrl(img)),
+    gallery: (car.gallery || []).map((g) => ({ ...g, url: normalizeMediaUrl(g.url) })),
+  };
+}
+
+async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
+  if (typeof input === 'string' && input.startsWith('/api')) {
+    return fetch(`${API_BASE}${input}`, init);
+  }
+  return fetch(input, init);
+}
+
 async function handleJsonResponse<T>(res: Response): Promise<T> {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
@@ -76,7 +105,7 @@ export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
     }
   });
   const query = params.toString();
-  const res = await fetch(`/api/cars${query ? `?${query}` : ''}`, {
+  const res = await apiFetch(`/api/cars${query ? `?${query}` : ''}`, {
     headers: filters.includeDrafts === 'true' ? authHeaders() : undefined,
   });
   return handleJsonResponse<Car[]>(res);
@@ -87,7 +116,7 @@ export async function fetchCarDetail(id: string): Promise<{
   similar: Car[];
   sellerOtherCars: Car[];
 }> {
-  const res = await fetch(`/api/cars/${encodeURIComponent(id)}`);
+  const res = await apiFetch(`/api/cars/${encodeURIComponent(id)}`);
   return handleJsonResponse<{
     car: Car;
     similar: Car[];
@@ -108,7 +137,7 @@ export async function submitEnquiry(payload: {
   offerPriceInr?: number;
   message: string;
 }): Promise<Enquiry> {
-  const res = await fetch('/api/enquiries', {
+  const res = await apiFetch('/api/enquiries', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -131,7 +160,7 @@ export async function submitSellRequest(payload: {
   ownerEmail: string;
   notes: string;
 }): Promise<SellRequest> {
-  const res = await fetch('/api/sell-requests', {
+  const res = await apiFetch('/api/sell-requests', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(payload),
@@ -143,7 +172,7 @@ export async function adminLogin(
   email: string,
   password: string
 ): Promise<{ token: string; email: string; user?: { id?: string; name?: string; email: string; role?: string; avatar?: string } }> {
-  const res = await fetch('/api/admin/login', {
+  const res = await apiFetch('/api/admin/login', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, password }),
@@ -152,7 +181,7 @@ export async function adminLogin(
 }
 
 export async function adminForgotPassword(email: string): Promise<{ ok: boolean; message: string; resetCode?: string }> {
-  const res = await fetch('/api/admin/forgot-password', {
+  const res = await apiFetch('/api/admin/forgot-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email }),
@@ -161,7 +190,7 @@ export async function adminForgotPassword(email: string): Promise<{ ok: boolean;
 }
 
 export async function adminResetPassword(email: string, newPassword: string): Promise<{ ok: boolean; message: string }> {
-  const res = await fetch('/api/admin/reset-password', {
+  const res = await apiFetch('/api/admin/reset-password', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ email, newPassword }),
@@ -170,7 +199,7 @@ export async function adminResetPassword(email: string, newPassword: string): Pr
 }
 
 export async function verifyAdminSession(): Promise<{ id?: string; name?: string; email: string; role?: string; avatar?: string }> {
-  const res = await fetch('/api/admin/me', {
+  const res = await apiFetch('/api/admin/me', {
     headers: authHeaders(),
   });
   return handleJsonResponse<{ id?: string; name?: string; email: string; role?: string; avatar?: string }>(res);
@@ -179,7 +208,7 @@ export async function verifyAdminSession(): Promise<{ id?: string; name?: string
 export const fetchAdminProfile = verifyAdminSession;
 
 export async function updateAdminProfile(data: { name?: string; currentPassword?: string; newPassword?: string; avatar?: string }): Promise<any> {
-  const res = await fetch('/api/admin/profile', {
+  const res = await apiFetch('/api/admin/profile', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -191,14 +220,14 @@ export async function updateAdminProfile(data: { name?: string; currentPassword?
 }
 
 export async function fetchAdminOverview(): Promise<AdminOverview> {
-  const res = await fetch('/api/admin/overview', {
+  const res = await apiFetch('/api/admin/overview', {
     headers: authHeaders(),
   });
   return handleJsonResponse<AdminOverview>(res);
 }
 
 export async function createCar(payload: Partial<Car>): Promise<Car> {
-  const res = await fetch('/api/admin/cars', {
+  const res = await apiFetch('/api/admin/cars', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -210,7 +239,7 @@ export async function createCar(payload: Partial<Car>): Promise<Car> {
 }
 
 export async function updateCar(id: string, payload: Partial<Car>): Promise<Car> {
-  const res = await fetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -222,7 +251,7 @@ export async function updateCar(id: string, payload: Partial<Car>): Promise<Car>
 }
 
 export async function deleteCar(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -232,7 +261,7 @@ export async function deleteCar(id: string): Promise<void> {
 export async function uploadCarImages(files: File[]): Promise<string[]> {
   const formData = new FormData();
   files.forEach((file) => formData.append('images', file));
-  const res = await fetch('/api/admin/upload', {
+  const res = await apiFetch('/api/admin/upload', {
     method: 'POST',
     headers: authHeaders(),
     body: formData,
@@ -247,21 +276,21 @@ export async function fetchCloudinaryStatus(): Promise<{
   cloudName: string;
   error?: string;
 }> {
-  const res = await fetch('/api/admin/cloudinary/status', {
+  const res = await apiFetch('/api/admin/cloudinary/status', {
     headers: authHeaders(),
   });
   return handleJsonResponse(res);
 }
 
 export async function fetchAdminEnquiries(): Promise<Enquiry[]> {
-  const res = await fetch('/api/admin/enquiries', {
+  const res = await apiFetch('/api/admin/enquiries', {
     headers: authHeaders(),
   });
   return handleJsonResponse<Enquiry[]>(res);
 }
 
 export async function updateEnquiryStatus(id: string, status: EnquiryStatus): Promise<Enquiry> {
-  const res = await fetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -273,7 +302,7 @@ export async function updateEnquiryStatus(id: string, status: EnquiryStatus): Pr
 }
 
 export async function deleteEnquiry(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -281,14 +310,14 @@ export async function deleteEnquiry(id: string): Promise<void> {
 }
 
 export async function fetchAdminSellRequests(): Promise<SellRequest[]> {
-  const res = await fetch('/api/admin/sell-requests', {
+  const res = await apiFetch('/api/admin/sell-requests', {
     headers: authHeaders(),
   });
   return handleJsonResponse<SellRequest[]>(res);
 }
 
 export async function updateSellRequestStatus(id: string, status: SellRequestStatus): Promise<SellRequest> {
-  const res = await fetch(`/api/admin/sell-requests/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/sell-requests/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -300,7 +329,7 @@ export async function updateSellRequestStatus(id: string, status: SellRequestSta
 }
 
 export async function deleteSellRequest(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/sell-requests/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/sell-requests/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -308,14 +337,14 @@ export async function deleteSellRequest(id: string): Promise<void> {
 }
 
 export async function fetchBusinessLocation(): Promise<LocationApiResponse> {
-  const res = await fetch('/api/location');
+  const res = await apiFetch('/api/location');
   return handleJsonResponse<LocationApiResponse>(res);
 }
 
 export async function updateBusinessLocation(
   payload: BusinessLocationSettings
 ): Promise<BusinessLocationSettings> {
-  const res = await fetch('/api/admin/location', {
+  const res = await apiFetch('/api/admin/location', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -331,7 +360,7 @@ export async function geocodeLocationServer(address: string): Promise<{
   longitude: string;
   formattedAddress: string;
 }> {
-  const res = await fetch('/api/admin/location/geocode', {
+  const res = await apiFetch('/api/admin/location/geocode', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -351,7 +380,7 @@ export async function geocodeLocationServer(address: string): Promise<{
 
 // Cars Enhancements
 export async function duplicateCar(id: string): Promise<Car> {
-  const res = await fetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
     method: 'POST',
     headers: authHeaders(),
   });
@@ -359,7 +388,7 @@ export async function duplicateCar(id: string): Promise<Car> {
 }
 
 export async function patchCarStatus(id: string, status: CarStatus): Promise<Car> {
-  const res = await fetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -371,7 +400,7 @@ export async function patchCarStatus(id: string, status: CarStatus): Promise<Car
 }
 
 export async function patchCarFeatured(id: string, featured: boolean): Promise<Car> {
-  const res = await fetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -384,7 +413,7 @@ export async function patchCarFeatured(id: string, featured: boolean): Promise<C
 
 // CRM Enquiries & Export
 export async function updateEnquiry(id: string, patch: Partial<Enquiry>): Promise<Enquiry> {
-  const res = await fetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/enquiries/${encodeURIComponent(id)}`, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
@@ -396,7 +425,7 @@ export async function updateEnquiry(id: string, patch: Partial<Enquiry>): Promis
 }
 
 export async function downloadEnquiriesCsv(): Promise<void> {
-  const res = await fetch('/api/admin/enquiries/export', {
+  const res = await apiFetch('/api/admin/enquiries/export', {
     headers: authHeaders(),
   });
   if (!res.ok) throw new Error('Failed to download CSV export');
@@ -413,7 +442,7 @@ export async function downloadEnquiriesCsv(): Promise<void> {
 
 // Admin Users Management
 export async function fetchAdminUsers(): Promise<AdminUser[]> {
-  const res = await fetch('/api/admin/users', {
+  const res = await apiFetch('/api/admin/users', {
     headers: authHeaders(),
   });
   return handleJsonResponse<AdminUser[]>(res);
@@ -425,7 +454,7 @@ export async function createAdminUser(data: {
   password: string;
   role: 'admin' | 'staff';
 }): Promise<AdminUser> {
-  const res = await fetch('/api/admin/users', {
+  const res = await apiFetch('/api/admin/users', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -440,7 +469,7 @@ export async function updateAdminUser(
   id: string,
   data: Partial<AdminUser> & { password?: string }
 ): Promise<AdminUser> {
-  const res = await fetch(`/api/admin/users/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/users/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -452,7 +481,7 @@ export async function updateAdminUser(
 }
 
 export async function deleteAdminUser(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/users/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/users/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -461,12 +490,12 @@ export async function deleteAdminUser(id: string): Promise<void> {
 
 // Categories Management
 export async function fetchCategories(): Promise<CategoryItem[]> {
-  const res = await fetch('/api/categories');
+  const res = await apiFetch('/api/categories');
   return handleJsonResponse<CategoryItem[]>(res);
 }
 
 export async function createCategory(data: Partial<CategoryItem>): Promise<CategoryItem> {
-  const res = await fetch('/api/admin/categories', {
+  const res = await apiFetch('/api/admin/categories', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -478,7 +507,7 @@ export async function createCategory(data: Partial<CategoryItem>): Promise<Categ
 }
 
 export async function updateCategory(id: string, data: Partial<CategoryItem>): Promise<CategoryItem> {
-  const res = await fetch(`/api/admin/categories/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/categories/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -490,7 +519,7 @@ export async function updateCategory(id: string, data: Partial<CategoryItem>): P
 }
 
 export async function deleteCategory(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/categories/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/categories/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -499,12 +528,12 @@ export async function deleteCategory(id: string): Promise<void> {
 
 // Brands Management
 export async function fetchBrands(): Promise<BrandItem[]> {
-  const res = await fetch('/api/brands');
+  const res = await apiFetch('/api/brands');
   return handleJsonResponse<BrandItem[]>(res);
 }
 
 export async function createBrand(data: Partial<BrandItem>): Promise<BrandItem> {
-  const res = await fetch('/api/admin/brands', {
+  const res = await apiFetch('/api/admin/brands', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -516,7 +545,7 @@ export async function createBrand(data: Partial<BrandItem>): Promise<BrandItem> 
 }
 
 export async function updateBrand(id: string, data: Partial<BrandItem>): Promise<BrandItem> {
-  const res = await fetch(`/api/admin/brands/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/brands/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -528,7 +557,7 @@ export async function updateBrand(id: string, data: Partial<BrandItem>): Promise
 }
 
 export async function deleteBrand(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/brands/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/brands/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -537,12 +566,12 @@ export async function deleteBrand(id: string): Promise<void> {
 
 // Homepage Settings
 export async function fetchHomepageSettings(): Promise<HomepageSettings> {
-  const res = await fetch('/api/homepage');
+  const res = await apiFetch('/api/homepage');
   return handleJsonResponse<HomepageSettings>(res);
 }
 
 export async function updateHomepageSettings(data: Partial<HomepageSettings>): Promise<HomepageSettings> {
-  const res = await fetch('/api/admin/homepage', {
+  const res = await apiFetch('/api/admin/homepage', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -555,12 +584,12 @@ export async function updateHomepageSettings(data: Partial<HomepageSettings>): P
 
 // About Us Settings
 export async function fetchAboutSettings(): Promise<AboutSettings> {
-  const res = await fetch('/api/about');
+  const res = await apiFetch('/api/about');
   return handleJsonResponse<AboutSettings>(res);
 }
 
 export async function updateAboutSettings(data: Partial<AboutSettings>): Promise<AboutSettings> {
-  const res = await fetch('/api/admin/about', {
+  const res = await apiFetch('/api/admin/about', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -573,19 +602,19 @@ export async function updateAboutSettings(data: Partial<AboutSettings>): Promise
 
 // Testimonials & Reviews
 export async function fetchTestimonials(): Promise<TestimonialItem[]> {
-  const res = await fetch('/api/testimonials');
+  const res = await apiFetch('/api/testimonials');
   return handleJsonResponse<TestimonialItem[]>(res);
 }
 
 export async function fetchAdminTestimonials(): Promise<TestimonialItem[]> {
-  const res = await fetch('/api/admin/testimonials', {
+  const res = await apiFetch('/api/admin/testimonials', {
     headers: authHeaders(),
   });
   return handleJsonResponse<TestimonialItem[]>(res);
 }
 
 export async function createTestimonial(data: Partial<TestimonialItem>): Promise<TestimonialItem> {
-  const res = await fetch('/api/admin/testimonials', {
+  const res = await apiFetch('/api/admin/testimonials', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -597,7 +626,7 @@ export async function createTestimonial(data: Partial<TestimonialItem>): Promise
 }
 
 export async function updateTestimonial(id: string, data: Partial<TestimonialItem>): Promise<TestimonialItem> {
-  const res = await fetch(`/api/admin/testimonials/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/testimonials/${encodeURIComponent(id)}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -609,7 +638,7 @@ export async function updateTestimonial(id: string, data: Partial<TestimonialIte
 }
 
 export async function deleteTestimonial(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/testimonials/${encodeURIComponent(id)}`, {
+  const res = await apiFetch(`/api/admin/testimonials/${encodeURIComponent(id)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
@@ -618,12 +647,12 @@ export async function deleteTestimonial(id: string): Promise<void> {
 
 // Website Settings
 export async function fetchWebsiteSettings(): Promise<WebsiteSettings> {
-  const res = await fetch('/api/settings');
+  const res = await apiFetch('/api/settings');
   return handleJsonResponse<WebsiteSettings>(res);
 }
 
 export async function updateWebsiteSettings(data: Partial<WebsiteSettings>): Promise<WebsiteSettings> {
-  const res = await fetch('/api/admin/settings', {
+  const res = await apiFetch('/api/admin/settings', {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
@@ -636,14 +665,14 @@ export async function updateWebsiteSettings(data: Partial<WebsiteSettings>): Pro
 
 // Notifications & Activity Logs
 export async function fetchNotifications(): Promise<NotificationItem[]> {
-  const res = await fetch('/api/admin/notifications', {
+  const res = await apiFetch('/api/admin/notifications', {
     headers: authHeaders(),
   });
   return handleJsonResponse<NotificationItem[]>(res);
 }
 
 export async function markNotificationRead(id: string): Promise<void> {
-  const res = await fetch(`/api/admin/notifications/${encodeURIComponent(id)}/read`, {
+  const res = await apiFetch(`/api/admin/notifications/${encodeURIComponent(id)}/read`, {
     method: 'PATCH',
     headers: authHeaders(),
   });
@@ -651,7 +680,7 @@ export async function markNotificationRead(id: string): Promise<void> {
 }
 
 export async function markAllNotificationsRead(): Promise<void> {
-  const res = await fetch('/api/admin/notifications/mark-all-read', {
+  const res = await apiFetch('/api/admin/notifications/mark-all-read', {
     method: 'POST',
     headers: authHeaders(),
   });
@@ -659,7 +688,7 @@ export async function markAllNotificationsRead(): Promise<void> {
 }
 
 export async function fetchActivityLogs(): Promise<ActivityLogItem[]> {
-  const res = await fetch('/api/admin/activity-logs', {
+  const res = await apiFetch('/api/admin/activity-logs', {
     headers: authHeaders(),
   });
   return handleJsonResponse<ActivityLogItem[]>(res);
@@ -667,14 +696,14 @@ export async function fetchActivityLogs(): Promise<ActivityLogItem[]> {
 
 // Media Library
 export async function fetchMediaLibrary(): Promise<Array<{ filename: string; url: string; size: number; createdAt: string }>> {
-  const res = await fetch('/api/admin/media', {
+  const res = await apiFetch('/api/admin/media', {
     headers: authHeaders(),
   });
   return handleJsonResponse<Array<{ filename: string; url: string; size: number; createdAt: string }>>(res);
 }
 
 export async function deleteMediaFile(filename: string): Promise<void> {
-  const res = await fetch(`/api/admin/media/${encodeURIComponent(filename)}`, {
+  const res = await apiFetch(`/api/admin/media/${encodeURIComponent(filename)}`, {
     method: 'DELETE',
     headers: authHeaders(),
   });
