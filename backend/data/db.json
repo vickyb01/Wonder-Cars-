@@ -4750,6 +4750,12 @@
       "name": "Premium Cars",
       "slug": "premium-cars",
       "description": "Exotic and ultra-luxury collector inventory"
+    },
+    {
+      "id": "cat-1795264221151",
+      "name": "tim epass",
+      "slug": "tim-epass",
+      "icon": "Car"
     }
   ],
   "brands": [
@@ -5011,6 +5017,27 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795264221163-8u6b",
+      "userEmail": "admin",
+      "action": "Added Category",
+      "details": "Added category: tim epass",
+      "timestamp": "2026-11-21T12:30:21.163Z"
+    },
+    {
+      "id": "act-1795264085993-wda2",
+      "userEmail": "admin",
+      "action": "Toggled Car Featured",
+      "details": "Range Rover Autobiography LWB featured: false",
+      "timestamp": "2026-11-21T12:28:05.993Z"
+    },
+    {
+      "id": "act-1795264084984-qrou",
+      "userEmail": "admin",
+      "action": "Toggled Car Featured",
+      "details": "Range Rover Autobiography LWB featured: true",
+      "timestamp": "2026-11-21T12:28:04.984Z"
+    },
     {
       "id": "act-1795263354838-e3pj",
       "userEmail": "admin",

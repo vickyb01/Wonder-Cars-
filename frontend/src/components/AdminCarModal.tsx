@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import {
   AlertCircle,
+  ArrowLeft,
+  ArrowRight,
   ArrowUp,
   CheckCircle2,
   Cloud,
@@ -8,6 +10,7 @@ import {
   Link2,
   Loader2,
   Plus,
+  Star,
   Trash2,
   UploadCloud,
   X,
@@ -381,13 +384,18 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
     setCustomImageUrl('');
   }
 
-  function promotePrimary(index: number) {
-    if (index === 0) return;
+  function movePhoto(fromIndex: number, toIndex: number) {
+    if (toIndex < 0 || toIndex >= gallery.length || fromIndex === toIndex) return;
     setGallery((prev) => {
       const next = [...prev];
-      const [picked] = next.splice(index, 1);
-      return [picked, ...next].map((item, idx) => ({ ...item, order: idx }));
+      const [item] = next.splice(fromIndex, 1);
+      next.splice(toIndex, 0, item);
+      return next.map((p, idx) => ({ ...p, order: idx }));
     });
+  }
+
+  function promotePrimary(index: number) {
+    movePhoto(index, 0);
   }
 
   function removePhoto(index: number) {
@@ -1080,15 +1088,87 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                   {gallery.map((photo, idx) => (
                     <div
                       key={photo.id}
-                      className="rounded-xl overflow-hidden bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] flex flex-col"
+                      className={`rounded-xl overflow-hidden bg-slate-50 dark:bg-[#09090B] border transition-all flex flex-col ${
+                        idx === 0
+                          ? 'border-amber-500/60 shadow-lg shadow-amber-500/10 ring-1 ring-amber-500/30'
+                          : 'border-slate-200 dark:border-white/[0.1]'
+                      }`}
                     >
-                      <div className="relative aspect-[4/3] bg-slate-100 dark:bg-[#18181B]">
-                        <VehicleImage src={photo.url} alt={photo.angleLabel} className="w-full h-full object-cover" />
-                        <span className="absolute top-2 left-2 px-2 py-0.5 rounded bg-black/75 text-[11px] font-mono text-white">
-                          {idx === 0 ? 'Primary Cover' : `#${idx + 1}`}
-                        </span>
+                      {/* Photo Thumbnail - 100% Uncropped with Ambient Backdrop */}
+                      <div className="relative aspect-[4/3] bg-black/90 overflow-hidden flex items-center justify-center">
+                        <VehicleImage
+                          src={photo.url}
+                          alt=""
+                          aria-hidden="true"
+                          className="absolute inset-0 w-full h-full object-cover blur-lg opacity-35 scale-110 pointer-events-none"
+                        />
+                        <VehicleImage
+                          src={photo.url}
+                          alt={photo.angleLabel}
+                          className="relative z-10 max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-md"
+                        />
+                        {/* Position Badge */}
+                        <div className="absolute top-2 left-2 z-20 flex items-center gap-1.5">
+                          <span
+                            className={`px-2 py-0.5 rounded text-[11px] font-mono font-bold flex items-center gap-1 shadow ${
+                              idx === 0
+                                ? 'bg-amber-500 text-black'
+                                : 'bg-black/80 text-white border border-white/20'
+                            }`}
+                          >
+                            {idx === 0 ? (
+                              <>
+                                <Star className="w-3 h-3 fill-black text-black" />
+                                #1 Cover
+                              </>
+                            ) : (
+                              `#${idx + 1}`
+                            )}
+                          </span>
+                        </div>
+
+                        {/* Direct Reorder Buttons on Overlay */}
+                        <div className="absolute top-2 right-2 z-20 flex items-center gap-1 bg-black/80 backdrop-blur-sm p-1 rounded-lg border border-white/20">
+                          <button
+                            type="button"
+                            title="Move Left (Earlier in sequence)"
+                            disabled={idx === 0}
+                            onClick={() => movePhoto(idx, idx - 1)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/20 cursor-pointer"
+                          >
+                            <ArrowLeft className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            title="Move Right (Later in sequence)"
+                            disabled={idx === gallery.length - 1}
+                            onClick={() => movePhoto(idx, idx + 1)}
+                            className="w-6 h-6 rounded flex items-center justify-center text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-white/20 cursor-pointer"
+                          >
+                            <ArrowRight className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
                       </div>
-                      <div className="p-3 space-y-2">
+
+                      <div className="p-3 space-y-2.5">
+                        {/* Order Selector Dropdown */}
+                        <div className="flex items-center justify-between gap-2">
+                          <label className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400">
+                            Sequence Position:
+                          </label>
+                          <select
+                            value={idx + 1}
+                            onChange={(e) => movePhoto(idx, Number(e.target.value) - 1)}
+                            className="h-7 px-2 rounded bg-white dark:bg-[#121215] border border-slate-300 dark:border-white/[0.15] text-xs font-mono font-semibold text-slate-900 dark:text-white cursor-pointer"
+                          >
+                            {gallery.map((_, i) => (
+                              <option key={i} value={i + 1}>
+                                {i === 0 ? '1 (Primary Cover)' : `Position ${i + 1}`}
+                              </option>
+                            ))}
+                          </select>
+                        </div>
+
                         <select
                           value={photo.category}
                           onChange={(e) =>
@@ -1106,6 +1186,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                             </option>
                           ))}
                         </select>
+
                         <input
                           type="text"
                           value={photo.angleLabel}
@@ -1114,26 +1195,29 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                               prev.map((p, i) => (i === idx ? { ...p, angleLabel: e.target.value } : p))
                             )
                           }
-                          placeholder="Angle label"
+                          placeholder="Angle label (e.g. Front 3/4, Cockpit, Rear)"
                           className="w-full h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
                         />
-                        <div className="flex items-center justify-between pt-1">
+
+                        <div className="flex items-center justify-between pt-1 border-t border-slate-200 dark:border-white/[0.06]">
                           {idx > 0 ? (
                             <button
                               type="button"
                               onClick={() => promotePrimary(idx)}
-                              className="inline-flex items-center gap-1 text-[11px] font-medium text-slate-600 dark:text-zinc-300 hover:text-blue-700 dark:hover:text-blue-400 cursor-pointer"
+                              className="inline-flex items-center gap-1 text-[11px] font-semibold text-amber-600 dark:text-amber-400 hover:underline cursor-pointer"
                             >
-                              <ArrowUp className="w-3 h-3" />
-                              <span>Set Primary</span>
+                              <Star className="w-3 h-3 fill-amber-500 text-amber-500" />
+                              <span>Make #1 Cover</span>
                             </button>
                           ) : (
-                            <span className="text-[11px] text-blue-700 dark:text-blue-400 font-semibold">Primary Photo</span>
+                            <span className="text-[11px] text-amber-500 font-bold flex items-center gap-1">
+                              <Star className="w-3 h-3 fill-amber-500" /> Primary Cover Image
+                            </span>
                           )}
                           <button
                             type="button"
                             onClick={() => removePhoto(idx)}
-                            className="inline-flex items-center gap-1 text-[11px] text-rose-700 dark:text-red-400 hover:text-rose-800 dark:hover:text-red-300 cursor-pointer"
+                            className="inline-flex items-center gap-1 text-[11px] text-rose-600 dark:text-rose-400 hover:text-rose-700 cursor-pointer"
                           >
                             <Trash2 className="w-3 h-3" />
                             <span>Remove</span>

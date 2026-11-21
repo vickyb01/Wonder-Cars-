@@ -152,13 +152,24 @@ export function ShowroomGallery({
               animate={{ opacity: 1 }}
               exit={{ opacity: 0.35 }}
               transition={{ duration: 0.2 }}
-              className="w-full h-full overflow-hidden"
+              className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black"
               onClick={() => setZoomed((z) => !z)}
             >
+              {/* Ambient blurred backdrop so there are no empty gaps */}
+              <VehicleImage
+                src={currentPhoto.url}
+                alt=""
+                aria-hidden="true"
+                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+              />
+
+              {/* Main Full Car Image - 100% Uncropped & Centered */}
               <div
-                className={`w-full h-full transition-transform duration-200 ${zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+                className={`relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4 pb-14 sm:pb-16 transition-transform duration-200 ${
+                  zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+                }`}
                 style={{
-                  transform: zoomed ? 'scale(2)' : 'scale(1)',
+                  transform: zoomed ? 'scale(1.8)' : 'scale(1)',
                   transformOrigin: `${panOrigin.x}% ${panOrigin.y}%`,
                 }}
               >
@@ -166,7 +177,7 @@ export function ShowroomGallery({
                   src={currentPhoto.url}
                   alt={`${carTitle} - ${currentPhoto.angleLabel}`}
                   loading="eager"
-                  className="w-full h-full object-cover object-center"
+                  className="max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-2xl"
                 />
               </div>
             </motion.div>
