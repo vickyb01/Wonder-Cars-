@@ -4851,6 +4851,20 @@
     "searchPlaceholder": "e.g. 911, G63, Mumbai",
     "brandLabel": "Marque / Brand",
     "brandDefaultText": "All Brands",
+    "brandOptions": [
+      "Porsche",
+      "Range Rover",
+      "Aston Martin",
+      "Mercedes-Benz",
+      "BMW",
+      "Audi",
+      "Bentley",
+      "Jaguar",
+      "Land Rover",
+      "Rolls-Royce",
+      "Ferrari",
+      "Lamborghini"
+    ],
     "budgetLabel": "Max Budget (INR)",
     "budgetDefaultText": "Any Budget",
     "budgetOptions": [

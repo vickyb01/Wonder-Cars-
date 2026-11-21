@@ -264,6 +264,7 @@ export function AdminPage() {
   const [newBudgetLabel, setNewBudgetLabel] = useState('');
   const [newBudgetValue, setNewBudgetValue] = useState('');
   const [newFuelType, setNewFuelType] = useState('');
+  const [newBrandOption, setNewBrandOption] = useState('');
   const [savingHomepage, setSavingHomepage] = useState(false);
 
   // About Us Management State
@@ -2314,38 +2315,119 @@ export function AdminPage() {
                   </div>
 
                   {/* Filter 2: Marque / Brand */}
-                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">2. Marque / Brand (Select)</span>
-                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Dropdown</span>
+                      <span className="text-xs font-bold text-slate-800">2. Marque / Brand (Select & Custom Brands)</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Brand Options</span>
                     </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className={labelCls}>Field Label</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.brandLabel ?? 'Marque / Brand'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, brandLabel: e.target.value } : null))
+                          }
+                          placeholder="Marque / Brand"
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Default Option Text</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.brandDefaultText ?? 'All Brands'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, brandDefaultText: e.target.value } : null))
+                          }
+                          placeholder="All Brands"
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Active Brand Options Chips */}
                     <div>
-                      <label className={labelCls}>Field Label</label>
-                      <input
-                        type="text"
-                        value={homepageSettings?.brandLabel ?? 'Marque / Brand'}
-                        onChange={(e) =>
-                          setHomepageSettings((prev) => (prev ? { ...prev, brandLabel: e.target.value } : null))
-                        }
-                        placeholder="Marque / Brand"
-                        className={inputCls}
-                      />
+                      <div className="flex items-center justify-between mb-2">
+                        <label className="block text-xs font-semibold text-slate-700">
+                          Active Brands in Dropdown:
+                        </label>
+                        <span className="text-[10px] font-semibold text-slate-500">
+                          {(homepageSettings?.brandOptions || [
+                            'Porsche', 'Range Rover', 'Aston Martin', 'Mercedes-Benz', 'BMW', 'Audi', 'Bentley', 'Jaguar', 'Land Rover', 'Rolls-Royce', 'Ferrari', 'Lamborghini'
+                          ]).length} Brands
+                        </span>
+                      </div>
+                      <div className="flex flex-wrap gap-2 max-h-48 overflow-y-auto p-2 rounded-lg border border-slate-200/60 bg-white">
+                        {(homepageSettings?.brandOptions || [
+                          'Porsche', 'Range Rover', 'Aston Martin', 'Mercedes-Benz', 'BMW', 'Audi', 'Bentley', 'Jaguar', 'Land Rover', 'Rolls-Royce', 'Ferrari', 'Lamborghini'
+                        ]).map((brand, bIdx, bArr) => (
+                          <span
+                            key={brand + bIdx}
+                            className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium bg-slate-100 text-slate-800 border border-slate-200 hover:border-slate-300 transition-colors"
+                          >
+                            <span>{brand}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setHomepageSettings((prev) => {
+                                  if (!prev) return prev;
+                                  const current = prev.brandOptions || bArr;
+                                  const nextBrands = current.filter((_, i) => i !== bIdx);
+                                  return { ...prev, brandOptions: nextBrands };
+                                });
+                              }}
+                              className="w-3.5 h-3.5 rounded-full hover:bg-slate-200 text-slate-400 hover:text-red-600 flex items-center justify-center cursor-pointer transition-colors"
+                              title={`Remove ${brand}`}
+                            >
+                              <X className="w-2.5 h-2.5" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Add Brand Input */}
+                      <div className="flex gap-2 mt-3 pt-3 border-t border-slate-200">
+                        <input
+                          type="text"
+                          value={newBrandOption}
+                          onChange={(e) => setNewBrandOption(e.target.value)}
+                          placeholder="Type any brand name (e.g. BMW, Porsche, Mercedes-Benz, Thar, Defender, Audi...)"
+                          className={inputCls}
+                        />
+                        <button
+                          type="button"
+                          onClick={async () => {
+                            const trimmed = newBrandOption.trim();
+                            if (!trimmed) return;
+                            const currentBrands = homepageSettings?.brandOptions || [
+                              'Porsche', 'Range Rover', 'Aston Martin', 'Mercedes-Benz', 'BMW', 'Audi', 'Bentley', 'Jaguar', 'Land Rover', 'Rolls-Royce', 'Ferrari', 'Lamborghini'
+                            ];
+                            if (currentBrands.map((b) => b.toLowerCase()).includes(trimmed.toLowerCase())) {
+                              setSaveFeedback({ type: 'error', text: `"${trimmed}" is already in the brand list!` });
+                              return;
+                            }
+                            setHomepageSettings((prev) => ({
+                              ...(prev || {} as HomepageSettings),
+                              brandOptions: [...currentBrands, trimmed],
+                            }));
+                            setNewBrandOption('');
+                            try {
+                              await createBrand({ name: trimmed, slug: trimmed.toLowerCase().replace(/\s+/g, '-') });
+                            } catch {
+                              // Ignore if already exists in brands db
+                            }
+                            setSaveFeedback({ type: 'success', text: `"${trimmed}" added to Marque / Brand dropdown! Click Save All Changes.` });
+                          }}
+                          className="px-4 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center gap-1.5 cursor-pointer shrink-0"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Brand</span>
+                        </button>
+                      </div>
                     </div>
-                    <div>
-                      <label className={labelCls}>Default Option Text</label>
-                      <input
-                        type="text"
-                        value={homepageSettings?.brandDefaultText ?? 'All Brands'}
-                        onChange={(e) =>
-                          setHomepageSettings((prev) => (prev ? { ...prev, brandDefaultText: e.target.value } : null))
-                        }
-                        placeholder="All Brands"
-                        className={inputCls}
-                      />
-                    </div>
-                    <p className="text-[11px] text-slate-500 italic">
-                      * Brand dropdown items are automatically synced from your showroom Brands.
-                    </p>
                   </div>
 
                   {/* Filter 3: Max Budget (INR) */}

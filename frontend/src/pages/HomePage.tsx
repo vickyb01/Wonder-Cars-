@@ -371,7 +371,10 @@ export function HomePage() {
                 <option value="All" className="bg-[#121215] text-white">
                   {homepageSettings?.brandDefaultText || 'All Brands'}
                 </option>
-                {HERO_BRAND_OPTIONS.map((brandName) => (
+                {(homepageSettings?.brandOptions && homepageSettings.brandOptions.length > 0
+                  ? homepageSettings.brandOptions
+                  : HERO_BRAND_OPTIONS
+                ).map((brandName) => (
                   <option key={brandName} value={brandName} className="bg-[#121215] text-white">
                     {brandName}
                   </option>

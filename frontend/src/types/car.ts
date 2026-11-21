@@ -276,6 +276,7 @@ export interface HomepageSettings {
   searchPlaceholder?: string;
   brandLabel?: string;
   brandDefaultText?: string;
+  brandOptions?: string[];
   budgetLabel?: string;
   budgetDefaultText?: string;
   budgetOptions?: BudgetOption[];
