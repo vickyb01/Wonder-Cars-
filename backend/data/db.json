@@ -4867,6 +4867,22 @@
     "budgetDefaultText": "Any Budget",
     "budgetOptions": [
       {
+        "label": "Up to ₹25 Lakh",
+        "value": "2500000"
+      },
+      {
+        "label": "Up to ₹50 Lakh",
+        "value": "5000000"
+      },
+      {
+        "label": "Up to ₹75 Lakh",
+        "value": "7500000"
+      },
+      {
+        "label": "Up to ₹1.00 Cr",
+        "value": "10000000"
+      },
+      {
         "label": "Up to ₹1.50 Cr",
         "value": "15000000"
       },
@@ -4893,18 +4909,24 @@
     ],
     "searchButtonText": "Search Cars",
     "brandOptions": [
+      "Mahindra",
       "Porsche",
-      "Range Rover",
-      "Aston Martin",
-      "Mercedes-Benz",
       "BMW",
+      "Mercedes-Benz",
+      "Mercedes-AMG",
       "Audi",
+      "Range Rover",
+      "Land Rover",
+      "Aston Martin",
       "Bentley",
       "Jaguar",
-      "Land Rover",
       "Rolls-Royce",
       "Ferrari",
-      "Lamborghini"
+      "Lamborghini",
+      "Toyota",
+      "Tata",
+      "Hyundai",
+      "Kia"
     ]
   },
   "aboutSettings": {

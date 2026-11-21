@@ -9,7 +9,7 @@ import { SeoHead } from '../components/SeoHead';
 import { VehicleImage } from '../components/VehicleImage';
 import { BrandSelectionSection } from '../components/BrandSelectionSection';
 import { ContactSection } from '../components/ContactSection';
-import { BRAND_CATALOG, toBrandSlug } from '../data/brands';
+import { BRAND_CATALOG, toBrandSlug, matchesBrandFilter } from '../data/brands';
 import { formatINRCompact, formatKm } from '../utils/format';
 
 const HERO_SLIDES = [
@@ -217,10 +217,26 @@ export function HomePage() {
       ? homepageSettings.heroSlides
       : HERO_SLIDES;
 
+  // Comprehensive brand options combining admin settings, current inventory brands, and catalog
+  const brandOptionsList = useMemo(() => {
+    const configured = homepageSettings?.brandOptions && homepageSettings.brandOptions.length > 0
+      ? homepageSettings.brandOptions
+      : [];
+    const fromInventory = allCars.map((c) => c.brand).filter(Boolean);
+    const catalogBrands = BRAND_CATALOG.map((b) => b.name);
+    return Array.from(new Set([...configured, ...fromInventory, ...catalogBrands])).sort((a, b) =>
+      a.localeCompare(b)
+    );
+  }, [homepageSettings?.brandOptions, allCars]);
+
   const budgetOptions =
     homepageSettings?.budgetOptions && homepageSettings.budgetOptions.length > 0
       ? homepageSettings.budgetOptions
       : [
+          { label: 'Up to ₹25 Lakh', value: '2500000' },
+          { label: 'Up to ₹50 Lakh', value: '5000000' },
+          { label: 'Up to ₹75 Lakh', value: '7500000' },
+          { label: 'Up to ₹1.00 Cr', value: '10000000' },
           { label: 'Up to ₹1.50 Cr', value: '15000000' },
           { label: 'Up to ₹2.00 Cr', value: '20000000' },
           { label: 'Up to ₹3.00 Cr', value: '30000000' },
@@ -231,6 +247,29 @@ export function HomePage() {
     homepageSettings?.fuelOptions && homepageSettings.fuelOptions.length > 0
       ? homepageSettings.fuelOptions
       : ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
+
+  // Check if any hero search filter is active
+  const isFiltered = selectedBrand !== 'All' || Boolean(maxPrice) || fuelType !== 'All';
+
+  // Real-time matching cars based on the 3 hero search controls
+  const heroFilteredCars = useMemo(() => {
+    if (!isFiltered) return allCars;
+    return allCars.filter((car) => {
+      // 1. Marque / Brand match
+      if (selectedBrand !== 'All' && !matchesBrandFilter(car.brand, selectedBrand)) {
+        return false;
+      }
+      // 2. Max Budget match
+      if (maxPrice && Number(maxPrice) > 0 && car.priceInr > Number(maxPrice)) {
+        return false;
+      }
+      // 3. Powertrain / Fuel match
+      if (fuelType !== 'All' && car.fuelType.toLowerCase() !== fuelType.toLowerCase()) {
+        return false;
+      }
+      return true;
+    });
+  }, [allCars, isFiltered, selectedBrand, maxPrice, fuelType]);
 
   return (
     <div className="bg-white dark:bg-[#09090B] text-slate-900 dark:text-[#FAFAFA] transition-colors duration-200">
@@ -356,10 +395,7 @@ export function HomePage() {
                 <option value="All" className="bg-[#121215] text-white">
                   {homepageSettings?.brandDefaultText || 'All Brands'}
                 </option>
-                {(homepageSettings?.brandOptions && homepageSettings.brandOptions.length > 0
-                  ? homepageSettings.brandOptions
-                  : HERO_BRAND_OPTIONS
-                ).map((brandName) => (
+                {brandOptionsList.map((brandName) => (
                   <option key={brandName} value={brandName} className="bg-[#121215] text-white">
                     {brandName}
                   </option>
@@ -414,11 +450,119 @@ export function HomePage() {
               className="w-full h-11 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-lg shadow-amber-600/30"
             >
               <Search className="w-4 h-4" />
-              <span>{homepageSettings?.searchButtonText || 'Search Cars'}</span>
+              <span>
+                {isFiltered
+                  ? (heroFilteredCars.length > 0
+                      ? `Show ${heroFilteredCars.length} ${heroFilteredCars.length === 1 ? 'Car' : 'Cars'}`
+                      : 'No Matching Cars')
+                  : (homepageSettings?.searchButtonText || 'Search Cars')}
+              </span>
             </button>
           </form>
         </motion.div>
       </section>
+
+      {/* Real-time Hero Filtered Results on Homepage */}
+      {isFiltered && (
+        <section id="hero-filtered-results" className="max-w-7xl mx-auto px-5 sm:px-8 py-12 border-b border-slate-200 dark:border-white/[0.06] bg-amber-500/[0.03]">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+            <div>
+              <div className="flex items-center gap-2 mb-1">
+                <span className="w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+                <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400">
+                  Live Search Results
+                </p>
+              </div>
+              <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+                Matching Cars ({heroFilteredCars.length})
+              </h2>
+            </div>
+
+            {/* Active Filters Pill Bar */}
+            <div className="flex flex-wrap items-center gap-2">
+              {selectedBrand !== 'All' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800/80 text-xs font-medium">
+                  Brand: <strong className="font-semibold">{selectedBrand}</strong>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedBrand('All')}
+                    className="hover:text-amber-950 dark:hover:text-white cursor-pointer ml-0.5"
+                    title="Remove Brand filter"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+              {Boolean(maxPrice) && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800/80 text-xs font-medium">
+                  Budget: <strong className="font-semibold">{budgetOptions.find((b) => b.value === maxPrice)?.label || `Up to ₹${Number(maxPrice).toLocaleString('en-IN')}`}</strong>
+                  <button
+                    type="button"
+                    onClick={() => setMaxPrice('')}
+                    className="hover:text-amber-950 dark:hover:text-white cursor-pointer ml-0.5"
+                    title="Remove Budget filter"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+              {fuelType !== 'All' && (
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 dark:bg-amber-950/60 text-amber-900 dark:text-amber-300 border border-amber-300 dark:border-amber-800/80 text-xs font-medium">
+                  Powertrain: <strong className="font-semibold">{fuelType}</strong>
+                  <button
+                    type="button"
+                    onClick={() => setFuelType('All')}
+                    className="hover:text-amber-950 dark:hover:text-white cursor-pointer ml-0.5"
+                    title="Remove Fuel filter"
+                  >
+                    <X className="w-3.5 h-3.5" />
+                  </button>
+                </span>
+              )}
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBrand('All');
+                  setMaxPrice('');
+                  setFuelType('All');
+                }}
+                className="text-xs font-semibold text-slate-500 hover:text-red-600 dark:text-zinc-400 dark:hover:text-red-400 underline cursor-pointer ml-1"
+              >
+                Clear All
+              </button>
+            </div>
+          </div>
+
+          {heroFilteredCars.length > 0 ? (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {heroFilteredCars.map((car, index) => (
+                <CarCard key={car.id} car={car} index={index} />
+              ))}
+            </div>
+          ) : (
+            <div className="text-center py-12 px-4 rounded-2xl border border-dashed border-slate-300 dark:border-white/10 bg-slate-50 dark:bg-[#121215]">
+              <Car className="w-10 h-10 text-slate-400 dark:text-zinc-500 mx-auto mb-3" />
+              <h3 className="text-base font-bold text-slate-900 dark:text-white mb-1">
+                No vehicles found matching these filters
+              </h3>
+              <p className="text-xs text-slate-500 dark:text-zinc-400 max-w-md mx-auto mb-4">
+                Try loosening your filters or resetting to view all available cars in inventory.
+              </p>
+              <button
+                type="button"
+                onClick={() => {
+                  setSelectedBrand('All');
+                  setMaxPrice('');
+                  setFuelType('All');
+                }}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-600 hover:bg-amber-500 text-white text-xs font-semibold shadow-xs cursor-pointer"
+              >
+                Reset All Filters
+              </button>
+            </div>
+          )}
+        </section>
+      )}
 
       {/* 3. Featured Collection */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 py-20 border-t border-slate-200 dark:border-white/[0.06]">
