@@ -54,15 +54,24 @@ export function toggleWishlistId(carId: string): { ids: string[]; saved: boolean
   return { ids: next, saved: !exists };
 }
 
-export const API_BASE = ((import.meta.env.VITE_API_URL as string) || '').replace(/\/$/, '');
+export const LIVE_BACKEND_URL = 'https://wonder-cars-1.onrender.com';
+
+export const API_BASE = (
+  (import.meta.env.VITE_API_URL as string) ||
+  (import.meta.env.VITE_API_BASE_URL as string) ||
+  (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1'
+    ? LIVE_BACKEND_URL
+    : '')
+).replace(/\/$/, '');
 
 export function normalizeMediaUrl(url?: string): string {
   if (!url) return '';
   if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
     return url;
   }
-  if (url.startsWith('/uploads/') && API_BASE) {
-    return `${API_BASE}${url}`;
+  if (url.startsWith('/uploads/')) {
+    const base = API_BASE || LIVE_BACKEND_URL;
+    return `${base}${url}`;
   }
   return url;
 }
@@ -77,10 +86,22 @@ export function normalizeCarImages(car: Car): Car {
 }
 
 async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
-  if (typeof input === 'string' && input.startsWith('/api')) {
-    return fetch(`${API_BASE}${input}`, init);
+  const isApiRequest = typeof input === 'string' && input.startsWith('/api');
+  const targetUrl = isApiRequest ? `${API_BASE}${input}` : input;
+
+  try {
+    const res = await fetch(targetUrl, init);
+    // If local dev server proxy returned 502 Bad Gateway (local backend offline), seamlessly fallback to Live Render backend
+    if (!res.ok && res.status === 502 && !API_BASE && isApiRequest) {
+      return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+    }
+    return res;
+  } catch (err) {
+    if (!API_BASE && isApiRequest) {
+      return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+    }
+    throw err;
   }
-  return fetch(input, init);
 }
 
 async function handleJsonResponse<T>(res: Response): Promise<T> {
