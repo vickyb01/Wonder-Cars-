@@ -127,7 +127,7 @@ export function ShowroomGallery({
         <div
           className={`relative overflow-hidden bg-slate-900 dark:bg-[#121215] select-none ${
             fullScreenHero
-              ? 'w-full h-[62vh] sm:h-[74vh] lg:h-[calc(100vh-72px)] min-h-[420px] max-h-[860px] border-y border-slate-200 dark:border-white/[0.08]'
+              ? 'w-full h-[32vh] sm:h-[62vh] lg:h-[calc(100vh-72px)] min-h-[220px] sm:min-h-[420px] max-h-[300px] sm:max-h-[860px] border-y border-slate-200 dark:border-white/[0.08]'
               : 'aspect-[16/10] rounded-2xl border border-slate-200 dark:border-white/[0.08]'
           }`}
           onMouseMove={handleMouseMove}
@@ -165,7 +165,7 @@ export function ShowroomGallery({
 
               {/* Main Full Car Image - 100% Uncropped & Centered */}
               <div
-                className={`relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4 pb-14 sm:pb-16 transition-transform duration-200 ${
+                className={`relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4 pb-12 sm:pb-16 transition-transform duration-200 ${
                   zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
                 }`}
                 style={{
@@ -187,26 +187,26 @@ export function ShowroomGallery({
           <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent pointer-events-none">
             <div
               className={`${
-                fullScreenHero ? 'max-w-7xl mx-auto px-5 sm:px-8 py-6' : 'p-4 sm:p-5'
-              } flex flex-wrap items-end justify-between gap-3`}
+                fullScreenHero ? 'max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-6' : 'p-3.5 sm:p-5'
+              } flex flex-wrap items-end justify-between gap-2.5 sm:gap-3`}
             >
               <div>
-                <p className="text-[11px] font-semibold uppercase tracking-wider text-blue-400">
+                <p className="text-[10px] sm:text-[11px] font-semibold uppercase tracking-wider text-blue-400">
                   {currentPhoto.category}
                 </p>
-                <p className="text-sm sm:text-lg font-semibold text-white">{currentPhoto.angleLabel}</p>
-                {currentPhoto.caption && <p className="text-xs sm:text-sm text-zinc-200 mt-0.5">{currentPhoto.caption}</p>}
+                <p className="text-sm sm:text-lg font-semibold text-white leading-tight">{currentPhoto.angleLabel}</p>
+                {currentPhoto.caption && <p className="text-xs sm:text-sm text-zinc-200 mt-0.5 line-clamp-1">{currentPhoto.caption}</p>}
               </div>
 
-              <div className="flex items-center gap-2 pointer-events-auto">
-                <span className="px-2.5 py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] font-mono text-xs text-white tabular-nums">
+              <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
+                <span className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] font-mono text-[11px] sm:text-xs text-white tabular-nums">
                   {String(activeIndex + 1).padStart(2, '0')} / {String(filteredPhotos.length).padStart(2, '0')}
                 </span>
 
                 <button
                   type="button"
                   onClick={() => setZoomed((z) => !z)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-[11px] sm:text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
                   aria-label={zoomed ? 'Zoom out' : 'Zoom in'}
                 >
                   {zoomed ? <ZoomOut className="w-3.5 h-3.5" /> : <ZoomIn className="w-3.5 h-3.5" />}
@@ -216,7 +216,7 @@ export function ShowroomGallery({
                 <button
                   type="button"
                   onClick={() => setLightboxOpen(true)}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
+                  className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-[11px] sm:text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
                   aria-label="Open fullscreen gallery"
                 >
                   <Expand className="w-3.5 h-3.5" />

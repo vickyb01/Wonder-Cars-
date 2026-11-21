@@ -195,7 +195,7 @@ export function CarDetailPage() {
   );
 
   return (
-    <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-[72px] pb-28 lg:pb-20 transition-colors duration-200">
+    <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-16 md:pt-[72px] pb-28 lg:pb-20 transition-colors duration-200">
       <SeoHead
         title={carTitle}
         description={`${carTitle} · ${formatKm(car.kilometres)} · ${car.fuelType} · ${car.transmission} · ${formatINR(car.priceInr)}`}
