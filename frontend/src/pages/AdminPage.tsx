@@ -622,7 +622,6 @@ export function AdminPage() {
     { id: 'add-car', label: 'Add New Car', icon: Plus, isButton: true },
     { id: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
     { id: 'cars', label: 'Cars Management', icon: Car, badge: cars.length },
-    { id: 'categories-brands', label: 'Categories & Brands', icon: Layers },
     { id: 'enquiries', label: 'Customer Enquiries (CRM)', icon: MessageSquare, badge: enquiries.filter((e) => e.status === 'New').length },
     { id: 'contact-messages', label: 'Contact Messages', icon: Mail, badge: sellRequests.filter((s) => s.status === 'Pending Review').length },
     { id: 'homepage', label: 'Homepage Management', icon: Home },
