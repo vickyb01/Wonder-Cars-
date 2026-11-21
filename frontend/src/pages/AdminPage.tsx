@@ -954,14 +954,14 @@ export function AdminPage() {
           />
         )}
 
-        {/* PROFESSIONAL LEFT SIDEBAR (Navy Blue #0B1528) */}
+        {/* PROFESSIONAL LEFT SIDEBAR (Navy Blue #0B1528) - 100% Sticky */}
         <aside
-          className={`fixed lg:static inset-y-0 left-0 z-40 w-64 bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 ${
+          className={`fixed lg:sticky top-0 lg:top-16 inset-y-0 left-0 z-40 w-64 h-screen lg:h-[calc(100vh-4rem)] bg-[#0B1528] border-r border-[#1E293B] flex flex-col justify-between transition-transform duration-300 shrink-0 self-start ${
             sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'
           }`}
         >
           {/* Scrollable Navigation Items */}
-          <div className="p-3 space-y-1 overflow-y-auto max-h-[calc(100vh-4rem)]">
+          <div className="p-3 space-y-1 overflow-y-auto flex-1">
             <div className="px-3 pt-2 pb-1 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               Admin Navigation
             </div>
@@ -1046,7 +1046,7 @@ export function AdminPage() {
           </div>
 
           {/* Sidebar Footer */}
-          <div className="p-3.5 border-t border-[#1E293B] text-[11px] text-slate-400 flex items-center justify-between">
+          <div className="p-3.5 border-t border-[#1E293B] text-[11px] text-slate-400 flex items-center justify-between shrink-0">
             <span className="font-semibold text-slate-300">Wonder Cars Pro</span>
             <span className="text-emerald-400 font-mono text-[10px]">v2.6 Stable</span>
           </div>
