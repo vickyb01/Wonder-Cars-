@@ -62,8 +62,9 @@ export function ShowroomEnquirySidebar({
       setFormError('Please enter your full name.');
       return;
     }
-    if (phone.replace(/\D/g, '').length < 10) {
-      setFormError('Please enter a valid 10-digit phone number.');
+    const cleanPhone = phone.replace(/\D/g, '');
+    if (cleanPhone.length !== 10) {
+      setFormError('Please enter a valid 10-digit mobile number.');
       return;
     }
     if (email.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
@@ -395,18 +396,43 @@ export function ShowroomEnquirySidebar({
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <div>
-                <label htmlFor="sh-phone" className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
-                  Phone Number *
-                </label>
-                <input
-                  id="sh-phone"
-                  type="tel"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="+91 98XXX XXXXX"
-                  className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                />
+                <div className="flex items-center justify-between mb-1">
+                  <label htmlFor="sh-phone" className="block text-xs font-medium text-slate-600 dark:text-zinc-400">
+                    Phone Number *
+                  </label>
+                  {phone.length > 0 && phone.length < 10 && (
+                    <span className="text-[10px] text-amber-500 font-mono">
+                      {10 - phone.length} more needed
+                    </span>
+                  )}
+                  {phone.length === 10 && (
+                    <span className="text-[10px] text-emerald-500 font-medium">
+                      ✓ 10 digits
+                    </span>
+                  )}
+                </div>
+                <div className="relative flex items-center">
+                  <span className="absolute left-3 text-xs font-semibold text-slate-500 dark:text-zinc-400 select-none pointer-events-none">
+                    +91
+                  </span>
+                  <input
+                    id="sh-phone"
+                    type="tel"
+                    inputMode="numeric"
+                    required
+                    maxLength={10}
+                    value={phone}
+                    onChange={(e) => {
+                      let digits = e.target.value.replace(/\D/g, '');
+                      if (digits.length > 10 && digits.startsWith('91')) {
+                        digits = digits.slice(2);
+                      }
+                      setPhone(digits.slice(0, 10));
+                    }}
+                    placeholder="98XXXXXXXX"
+                    className="w-full h-10 pl-11 pr-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono tabular-nums tracking-wide focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
+                </div>
               </div>
               <div>
                 <label htmlFor="sh-email" className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">

@@ -4537,6 +4537,21 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795291320612",
+      "type": "test-drive",
+      "carId": "car-audi-rs-etron-2023",
+      "carTitle": "2023 Audi RS e-tron GT (SM-4910)",
+      "name": "Vicky Bhelave",
+      "email": "vickybhelave25@navgurukul.org",
+      "phone": "7654576543345",
+      "preferredDate": "2026-12-09",
+      "preferredTime": "11:00 AM",
+      "city": "Hyderabad, TS",
+      "message": "665rf",
+      "status": "New",
+      "createdAt": "2026-11-21T20:02:00.612Z"
+    },
+    {
       "id": "enq-1795172859617",
       "type": "test-drive",
       "carId": "car-audi-rs-etron-2023",
@@ -4863,6 +4878,26 @@
     "searchPlaceholder": "e.g. 911, G63, Mumbai",
     "brandLabel": "Marque / Brand",
     "brandDefaultText": "All Brands",
+    "brandOptions": [
+      "Mahindra",
+      "Porsche",
+      "BMW",
+      "Mercedes-Benz",
+      "Mercedes-AMG",
+      "Audi",
+      "Range Rover",
+      "Land Rover",
+      "Aston Martin",
+      "Bentley",
+      "Jaguar",
+      "Rolls-Royce",
+      "Ferrari",
+      "Lamborghini",
+      "Toyota",
+      "Tata",
+      "Hyundai",
+      "Kia"
+    ],
     "budgetLabel": "Max Budget (INR)",
     "budgetDefaultText": "Any Budget",
     "budgetOptions": [
@@ -4907,32 +4942,17 @@
       "Electric",
       "Hybrid"
     ],
-    "searchButtonText": "Search Cars",
-    "brandOptions": [
-      "Mahindra",
-      "Porsche",
-      "BMW",
-      "Mercedes-Benz",
-      "Mercedes-AMG",
-      "Audi",
-      "Range Rover",
-      "Land Rover",
-      "Aston Martin",
-      "Bentley",
-      "Jaguar",
-      "Rolls-Royce",
-      "Ferrari",
-      "Lamborghini",
-      "Toyota",
-      "Tata",
-      "Hyundai",
-      "Kia"
-    ]
+    "searchButtonText": "Search Cars"
   },
   "aboutSettings": {
     "heroBadge": "Welcome to Wonder Cars",
     "headline": "More Than Cars, We Build Trust.",
     "subheadline": "Wonder Cars is Delhi-NCR’s premier destination for curated, certified pre-owned luxury and performance automobiles. Founded with an uncompromising commitment to vehicle provenance, forensic quality audits, and transparent customer relationships.",
+    "heroBgImage": "/assets/about-hero-bg.jpg",
+    "heroCarImage": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+    "heroCarTitle": "Wonder Cars Delhi",
+    "heroCarSubtitle": "East Delhi Showroom Gallery",
+    "heroCarRating": "★ 4.9 Rating",
     "heroStats": [
       {
         "number": "100%",
@@ -4963,6 +4983,91 @@
     "ownerPhilosophy": "“A reputation takes decades to build and seconds to compromise. That is why we treat every client like family and every car like our own.”",
     "ownerSignature": "Naman Jain",
     "ownerImage": "/assets/naman-jain-owner.jpg",
+    "whyChooseBadge": "The Wonder Advantage",
+    "whyChooseTitle": "Why Discerning Buyers Choose Wonder Cars",
+    "whyChooseDescription": "From forensic mechanical diagnostics to seamless state-wide RC transfers, see what makes our buying experience second to none.",
+    "whyChooseItems": [
+      {
+        "id": "w1",
+        "title": "Quality Checked Vehicles",
+        "highlight": "210-Point Forensic Audit",
+        "description": "Digital paint depth measurement, OBD diagnostic scans, suspension health checks, and engine compression telemetry on every car.",
+        "badge": "Inspected & Certified",
+        "iconName": "CheckCircle2"
+      },
+      {
+        "id": "w2",
+        "title": "Transparent Pricing",
+        "highlight": "Zero Hidden Charges",
+        "description": "Direct INR price quotes with complete breakdown of taxes, registration transfer, and warranty package. What you see is what you pay.",
+        "badge": "100% Fixed INR Quotes",
+        "iconName": "Scale"
+      },
+      {
+        "id": "w3",
+        "title": "Verified Documentation",
+        "highlight": "Clear Title Guarantee",
+        "description": "Full legal provenance review: NCRP clearance, single-owner history verification, insurance claim scrutiny, and seamless state RC transfer.",
+        "badge": "NOC & RC Cleared",
+        "iconName": "FileCheck"
+      },
+      {
+        "id": "w4",
+        "title": "Customer-Focused Service",
+        "highlight": "Private Concierge Care",
+        "description": "Private showroom viewings, doorstep test drives across Delhi-NCR, custom financing options, and tailored vehicle handover ceremonies.",
+        "badge": "Doorstep Test Drive",
+        "iconName": "UserCheck"
+      },
+      {
+        "id": "w5",
+        "title": "Wide Range of Pre-Owned Cars",
+        "highlight": "Curated Fleet Portfolio",
+        "description": "From sporty sedans and executive grand tourers to high-performance SUVs and luxury electric vehicles, our fleet caters to all driving desires.",
+        "badge": "Multibrand Excellence",
+        "iconName": "Car"
+      },
+      {
+        "id": "w6",
+        "title": "Trusted Buying Experience",
+        "highlight": "6-Month Assured Warranty",
+        "description": "Every vehicle is protected by our comprehensive 6-month engine and transmission coverage, offering total peace of mind on the road.",
+        "badge": "6-Month Assured Warranty",
+        "iconName": "ShieldAlert"
+      }
+    ],
+    "certificatesBadge": "Verified & Certified",
+    "certificatesTitle": "Dealership Certifications & Credentials",
+    "certificatesDescription": "Wonder Cars operates under strict automotive industry compliance, certified inspection standards, and authorized business registration.",
+    "certificatesItems": [
+      {
+        "id": "c1",
+        "title": "Droom Certificate of Excellence · Winner 2024–25",
+        "authority": "Droom Technology · Sandeep Aggarwal (Founder & CEO)",
+        "date": "Winner 2024–25 · Rated 4.3 ★",
+        "description": "Awarded to WONDER CARS for outstanding pre-owned automobile sales excellence, verified pricing transparency, and superior customer rating of 4.3 based on Droom proprietary methodology.",
+        "badge": "Droom Excellence Winner",
+        "image": "/assets/certificates/droom-excellence-certificate.jpg"
+      },
+      {
+        "id": "c2",
+        "title": "CarDekho Certificate of Association",
+        "authority": "CarDekho Certified Automotive Dealer Network",
+        "date": "Authorized Partner Dealer",
+        "description": "Official Certificate of Association recognizing WONDER CARS as an accredited CarDekho Partner Dealer meeting rigorous customer trust and multi-point vehicle standards.",
+        "badge": "CarDekho Partner Dealer",
+        "image": "/assets/certificates/cardekho-partner-certificate.jpg"
+      },
+      {
+        "id": "c3",
+        "title": "OLX Autos Certificate of Recognition",
+        "authority": "OLX Auto India · Amit Kumar (Head - OLX Auto India)",
+        "date": "Valuable Dealer Partner",
+        "description": "Awarded to WONDER CARS for being a Valuable Dealer Partner at OLX Autos, recognizing leadership and excellence in the certified used car marketplace.",
+        "badge": "OLX Autos Partner",
+        "image": "/assets/certificates/olx-autos-recognition-certificate.jpg"
+      }
+    ],
     "galleryBadge": "Our Atmosphere",
     "galleryTitle": "Showroom, Fleet & Delivery Moments",
     "galleryDescription": "Take a visual tour inside our East Delhi gallery, inspect our pristine pre-owned fleet, and witness unforgettable vehicle delivery celebrations.",
@@ -5066,96 +5171,6 @@
         "autoPlayLive": false
       }
     ],
-    "heroBgImage": "/assets/about-hero-bg.jpg",
-    "heroCarImage": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
-    "heroCarTitle": "Wonder Cars Delhi",
-    "heroCarSubtitle": "East Delhi Showroom Gallery",
-    "heroCarRating": "★ 4.9 Rating",
-    "whyChooseBadge": "The Wonder Advantage",
-    "whyChooseTitle": "Why Discerning Buyers Choose Wonder Cars",
-    "whyChooseDescription": "From forensic mechanical diagnostics to seamless state-wide RC transfers, see what makes our buying experience second to none.",
-    "whyChooseItems": [
-      {
-        "id": "w1",
-        "title": "Quality Checked Vehicles",
-        "highlight": "210-Point Forensic Audit",
-        "description": "Digital paint depth measurement, OBD diagnostic scans, suspension health checks, and engine compression telemetry on every car.",
-        "badge": "Inspected & Certified",
-        "iconName": "CheckCircle2"
-      },
-      {
-        "id": "w2",
-        "title": "Transparent Pricing",
-        "highlight": "Zero Hidden Charges",
-        "description": "Direct INR price quotes with complete breakdown of taxes, registration transfer, and warranty package. What you see is what you pay.",
-        "badge": "100% Fixed INR Quotes",
-        "iconName": "Scale"
-      },
-      {
-        "id": "w3",
-        "title": "Verified Documentation",
-        "highlight": "Clear Title Guarantee",
-        "description": "Full legal provenance review: NCRP clearance, single-owner history verification, insurance claim scrutiny, and seamless state RC transfer.",
-        "badge": "NOC & RC Cleared",
-        "iconName": "FileCheck"
-      },
-      {
-        "id": "w4",
-        "title": "Customer-Focused Service",
-        "highlight": "Private Concierge Care",
-        "description": "Private showroom viewings, doorstep test drives across Delhi-NCR, custom financing options, and tailored vehicle handover ceremonies.",
-        "badge": "Doorstep Test Drive",
-        "iconName": "UserCheck"
-      },
-      {
-        "id": "w5",
-        "title": "Wide Range of Pre-Owned Cars",
-        "highlight": "Curated Fleet Portfolio",
-        "description": "From sporty sedans and executive grand tourers to high-performance SUVs and luxury electric vehicles, our fleet caters to all driving desires.",
-        "badge": "Multibrand Excellence",
-        "iconName": "Car"
-      },
-      {
-        "id": "w6",
-        "title": "Trusted Buying Experience",
-        "highlight": "6-Month Assured Warranty",
-        "description": "Every vehicle is protected by our comprehensive 6-month engine and transmission coverage, offering total peace of mind on the road.",
-        "badge": "6-Month Assured Warranty",
-        "iconName": "ShieldAlert"
-      }
-    ],
-    "certificatesBadge": "Verified & Certified",
-    "certificatesTitle": "Dealership Certifications & Credentials",
-    "certificatesDescription": "Wonder Cars operates under strict automotive industry compliance, certified inspection standards, and authorized business registration.",
-    "certificatesItems": [
-      {
-        "id": "c1",
-        "title": "Droom Certificate of Excellence · Winner 2024–25",
-        "authority": "Droom Technology · Sandeep Aggarwal (Founder & CEO)",
-        "date": "Winner 2024–25 · Rated 4.3 ★",
-        "description": "Awarded to WONDER CARS for outstanding pre-owned automobile sales excellence, verified pricing transparency, and superior customer rating of 4.3 based on Droom proprietary methodology.",
-        "badge": "Droom Excellence Winner",
-        "image": "/assets/certificates/droom-excellence-certificate.jpg"
-      },
-      {
-        "id": "c2",
-        "title": "CarDekho Certificate of Association",
-        "authority": "CarDekho Certified Automotive Dealer Network",
-        "date": "Authorized Partner Dealer",
-        "description": "Official Certificate of Association recognizing WONDER CARS as an accredited CarDekho Partner Dealer meeting rigorous customer trust and multi-point vehicle standards.",
-        "badge": "CarDekho Partner Dealer",
-        "image": "/assets/certificates/cardekho-partner-certificate.jpg"
-      },
-      {
-        "id": "c3",
-        "title": "OLX Autos Certificate of Recognition",
-        "authority": "OLX Auto India · Amit Kumar (Head - OLX Auto India)",
-        "date": "Valuable Dealer Partner",
-        "description": "Awarded to WONDER CARS for being a Valuable Dealer Partner at OLX Autos, recognizing leadership and excellence in the certified used car marketplace.",
-        "badge": "OLX Autos Partner",
-        "image": "/assets/certificates/olx-autos-recognition-certificate.jpg"
-      }
-    ],
     "instagramUrl": "https://www.instagram.com/usedcarsnearby/",
     "instagramHandle": "@usedcarsnearby",
     "instagramBio": "Delhi-NCR’s Certified Pre-Owned Luxury Cars. 210-Point Forensic Audits, Transparent Pricing & 6-Month Assured Warranty.",
@@ -5238,6 +5253,15 @@
   },
   "notifications": [
     {
+      "id": "notif-1795291320612",
+      "title": "New Enquiry: Test Drive",
+      "message": "Vicky Bhelave enquired about 2023 Audi RS e-tron GT (SM-4910) (7654576543345)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-21T20:02:00.612Z"
+    },
+    {
       "id": "notif-1795172859617",
       "title": "New Enquiry: Test Drive",
       "message": "vicky enquired about 2023 Audi RS e-tron GT (SM-4910) (3456786754356432645342)",
@@ -5274,6 +5298,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795291320644-za0f",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Vicky Bhelave submitted enquiry for 2023 Audi RS e-tron GT (SM-4910)",
+      "timestamp": "2026-11-21T20:02:00.644Z"
+    },
     {
       "id": "act-1795284521039-ut80",
       "userEmail": "admin",

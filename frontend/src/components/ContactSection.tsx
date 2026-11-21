@@ -377,23 +377,43 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                         />
                       </div>
                       <div>
-                        <label htmlFor="c-phone" className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1.5">
-                          Phone Number *
-                        </label>
-                        <input
-                          id="c-phone"
-                          type="tel"
-                          inputMode="numeric"
-                          required
-                          maxLength={10}
-                          value={phone}
-                          onChange={(e) => {
-                            const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
-                            setPhone(digits);
-                          }}
-                          placeholder="98XXXXXXXX"
-                          className={inputCls}
-                        />
+                        <div className="flex items-center justify-between mb-1.5">
+                          <label htmlFor="c-phone" className="block text-xs font-medium text-slate-600 dark:text-zinc-400">
+                            Phone Number *
+                          </label>
+                          {phone.length > 0 && phone.length < 10 && (
+                            <span className="text-[10px] text-amber-500 font-mono">
+                              {10 - phone.length} more needed
+                            </span>
+                          )}
+                          {phone.length === 10 && (
+                            <span className="text-[10px] text-emerald-500 font-medium">
+                              ✓ 10 digits
+                            </span>
+                          )}
+                        </div>
+                        <div className="relative flex items-center">
+                          <span className="absolute left-3 text-xs font-semibold text-slate-500 dark:text-zinc-400 select-none pointer-events-none">
+                            +91
+                          </span>
+                          <input
+                            id="c-phone"
+                            type="tel"
+                            inputMode="numeric"
+                            required
+                            maxLength={10}
+                            value={phone}
+                            onChange={(e) => {
+                              let digits = e.target.value.replace(/\D/g, '');
+                              if (digits.length > 10 && digits.startsWith('91')) {
+                                digits = digits.slice(2);
+                              }
+                              setPhone(digits.slice(0, 10));
+                            }}
+                            placeholder="98XXXXXXXX"
+                            className={`${inputCls} pl-11`}
+                          />
+                        </div>
                       </div>
                     </div>
 

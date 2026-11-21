@@ -1153,18 +1153,26 @@ export function ComparePage() {
                       placeholder="Full Name *"
                       className="h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
                     />
-                    <input
-                      type="tel"
-                      inputMode="numeric"
-                      maxLength={10}
-                      value={enquiryPhone}
-                      onChange={(e) => {
-                        const digits = e.target.value.replace(/\D/g, '').slice(0, 10);
-                        setEnquiryPhone(digits);
-                      }}
-                      placeholder="98XXXXXXXX"
-                      className="h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                    />
+                    <div className="relative flex items-center">
+                      <span className="absolute left-3 text-xs font-semibold text-slate-500 dark:text-zinc-400 select-none pointer-events-none">
+                        +91
+                      </span>
+                      <input
+                        type="tel"
+                        inputMode="numeric"
+                        maxLength={10}
+                        value={enquiryPhone}
+                        onChange={(e) => {
+                          let digits = e.target.value.replace(/\D/g, '');
+                          if (digits.length > 10 && digits.startsWith('91')) {
+                            digits = digits.slice(2);
+                          }
+                          setEnquiryPhone(digits.slice(0, 10));
+                        }}
+                        placeholder="98XXXXXXXX"
+                        className="w-full h-10 pl-11 pr-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                      />
+                    </div>
                   </div>
                   <input
                     type="email"
