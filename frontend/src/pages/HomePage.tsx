@@ -702,203 +702,223 @@ export function HomePage() {
       <ContactSection />
 
       {/* ─────────────────────────────────────────────────────────────
-          FULL INTERACTIVE CAR SEARCH MODAL
+          FULL SCREEN INTERACTIVE CAR SEARCH
       ───────────────────────────────────────────────────────────── */}
       <AnimatePresence>
         {isSearchOpen && (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="fixed inset-0 z-50 bg-black/80 backdrop-blur-md flex items-start justify-center pt-4 sm:pt-16 md:pt-20 px-2.5 sm:px-4"
-            onClick={() => setIsSearchOpen(false)}
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.98 }}
+            transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
+            className="fixed inset-0 z-50 bg-[#09090B] text-white flex flex-col h-screen w-screen overflow-hidden"
           >
-            <motion.div
-              initial={{ scale: 0.95, y: -10, opacity: 0 }}
-              animate={{ scale: 1, y: 0, opacity: 1 }}
-              exit={{ scale: 0.95, y: -10, opacity: 0 }}
-              transition={{ duration: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="w-full max-w-4xl lg:max-w-5xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.12] rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[92vh]"
-              onClick={(e) => e.stopPropagation()}
-            >
-              {/* Header with Search Input & Prominent Wrong/Close Button */}
-              <div className="flex items-center gap-3 px-4 sm:px-6 py-4 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50/50 dark:bg-white/[0.02]">
-                <Search className="w-5 h-5 text-amber-500 shrink-0" />
-                <input
-                  ref={modalInputRef}
-                  type="text"
-                  value={modalSearchQuery}
-                  onChange={(e) => setModalSearchQuery(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === 'Enter') {
-                      e.preventDefault();
-                      setIsSearchOpen(false);
-                      setSearchQuery(modalSearchQuery);
-                      navigate(`/cars${modalSearchQuery.trim() ? `?search=${encodeURIComponent(modalSearchQuery.trim())}` : ''}`);
-                    }
-                  }}
-                  placeholder="Search car name, model, brand (e.g. Scorpio, Mahindra, Diesel, Porsche)..."
-                  className="w-full text-base sm:text-lg bg-transparent text-slate-900 dark:text-white placeholder:text-slate-400 dark:placeholder:text-zinc-500 outline-none font-medium"
-                />
-                {modalSearchQuery && (
-                  <button
-                    type="button"
-                    onClick={() => setModalSearchQuery('')}
-                    className="p-1.5 rounded-full hover:bg-slate-200 dark:hover:bg-white/10 text-slate-400 hover:text-slate-600 dark:hover:text-white transition-colors cursor-pointer"
-                    title="Clear text"
-                  >
-                    <X className="w-4 h-4" />
-                  </button>
-                )}
-                {/* Prominent Cross / Wrong Close Button */}
+            {/* 1. Full Screen Top Header Bar */}
+            <div className="border-b border-white/10 bg-[#121215]/90 backdrop-blur-xl shrink-0">
+              <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-4">
+                <div className="flex items-center gap-3 sm:gap-4 flex-1">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shrink-0">
+                    <Search className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <input
+                      ref={modalInputRef}
+                      type="text"
+                      value={modalSearchQuery}
+                      onChange={(e) => setModalSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter') {
+                          e.preventDefault();
+                          setIsSearchOpen(false);
+                          setSearchQuery(modalSearchQuery);
+                          navigate(`/cars${modalSearchQuery.trim() ? `?search=${encodeURIComponent(modalSearchQuery.trim())}` : ''}`);
+                        }
+                      }}
+                      placeholder="Search any car name, model, brand, variant (e.g. Scorpio, Mahindra, Diesel, Porsche)..."
+                      className="w-full text-lg sm:text-2xl font-semibold bg-transparent text-white placeholder:text-zinc-500 outline-none tracking-tight"
+                    />
+                  </div>
+                  {modalSearchQuery && (
+                    <button
+                      type="button"
+                      onClick={() => setModalSearchQuery('')}
+                      className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
+                      title="Clear search text"
+                    >
+                      <X className="w-5 h-5" />
+                    </button>
+                  )}
+                </div>
+
+                {/* Prominent Cross Close Button */}
                 <button
                   type="button"
                   onClick={() => setIsSearchOpen(false)}
-                  className="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-slate-100 hover:bg-red-500 hover:text-white dark:bg-white/10 dark:hover:bg-red-500 text-slate-600 dark:text-zinc-300 flex items-center justify-center transition-all cursor-pointer border border-slate-200 dark:border-white/10 shrink-0 shadow-xs group"
+                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-white/10 hover:bg-red-500/90 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/15 hover:border-red-500 transition-all cursor-pointer shrink-0 shadow-lg group"
                   title="Close Search (Esc)"
                   aria-label="Close search"
                 >
                   <X className="w-5 h-5 transition-transform group-hover:rotate-90 duration-200" />
+                  <span className="hidden sm:inline">Close</span>
+                  <kbd className="hidden md:inline text-[10px] bg-black/40 px-1.5 py-0.5 rounded border border-white/20 text-zinc-300">Esc</kbd>
                 </button>
               </div>
 
-              {/* Popular Tags / Filter Pills */}
-              <div className="flex items-center gap-1.5 overflow-x-auto py-2.5 px-4 sm:px-6 bg-slate-100/60 dark:bg-white/[0.03] border-b border-slate-200 dark:border-white/[0.06] text-xs shrink-0">
-                <span className="text-[11px] font-semibold text-slate-500 dark:text-zinc-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1">
-                  <Sparkles className="w-3 h-3 text-amber-500" />
-                  <span>Popular:</span>
-                </span>
-                {['All', 'Mahindra', 'Diesel', 'Audi', 'BMW', 'Mercedes-Benz', 'Porsche', 'Range Rover', 'Electric', 'Under ₹50 Lakh', 'Under ₹2 Cr'].map((tag) => (
-                  <button
-                    key={tag}
-                    type="button"
-                    onClick={() => {
-                      setSelectedTag(tag);
-                      if (tag !== 'All' && tag !== 'Electric' && tag !== 'Diesel' && tag !== 'Under ₹50 Lakh' && tag !== 'Under ₹2 Cr') {
-                        setModalSearchQuery(tag);
-                      } else {
-                        setModalSearchQuery('');
-                      }
-                    }}
-                    className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
-                      selectedTag === tag
-                        ? 'bg-amber-600 text-white shadow-xs'
-                        : 'bg-white dark:bg-white/[0.06] text-slate-700 dark:text-zinc-300 hover:bg-slate-200 dark:hover:bg-white/[0.12] border border-slate-200 dark:border-white/[0.08]'
-                    }`}
-                  >
-                    {tag}
-                  </button>
-                ))}
-              </div>
-
-              {/* Matching Cars List */}
-              <div className="overflow-y-auto p-4 sm:p-6 space-y-3 max-h-[62vh] flex-1">
-                <div className="flex items-center justify-between px-1 text-xs text-slate-500 dark:text-zinc-400 mb-1">
-                  <span>
-                    {modalSearchQuery.trim()
-                      ? `Results for "${modalSearchQuery}"`
-                      : 'Available Showroom Inventory'}
+              {/* 2. Popular Tags / Filter Pills Row */}
+              <div className="border-t border-white/[0.06] bg-black/30">
+                <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3 flex items-center gap-2 overflow-x-auto text-xs scrollbar-none">
+                  <span className="text-[11px] font-semibold text-zinc-400 uppercase tracking-wider shrink-0 mr-1 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                    <span>Popular:</span>
                   </span>
-                  <span className="font-semibold text-slate-700 dark:text-zinc-300">
-                    {modalMatchingCars.length} {modalMatchingCars.length === 1 ? 'Car' : 'Cars'} Available
+                  {['All', 'Mahindra', 'Diesel', 'Audi', 'BMW', 'Mercedes-Benz', 'Porsche', 'Range Rover', 'Electric', 'Under ₹50 Lakh', 'Under ₹2 Cr'].map((tag) => (
+                    <button
+                      key={tag}
+                      type="button"
+                      onClick={() => {
+                        setSelectedTag(tag);
+                        if (tag !== 'All' && tag !== 'Electric' && tag !== 'Diesel' && tag !== 'Under ₹50 Lakh' && tag !== 'Under ₹2 Cr') {
+                          setModalSearchQuery(tag);
+                        } else {
+                          setModalSearchQuery('');
+                        }
+                      }}
+                      className={`px-3.5 py-1.5 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
+                        selectedTag === tag
+                          ? 'bg-gradient-to-r from-amber-500 to-amber-600 text-white shadow-md shadow-amber-500/20'
+                          : 'bg-white/[0.06] text-zinc-300 hover:bg-white/[0.12] border border-white/[0.08]'
+                      }`}
+                    >
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* 3. Full Screen Cars Grid List (Scrollable) */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-8 py-6">
+              <div className="max-w-7xl mx-auto">
+                <div className="flex items-center justify-between pb-4 mb-4 border-b border-white/10 text-xs text-zinc-400">
+                  <div className="flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    <span className="font-medium text-sm text-zinc-200">
+                      {modalSearchQuery.trim()
+                        ? `Search Results for "${modalSearchQuery}"`
+                        : (selectedTag !== 'All' ? `Filtered by ${selectedTag}` : 'All Showroom Inventory')}
+                    </span>
+                  </div>
+                  <span className="font-semibold text-sm text-amber-400">
+                    {modalMatchingCars.length} {modalMatchingCars.length === 1 ? 'Vehicle' : 'Vehicles'} Available
                   </span>
                 </div>
 
                 {modalMatchingCars.length === 0 ? (
-                  <div className="py-16 text-center space-y-3">
-                    <div className="w-14 h-14 mx-auto rounded-full bg-amber-50 dark:bg-amber-500/10 flex items-center justify-center text-amber-600 dark:text-amber-400">
-                      <Car className="w-7 h-7" />
+                  <div className="py-24 text-center space-y-4">
+                    <div className="w-16 h-16 mx-auto rounded-2xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+                      <Car className="w-8 h-8" />
                     </div>
                     <div>
-                      <p className="font-display text-lg font-semibold text-slate-900 dark:text-white">
-                        No cars found matching "{modalSearchQuery}"
+                      <p className="font-display text-xl font-bold text-white">
+                        No cars found matching "{modalSearchQuery || selectedTag}"
                       </p>
-                      <p className="text-xs text-slate-500 dark:text-zinc-400 mt-1 max-w-sm mx-auto">
-                        Try searching by brand (e.g. Mahindra, BMW, Porsche) or explore all showroom cars.
+                      <p className="text-sm text-zinc-400 mt-1 max-w-md mx-auto">
+                        Try searching by brand (e.g. Mahindra, Porsche, BMW) or reset to view all available cars.
                       </p>
                     </div>
                     <button
                       type="button"
                       onClick={() => {
-                        setIsSearchOpen(false);
-                        navigate('/cars');
+                        setSelectedTag('All');
+                        setModalSearchQuery('');
                       }}
-                      className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-xl bg-amber-600 hover:bg-amber-700 text-white text-xs font-semibold shadow-xs transition-colors cursor-pointer"
+                      className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-white text-sm font-semibold shadow-lg shadow-amber-500/20 transition-all cursor-pointer"
                     >
-                      <span>Browse All Inventory</span>
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <span>Show All Cars</span>
+                      <ArrowRight className="w-4 h-4" />
                     </button>
                   </div>
                 ) : (
-                  modalMatchingCars.map((car) => (
-                    <div
-                      key={car.id}
-                      onClick={() => {
-                        setIsSearchOpen(false);
-                        setSearchQuery(`${car.brand} ${car.model}`);
-                        navigate(`/cars/${car.id}`);
-                      }}
-                      className="group flex items-center justify-between p-3.5 sm:p-4 rounded-xl bg-white dark:bg-[#18181b]/60 hover:bg-amber-50/70 dark:hover:bg-amber-500/10 border border-slate-200/80 dark:border-white/[0.06] hover:border-amber-500/40 dark:hover:border-amber-500/30 transition-all cursor-pointer gap-3 sm:gap-5"
-                    >
-                      {/* Car Thumbnail */}
-                      <div className="w-20 h-14 sm:w-28 sm:h-20 rounded-xl overflow-hidden shrink-0 bg-slate-200 dark:bg-black border border-slate-200 dark:border-white/[0.08]">
-                        <VehicleImage
-                          src={car.images?.[0]}
-                          alt={`${car.brand} ${car.model}`}
-                          className="w-full h-full object-cover group-hover:scale-108 transition-transform duration-300"
-                        />
-                      </div>
-
-                      {/* Title & Specs */}
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <h4 className="font-display font-bold text-slate-900 dark:text-white text-base sm:text-lg group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors truncate">
-                            {car.year} {car.brand} {car.model}
-                          </h4>
-                          {car.variant && (
-                            <span className="text-xs px-2 py-0.5 rounded-md bg-slate-100 dark:bg-white/[0.06] text-slate-600 dark:text-zinc-400 font-medium">
-                              {car.variant}
-                            </span>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2 flex-wrap mt-1.5 text-xs text-slate-500 dark:text-zinc-400">
-                          <span className="px-2 py-0.5 rounded bg-amber-50 dark:bg-amber-950/40 text-amber-800 dark:text-amber-300 border border-amber-200/60 dark:border-amber-800/40 font-medium">
-                            {car.fuelType}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6">
+                    {modalMatchingCars.map((car) => (
+                      <div
+                        key={car.id}
+                        onClick={() => {
+                          setIsSearchOpen(false);
+                          setSearchQuery(`${car.brand} ${car.model}`);
+                          navigate(`/cars/${car.id}`);
+                        }}
+                        className="group flex flex-col sm:flex-row items-stretch sm:items-center justify-between p-4 rounded-2xl bg-[#121215] hover:bg-[#18181c] border border-white/[0.08] hover:border-amber-500/40 transition-all duration-200 cursor-pointer gap-4 shadow-xl hover:shadow-amber-500/5"
+                      >
+                        {/* Car Thumbnail */}
+                        <div className="w-full sm:w-44 sm:h-28 h-44 rounded-xl overflow-hidden shrink-0 bg-black border border-white/[0.08] relative">
+                          <VehicleImage
+                            src={car.images?.[0]}
+                            alt={`${car.brand} ${car.model}`}
+                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                          />
+                          <span className="absolute bottom-2 left-2 px-2 py-0.5 rounded-md bg-black/80 backdrop-blur-md text-[11px] font-semibold text-white border border-white/10">
+                            {car.year}
                           </span>
-                          <span>{car.transmission}</span>
-                          <span>•</span>
-                          <span>{formatKm(car.kilometres)}</span>
-                          <span>•</span>
-                          <span>{car.location || 'Delhi NCR'}</span>
+                        </div>
+
+                        {/* Title & Specs */}
+                        <div className="flex-1 min-w-0 flex flex-col justify-between py-0.5">
+                          <div>
+                            <div className="flex items-center gap-2 flex-wrap">
+                              <h4 className="font-display font-bold text-white text-base sm:text-lg group-hover:text-amber-400 transition-colors truncate">
+                                {car.brand} {car.model}
+                              </h4>
+                              {car.variant && (
+                                <span className="text-xs px-2 py-0.5 rounded-md bg-white/[0.06] text-zinc-300 font-medium">
+                                  {car.variant}
+                                </span>
+                              )}
+                            </div>
+                            <div className="flex items-center gap-2 flex-wrap mt-2 text-xs text-zinc-400">
+                              <span className="px-2 py-0.5 rounded bg-amber-950/60 text-amber-300 border border-amber-800/60 font-semibold">
+                                {car.fuelType}
+                              </span>
+                              <span className="px-2 py-0.5 rounded bg-white/[0.06] text-zinc-300">
+                                {car.transmission}
+                              </span>
+                              <span>•</span>
+                              <span>{formatKm(car.kilometres)}</span>
+                            </div>
+                            <p className="text-xs text-zinc-500 truncate mt-1">
+                              📍 {car.location || 'Delhi NCR'}
+                            </p>
+                          </div>
+
+                          {/* Price & Action */}
+                          <div className="flex items-center justify-between mt-3 pt-3 border-t border-white/[0.06]">
+                            <p className="font-display font-extrabold text-amber-400 text-lg sm:text-xl">
+                              {formatINRCompact(car.priceInr)}
+                            </p>
+                            <span className="inline-flex items-center gap-1 text-xs font-semibold text-zinc-400 group-hover:text-amber-400 transition-colors">
+                              <span>View Details</span>
+                              <ChevronRight className="w-4 h-4" />
+                            </span>
+                          </div>
                         </div>
                       </div>
-
-                      {/* Price & Action */}
-                      <div className="text-right shrink-0">
-                        <p className="font-display font-extrabold text-amber-600 dark:text-amber-400 text-base sm:text-xl">
-                          {formatINRCompact(car.priceInr)}
-                        </p>
-                        <span className="inline-flex items-center gap-1 text-xs font-semibold text-slate-500 dark:text-zinc-400 group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors mt-0.5">
-                          <span>View Details</span>
-                          <ChevronRight className="w-4 h-4" />
-                        </span>
-                      </div>
-                    </div>
-                  ))
+                    ))}
+                  </div>
                 )}
               </div>
+            </div>
 
-              {/* Modal Footer */}
-              <div className="p-3.5 sm:p-4 border-t border-slate-200 dark:border-white/[0.08] bg-slate-50/80 dark:bg-white/[0.02] flex items-center justify-between gap-3 text-xs text-slate-500 dark:text-zinc-400">
+            {/* 4. Full Screen Sticky Footer */}
+            <div className="border-t border-white/10 bg-[#121215] shrink-0">
+              <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 flex items-center justify-between gap-3 text-xs text-zinc-400">
                 <span className="hidden sm:inline">
-                  Tip: Type model or brand name & press Enter • Esc to close
+                  Tip: Press <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-zinc-300 font-mono">Enter</kbd> to view full inventory • <kbd className="px-1.5 py-0.5 rounded bg-black/60 border border-white/20 text-zinc-300 font-mono">Esc</kbd> to close
                 </span>
-                <div className="flex items-center gap-2 w-full sm:w-auto justify-end">
+                <div className="flex items-center gap-2.5 w-full sm:w-auto justify-end">
                   <button
                     type="button"
                     onClick={() => setIsSearchOpen(false)}
-                    className="px-4 py-2 rounded-xl border border-slate-300 dark:border-white/15 hover:bg-slate-100 dark:hover:bg-white/5 text-slate-700 dark:text-zinc-300 text-xs font-semibold cursor-pointer transition-colors"
+                    className="px-5 py-2.5 rounded-xl border border-white/15 hover:bg-white/10 text-zinc-200 text-xs font-semibold cursor-pointer transition-colors"
                   >
                     Close (बंद करें)
                   </button>
@@ -909,14 +929,14 @@ export function HomePage() {
                       setSearchQuery(modalSearchQuery);
                       navigate(`/cars${modalSearchQuery.trim() ? `?search=${encodeURIComponent(modalSearchQuery.trim())}` : ''}`);
                     }}
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold shadow-xs transition-all cursor-pointer"
+                    className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-xs shadow-lg shadow-amber-600/20 transition-all cursor-pointer"
                   >
                     <span>View All Results in Cars Inventory</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <ArrowRight className="w-4 h-4" />
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
