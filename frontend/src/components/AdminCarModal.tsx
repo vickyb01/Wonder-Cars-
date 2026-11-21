@@ -789,7 +789,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                 </div>
               </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
                     Mfg. Year <span className="text-rose-500">*</span>
@@ -842,17 +842,6 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                       <span>{fieldErrors.priceInr}</span>
                     </p>
                   )}
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Pricing Mode</label>
-                  <select
-                    value={priceType}
-                    onChange={(e) => setPriceType(e.target.value as PriceType)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="Negotiable">Negotiable</option>
-                    <option value="Fixed">Fixed Price</option>
-                  </select>
                 </div>
               </div>
 
