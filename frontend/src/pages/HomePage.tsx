@@ -140,6 +140,12 @@ export function HomePage() {
     if (selectedTag !== 'All') {
       if (selectedTag === 'Electric') {
         if (car.fuelType !== 'Electric') return false;
+      } else if (selectedTag === 'Diesel') {
+        if (car.fuelType !== 'Diesel') return false;
+      } else if (selectedTag === 'Petrol') {
+        if (car.fuelType !== 'Petrol') return false;
+      } else if (selectedTag === 'Under ₹50 Lakh') {
+        if (car.priceInr > 5000000) return false;
       } else if (selectedTag === 'Under ₹2 Cr') {
         if (car.priceInr > 20000000) return false;
       } else {
@@ -153,15 +159,21 @@ export function HomePage() {
     const fullName = `${car.year} ${car.brand} ${car.model} ${car.variant || ''}`.toLowerCase();
     const brand = car.brand.toLowerCase();
     const model = car.model.toLowerCase();
+    const variant = (car.variant || '').toLowerCase();
     const location = (car.location || '').toLowerCase();
     const fuel = (car.fuelType || '').toLowerCase();
+    const transmission = (car.transmission || '').toLowerCase();
+    const listingCode = (car.listingCode || '').toLowerCase();
 
     return (
       fullName.includes(q) ||
       brand.includes(q) ||
       model.includes(q) ||
+      variant.includes(q) ||
       location.includes(q) ||
-      fuel.includes(q)
+      fuel.includes(q) ||
+      transmission.includes(q) ||
+      listingCode.includes(q)
     );
   });
 
@@ -199,17 +211,22 @@ export function HomePage() {
     };
   }, []);
 
-  function handleHeroSearch(e: React.FormEvent) {
-    e.preventDefault();
-    if (selectedBrand === 'All' && !maxPrice && fuelType === 'All') {
-      navigate('/cars');
-      return;
+  function handleHeroSearch(e?: React.FormEvent) {
+    if (e) e.preventDefault();
+
+    // If user selected hero dropdown options, pre-fill modal filter
+    if (selectedBrand !== 'All') {
+      setSelectedTag(selectedBrand);
+      setModalSearchQuery(selectedBrand);
+    } else if (fuelType !== 'All') {
+      setSelectedTag(fuelType);
+      setModalSearchQuery(fuelType);
+    } else {
+      setSelectedTag('All');
+      setModalSearchQuery('');
     }
-    const params = new URLSearchParams();
-    if (selectedBrand !== 'All') params.set('brand', toBrandSlug(selectedBrand));
-    if (maxPrice) params.set('maxPrice', maxPrice);
-    if (fuelType !== 'All') params.set('fuelType', fuelType);
-    navigate(`/cars${params.toString() ? `?${params.toString()}` : ''}`);
+
+    setIsSearchOpen(true);
   }
 
   const heroSlides =
@@ -446,17 +463,12 @@ export function HomePage() {
             </div>
 
             <button
-              type="submit"
+              type="button"
+              onClick={handleHeroSearch}
               className="w-full h-11 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-lg shadow-amber-600/30"
             >
               <Search className="w-4 h-4" />
-              <span>
-                {isFiltered
-                  ? (heroFilteredCars.length > 0
-                      ? `Show ${heroFilteredCars.length} ${heroFilteredCars.length === 1 ? 'Car' : 'Cars'}`
-                      : 'No Matching Cars')
-                  : (homepageSettings?.searchButtonText || 'Search Cars')}
-              </span>
+              <span>{homepageSettings?.searchButtonText || 'Search Cars'}</span>
             </button>
           </form>
         </motion.div>
@@ -755,14 +767,16 @@ export function HomePage() {
                   <Sparkles className="w-3 h-3 text-amber-500" />
                   <span>Popular:</span>
                 </span>
-                {['All', 'Audi', 'BMW', 'Mercedes-Benz', 'Porsche', 'Range Rover', 'Electric', 'Under ₹2 Cr'].map((tag) => (
+                {['All', 'Mahindra', 'Diesel', 'Audi', 'BMW', 'Mercedes-Benz', 'Porsche', 'Range Rover', 'Electric', 'Under ₹50 Lakh', 'Under ₹2 Cr'].map((tag) => (
                   <button
                     key={tag}
                     type="button"
                     onClick={() => {
                       setSelectedTag(tag);
-                      if (tag !== 'All' && tag !== 'Electric' && tag !== 'Under ₹2 Cr') {
+                      if (tag !== 'All' && tag !== 'Electric' && tag !== 'Diesel' && tag !== 'Under ₹50 Lakh' && tag !== 'Under ₹2 Cr') {
                         setModalSearchQuery(tag);
+                      } else {
+                        setModalSearchQuery('');
                       }
                     }}
                     className={`px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap transition-all cursor-pointer ${
