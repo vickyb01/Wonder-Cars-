@@ -164,8 +164,8 @@ export function AdminPage() {
   const [currentUser, setCurrentUser] = useState<{ id?: string; name?: string; email: string; role?: string; avatar?: string } | null>(null);
 
   // Authentication states
-  const [emailInput, setEmailInput] = useState('admin@wondercars.in');
-  const [passwordInput, setPasswordInput] = useState('WonderCars@2026');
+  const [emailInput, setEmailInput] = useState('');
+  const [passwordInput, setPasswordInput] = useState('');
   const [loginError, setLoginError] = useState('');
   const [loggingIn, setLoggingIn] = useState(false);
   const [forgotModalOpen, setForgotModalOpen] = useState(false);
@@ -639,7 +639,8 @@ export function AdminPage() {
                     value={emailInput}
                     onChange={(e) => setEmailInput(e.target.value)}
                     required
-                    placeholder="admin@wondercars.in"
+                    autoComplete="off"
+                    placeholder="Enter admin email"
                     className={`${inputCls} pl-10`}
                   />
                 </div>
@@ -667,7 +668,8 @@ export function AdminPage() {
                     value={passwordInput}
                     onChange={(e) => setPasswordInput(e.target.value)}
                     required
-                    placeholder="••••••••••••"
+                    autoComplete="current-password"
+                    placeholder="Enter admin password"
                     className={`${inputCls} pl-10`}
                   />
                 </div>
