@@ -54,7 +54,7 @@ interface AdminCarModalProps {
   onSaved: (saved: Car) => void;
 }
 
-type ModalTab = 'basic' | 'gallery' | 'specs' | 'inspection';
+type ModalTab = 'basic' | 'gallery' | 'inspection';
 
 const PHOTO_CATEGORIES: PhotoCategory[] = [
   'Exterior',
@@ -642,8 +642,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
           {[
             { id: 'basic', label: '1. Basic & Pricing' },
             { id: 'gallery', label: `2. Photos (${gallery.length}/35)` },
-            { id: 'specs', label: '3. Specs & Features' },
-            { id: 'inspection', label: '4. Condition & Documents' },
+            { id: 'inspection', label: '3. Condition & Documents' },
           ].map((tab) => {
             const hasErr = hasTabError(tab.id as ModalTab);
             return (
@@ -1346,197 +1345,6 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                   ))}
                 </div>
               )}
-            </div>
-          )}
-
-          {activeTab === 'specs' && (
-            <div className="space-y-6">
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">First Reg. Date</label>
-                  <input
-                    type="date"
-                    value={registrationDate}
-                    onChange={(e) => setRegistrationDate(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Category</label>
-                  <input
-                    type="text"
-                    value={category}
-                    onChange={(e) => setCategory(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Body Type</label>
-                  <input
-                    type="text"
-                    value={bodyType}
-                    onChange={(e) => setBodyType(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Exterior Colour</label>
-                  <input
-                    type="text"
-                    value={color}
-                    onChange={(e) => setColor(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Interior Colour</label>
-                  <input
-                    type="text"
-                    value={interiorColor}
-                    onChange={(e) => setInteriorColor(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Seating Capacity</label>
-                  <input
-                    type="number"
-                    value={seatingCapacity}
-                    onChange={(e) => setSeatingCapacity(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Doors</label>
-                  <input
-                    type="number"
-                    value={doors}
-                    onChange={(e) => setDoors(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white font-mono"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Engine CC</label>
-                  <input
-                    type="text"
-                    value={engineCc}
-                    onChange={(e) => setEngineCc(e.target.value)}
-                    placeholder="2,981 cc"
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Engine Type</label>
-                  <input
-                    type="text"
-                    value={engine}
-                    onChange={(e) => setEngine(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Cylinders</label>
-                  <input
-                    type="text"
-                    value={cylinders}
-                    onChange={(e) => setCylinders(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Max Power</label>
-                  <input
-                    type="text"
-                    value={power}
-                    onChange={(e) => setPower(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Max Torque</label>
-                  <input
-                    type="text"
-                    value={torque}
-                    onChange={(e) => setTorque(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Drivetrain</label>
-                  <input
-                    type="text"
-                    value={drivetrain}
-                    onChange={(e) => setDrivetrain(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Claimed Mileage</label>
-                  <input
-                    type="text"
-                    value={claimedMileage}
-                    onChange={(e) => setClaimedMileage(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Emission Standard</label>
-                  <input
-                    type="text"
-                    value={emissionStandard}
-                    onChange={(e) => setEmissionStandard(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Registration RTO</label>
-                  <input
-                    type="text"
-                    value={registrationState}
-                    onChange={(e) => setRegistrationState(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white"
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2 border-t border-slate-200 dark:border-white/[0.08]">
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Comfort Features (one per line)</label>
-                  <textarea
-                    rows={4}
-                    value={comfortText}
-                    onChange={(e) => setComfortText(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Entertainment Features (one per line)</label>
-                  <textarea
-                    rows={4}
-                    value={entertainmentText}
-                    onChange={(e) => setEntertainmentText(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Safety Features (one per line)</label>
-                  <textarea
-                    rows={4}
-                    value={safetyText}
-                    onChange={(e) => setSafetyText(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Exterior Features (one per line)</label>
-                  <textarea
-                    rows={4}
-                    value={exteriorFeaturesText}
-                    onChange={(e) => setExteriorFeaturesText(e.target.value)}
-                    className="w-full p-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                  />
-                </div>
-              </div>
             </div>
           )}
 
