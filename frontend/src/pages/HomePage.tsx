@@ -714,13 +714,23 @@ export function HomePage() {
             className="fixed inset-0 z-50 bg-[#09090B] text-white flex flex-col h-screen w-screen overflow-hidden"
           >
             {/* 1. Full Screen Top Header Bar */}
-            <div className="border-b border-white/10 bg-[#121215]/90 backdrop-blur-xl shrink-0">
-              <div className="max-w-7xl mx-auto px-4 sm:px-8 py-4 sm:py-5 flex items-center justify-between gap-4">
-                <div className="flex items-center gap-3 sm:gap-4 flex-1">
-                  <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-gradient-to-br from-amber-500/20 to-amber-600/10 border border-amber-500/30 flex items-center justify-center shrink-0">
-                    <Search className="w-5 h-5 sm:w-6 sm:h-6 text-amber-400" />
+            <div className="border-b border-white/10 bg-[#121215]/95 backdrop-blur-2xl shrink-0">
+              <div className="max-w-7xl mx-auto px-4 sm:px-8 py-3.5 sm:py-4 flex items-center justify-between gap-3 sm:gap-6">
+                {/* Left: Wonder Cars Brand Badge */}
+                <div className="flex items-center gap-3 shrink-0">
+                  <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-amber-500 to-amber-700 flex items-center justify-center text-white font-extrabold text-base shadow-lg shadow-amber-600/30">
+                    W
                   </div>
-                  <div className="flex-1 min-w-0">
+                  <div className="hidden sm:block">
+                    <span className="font-display font-bold text-white text-sm tracking-tight block">Wonder Cars</span>
+                    <span className="text-[10px] text-zinc-400 block -mt-0.5 font-medium">Quick Inventory Search</span>
+                  </div>
+                </div>
+
+                {/* Middle: Sleek, Centered Search Capsule with Controlled Width */}
+                <div className="flex-1 max-w-md sm:max-w-lg lg:max-w-xl mx-auto">
+                  <div className="relative flex items-center h-11 sm:h-12 px-4 rounded-full bg-white/[0.07] hover:bg-white/[0.1] focus-within:bg-white/[0.12] border border-white/15 focus-within:border-amber-400 focus-within:ring-2 focus-within:ring-amber-400/30 transition-all duration-200 shadow-inner">
+                    <Search className="w-4 h-4 text-amber-400 shrink-0 mr-2.5" />
                     <input
                       ref={modalInputRef}
                       type="text"
@@ -734,33 +744,33 @@ export function HomePage() {
                           navigate(`/cars${modalSearchQuery.trim() ? `?search=${encodeURIComponent(modalSearchQuery.trim())}` : ''}`);
                         }
                       }}
-                      placeholder="Search any car name, model, brand, variant (e.g. Scorpio, Mahindra, Diesel, Porsche)..."
-                      className="w-full text-lg sm:text-2xl font-semibold bg-transparent text-white placeholder:text-zinc-500 outline-none tracking-tight"
+                      placeholder="Search by model, brand, or fuel (e.g. Scorpio, BMW, Diesel)..."
+                      className="w-full text-sm sm:text-base bg-transparent text-white placeholder:text-zinc-400 outline-none font-medium pr-2"
                     />
+                    {modalSearchQuery && (
+                      <button
+                        type="button"
+                        onClick={() => setModalSearchQuery('')}
+                        className="p-1 rounded-full hover:bg-white/20 text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0 ml-1"
+                        title="Clear text"
+                      >
+                        <X className="w-3.5 h-3.5" />
+                      </button>
+                    )}
                   </div>
-                  {modalSearchQuery && (
-                    <button
-                      type="button"
-                      onClick={() => setModalSearchQuery('')}
-                      className="p-2 rounded-full hover:bg-white/10 text-zinc-400 hover:text-white transition-colors cursor-pointer shrink-0"
-                      title="Clear search text"
-                    >
-                      <X className="w-5 h-5" />
-                    </button>
-                  )}
                 </div>
 
-                {/* Prominent Cross Close Button */}
+                {/* Right: Prominent Cross Close Button */}
                 <button
                   type="button"
                   onClick={() => setIsSearchOpen(false)}
-                  className="px-4 py-2 sm:px-5 sm:py-2.5 rounded-xl bg-white/10 hover:bg-red-500/90 text-white font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/15 hover:border-red-500 transition-all cursor-pointer shrink-0 shadow-lg group"
+                  className="h-10 sm:h-11 px-4 sm:px-5 rounded-full bg-white/10 hover:bg-red-500 hover:text-white text-zinc-200 font-semibold text-xs sm:text-sm flex items-center gap-2 border border-white/15 hover:border-red-500 transition-all duration-200 cursor-pointer shrink-0 shadow-md group"
                   title="Close Search (Esc)"
                   aria-label="Close search"
                 >
-                  <X className="w-5 h-5 transition-transform group-hover:rotate-90 duration-200" />
-                  <span className="hidden sm:inline">Close</span>
-                  <kbd className="hidden md:inline text-[10px] bg-black/40 px-1.5 py-0.5 rounded border border-white/20 text-zinc-300">Esc</kbd>
+                  <X className="w-4 h-4 transition-transform group-hover:rotate-90 duration-200" />
+                  <span>Close</span>
+                  <kbd className="hidden md:inline text-[10px] bg-black/40 px-1.5 py-0.5 rounded border border-white/20 text-zinc-300 font-mono">Esc</kbd>
                 </button>
               </div>
 
