@@ -201,12 +201,11 @@ export function HomePage() {
 
   function handleHeroSearch(e: React.FormEvent) {
     e.preventDefault();
-    if (!searchQuery.trim() && selectedBrand === 'All' && !maxPrice && fuelType === 'All') {
-      setIsSearchOpen(true);
+    if (selectedBrand === 'All' && !maxPrice && fuelType === 'All') {
+      navigate('/cars');
       return;
     }
     const params = new URLSearchParams();
-    if (searchQuery.trim()) params.set('search', searchQuery.trim());
     if (selectedBrand !== 'All') params.set('brand', toBrandSlug(selectedBrand));
     if (maxPrice) params.set('maxPrice', maxPrice);
     if (fuelType !== 'All') params.set('fuelType', fuelType);
@@ -342,22 +341,8 @@ export function HomePage() {
 
           <form
             onSubmit={handleHeroSearch}
-            className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
+            className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
           >
-            <div>
-              <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
-                {homepageSettings?.searchLabel || 'Search Model or City'}
-              </label>
-              <input
-                id="hero-search"
-                type="text"
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={homepageSettings?.searchPlaceholder || 'e.g. 911, G63, Mumbai'}
-                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200"
-              />
-            </div>
-
             <div>
               <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 {homepageSettings?.brandLabel || 'Marque / Brand'}

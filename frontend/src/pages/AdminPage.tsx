@@ -2288,48 +2288,16 @@ export function AdminPage() {
                   <div>
                     <h3 className="font-bold text-sm text-[#0B1528]">Quick Search Filter Bar Settings (Image 2)</h3>
                     <p className="text-[11px] text-slate-500">
-                      Customize all labels, placeholders, budget tiers, and powertrain options for the 4 search filters under the hero section.
+                      Customize all labels, placeholders, budget tiers, and powertrain options for the 3 search filters under the hero section.
                     </p>
                   </div>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-                  {/* Filter 1: Search Model or City */}
-                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">1. Search Model or City (Input)</span>
-                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Text Filter</span>
-                    </div>
-                    <div>
-                      <label className={labelCls}>Field Label</label>
-                      <input
-                        type="text"
-                        value={homepageSettings?.searchLabel ?? 'Search Model or City'}
-                        onChange={(e) =>
-                          setHomepageSettings((prev) => (prev ? { ...prev, searchLabel: e.target.value } : null))
-                        }
-                        placeholder="Search Model or City"
-                        className={inputCls}
-                      />
-                    </div>
-                    <div>
-                      <label className={labelCls}>Input Placeholder Text</label>
-                      <input
-                        type="text"
-                        value={homepageSettings?.searchPlaceholder ?? 'e.g. 911, G63, Mumbai'}
-                        onChange={(e) =>
-                          setHomepageSettings((prev) => (prev ? { ...prev, searchPlaceholder: e.target.value } : null))
-                        }
-                        placeholder="e.g. 911, G63, Mumbai"
-                        className={inputCls}
-                      />
-                    </div>
-                  </div>
-
-                  {/* Filter 2: Marque / Brand */}
+                  {/* Filter 1: Marque / Brand */}
                   <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">2. Marque / Brand (Select & Custom Brands)</span>
+                      <span className="text-xs font-bold text-slate-800">1. Marque / Brand (Select & Custom Brands)</span>
                       <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Brand Options</span>
                     </div>
 
@@ -2442,10 +2410,10 @@ export function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Filter 3: Max Budget (INR) */}
+                  {/* Filter 2: Max Budget (INR) */}
                   <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">3. Max Budget (INR) (Select & Custom Tiers)</span>
+                      <span className="text-xs font-bold text-slate-800">2. Max Budget (INR) (Select & Custom Tiers)</span>
                       <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Budget Tiers</span>
                     </div>
 
@@ -2564,10 +2532,10 @@ export function AdminPage() {
                     </div>
                   </div>
 
-                  {/* Filter 4: Powertrain / Fuel Types */}
+                  {/* Filter 3: Powertrain / Fuel Types */}
                   <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
                     <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-slate-800">4. Powertrain / Fuel Types (Select & Custom Options)</span>
+                      <span className="text-xs font-bold text-slate-800">3. Powertrain / Fuel Types (Select & Custom Options)</span>
                       <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Fuel Options</span>
                     </div>
 
