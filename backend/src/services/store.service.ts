@@ -122,9 +122,26 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
   promotionalBannerActive: false,
   featuredCarIds: ['car-911-carrera-s-2022', 'car-audi-rs-etron-gt-2023', 'car-bmw-m4-comp-2023'],
   ctaExploreText: 'Explore Cars',
+  ctaExploreLink: '/cars',
   ctaCompareText: 'Compare Cars',
   whyChooseHeading: 'Why Discerning Collectors Choose Wonder Cars',
   whyChooseSubheading: 'Built on forensic technical diligence, upfront INR pricing, and lasting client relationships across Delhi-NCR.',
+  searchLabel: 'Search Model or City',
+  searchPlaceholder: 'e.g. 911, G63, Mumbai',
+  brandLabel: 'Marque / Brand',
+  brandDefaultText: 'All Brands',
+  budgetLabel: 'Max Budget (INR)',
+  budgetDefaultText: 'Any Budget',
+  budgetOptions: [
+    { label: 'Up to ₹1.50 Cr', value: '15000000' },
+    { label: 'Up to ₹2.00 Cr', value: '20000000' },
+    { label: 'Up to ₹3.00 Cr', value: '30000000' },
+    { label: 'Up to ₹4.00 Cr', value: '40000000' },
+  ],
+  fuelLabel: 'Powertrain',
+  fuelDefaultText: 'All Fuel Types',
+  fuelOptions: ['Petrol', 'Diesel', 'Electric', 'Hybrid'],
+  searchButtonText: 'Search Cars',
 };
 
 export const DEFAULT_ABOUT_SETTINGS: AboutSettings = {

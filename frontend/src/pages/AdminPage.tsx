@@ -2,7 +2,9 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import {
   AlertCircle,
+  ArrowDown,
   ArrowRight,
+  ArrowUp,
   ArrowUpRight,
   BarChart3,
   Bell,
@@ -23,6 +25,7 @@ import {
   FileSpreadsheet,
   Globe,
   Home,
+  Image as ImageIcon,
   Info,
   Layers,
   LayoutDashboard,
@@ -48,6 +51,7 @@ import {
   Tag,
   Trash2,
   TrendingUp,
+  Upload,
   UploadCloud,
   User,
   UserCheck,
@@ -61,6 +65,7 @@ import type {
   AdminOverview,
   AdminUser,
   BrandItem,
+  BudgetOption,
   BusinessLocationSettings,
   Car as CarType,
   CarStatus,
@@ -250,6 +255,15 @@ export function AdminPage() {
   const [newCatName, setNewCatName] = useState('');
   const [newBrandName, setNewBrandName] = useState('');
   const [newBrandOrigin, setNewBrandOrigin] = useState('');
+
+  // Homepage Management State
+  const [newSlideUrl, setNewSlideUrl] = useState('');
+  const [newSlideAlt, setNewSlideAlt] = useState('');
+  const [uploadingSlide, setUploadingSlide] = useState(false);
+  const [newBudgetLabel, setNewBudgetLabel] = useState('');
+  const [newBudgetValue, setNewBudgetValue] = useState('');
+  const [newFuelType, setNewFuelType] = useState('');
+  const [savingHomepage, setSavingHomepage] = useState(false);
 
   const unreadNotifsCount = useMemo(() => notifications.filter((n) => !n.read).length, [notifications]);
 
@@ -1847,100 +1861,757 @@ export function AdminPage() {
           {/* TAB 7: HOMEPAGE MANAGEMENT */}
           {/* ========================================================================= */}
           {activeTab === 'homepage' && (
-            <div className="space-y-6 max-w-4xl">
-              <div>
-                <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">Homepage Management</h1>
-                <p className="text-xs text-slate-500 mt-1">Configure hero headlines, festive promotional banner, and featured car highlights.</p>
+            <div className="space-y-6 max-w-5xl">
+              {/* Header Title & Top Save Button */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div>
+                  <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">Homepage Management</h1>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Edit and customize every section on the homepage: hero headings, description, background carousel slides, and the quick search filter bar.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  disabled={savingHomepage}
+                  onClick={async () => {
+                    if (!homepageSettings) return;
+                    setSavingHomepage(true);
+                    try {
+                      const updated = await updateHomepageSettings(homepageSettings);
+                      setHomepageSettings(updated);
+                      setSaveFeedback({ type: 'success', text: 'Homepage configuration saved and live on website!' });
+                    } catch (err: unknown) {
+                      setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to save homepage settings.' });
+                    } finally {
+                      setSavingHomepage(false);
+                    }
+                  }}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-md shadow-blue-600/25 transition-all cursor-pointer shrink-0 disabled:opacity-60"
+                >
+                  {savingHomepage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  <span>Save All Changes</span>
+                </button>
               </div>
 
+              {/* CARD 1: HERO SECTION HEADINGS & CTA (Image 1) */}
               <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-5">
-                <h3 className="font-bold text-sm text-[#0B1528] pb-2 border-b border-slate-100">Hero Section Banners & Text</h3>
-                <div className="space-y-4">
-                  <div>
-                    <label className={labelCls}>Hero Main Heading</label>
-                    <input
-                      type="text"
-                      value={homepageSettings?.heroHeading || ''}
-                      onChange={(e) =>
-                        setHomepageSettings((prev) => (prev ? { ...prev, heroHeading: e.target.value } : null))
-                      }
-                      className={inputCls}
-                    />
+                <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                  <div className="w-8 h-8 rounded-lg bg-amber-500/10 flex items-center justify-center text-amber-600">
+                    <Sparkles className="w-4 h-4" />
                   </div>
-
                   <div>
-                    <label className={labelCls}>Hero Subheadline</label>
-                    <input
-                      type="text"
-                      value={homepageSettings?.heroSubheadline || ''}
-                      onChange={(e) =>
-                        setHomepageSettings((prev) => (prev ? { ...prev, heroSubheadline: e.target.value } : null))
-                      }
-                      className={inputCls}
-                    />
-                  </div>
-
-                  <div>
-                    <label className={labelCls}>Hero Tagline Description</label>
-                    <textarea
-                      rows={3}
-                      value={homepageSettings?.heroTagline || ''}
-                      onChange={(e) =>
-                        setHomepageSettings((prev) => (prev ? { ...prev, heroTagline: e.target.value } : null))
-                      }
-                      className="w-full p-3 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
-                    />
-                  </div>
-
-                  {/* Promotional Banner */}
-                  <div className="p-4 rounded-xl bg-amber-50/70 border border-amber-200/80 space-y-3">
-                    <div className="flex items-center justify-between">
-                      <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
-                        <Sparkles className="w-4 h-4 text-amber-600" />
-                        Festive Promotional Top Announcement Bar
-                      </span>
-                      <label className="flex items-center gap-2 text-xs font-semibold text-amber-900 cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={Boolean(homepageSettings?.promotionalBannerActive)}
-                          onChange={(e) =>
-                            setHomepageSettings((prev) =>
-                              prev ? { ...prev, promotionalBannerActive: e.target.checked } : null
-                            )
-                          }
-                          className="rounded text-amber-600"
-                        />
-                        <span>Active</span>
-                      </label>
-                    </div>
-                    <input
-                      type="text"
-                      value={homepageSettings?.promotionalBannerText || ''}
-                      onChange={(e) =>
-                        setHomepageSettings((prev) =>
-                          prev ? { ...prev, promotionalBannerText: e.target.value } : null
-                        )
-                      }
-                      placeholder="Special Festive Offer: 0% Processing Fee on Luxury Auto Loans..."
-                      className={inputCls}
-                    />
+                    <h3 className="font-bold text-sm text-[#0B1528]">Hero Section Typography & Call to Action</h3>
+                    <p className="text-[11px] text-slate-500">Edit the primary headline, subheadline, description paragraph, and explore button.</p>
                   </div>
                 </div>
 
+                <div className="space-y-4">
+                  {/* Hero Main Heading */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-semibold text-slate-700">Hero Main Heading</label>
+                      <span className="text-[10px] text-slate-400">e.g. Used Cars Nearby</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={homepageSettings?.heroHeading ?? 'Used Cars Nearby'}
+                      onChange={(e) =>
+                        setHomepageSettings((prev) => (prev ? { ...prev, heroHeading: e.target.value } : null))
+                      }
+                      placeholder="Used Cars Nearby"
+                      className={inputCls}
+                    />
+                  </div>
+
+                  {/* Hero Subheadline */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-semibold text-slate-700">Hero Subheadline / Tagline</label>
+                      <span className="text-[10px] text-slate-400">e.g. — Delhi-NCR’s Most Trusted Pre-Owned Car Destination!</span>
+                    </div>
+                    <input
+                      type="text"
+                      value={homepageSettings?.heroSubheadline ?? '— Delhi-NCR’s Most Trusted Pre-Owned Car Destination!'}
+                      onChange={(e) =>
+                        setHomepageSettings((prev) => (prev ? { ...prev, heroSubheadline: e.target.value } : null))
+                      }
+                      placeholder="— Delhi-NCR’s Most Trusted Pre-Owned Car Destination!"
+                      className={inputCls}
+                    />
+                  </div>
+
+                  {/* Hero Description Paragraph */}
+                  <div>
+                    <div className="flex items-center justify-between mb-1.5">
+                      <label className="text-xs font-semibold text-slate-700">Hero Description Paragraph</label>
+                      <span className="text-[10px] text-slate-400">Main body text below the subheadline</span>
+                    </div>
+                    <textarea
+                      rows={3}
+                      value={homepageSettings?.heroTagline ?? 'Looking for a reliable car in top-notch condition? Every vehicle is 100% certified, professionally detailed, and backed by a 6-month warranty for complete peace of mind.'}
+                      onChange={(e) =>
+                        setHomepageSettings((prev) => (prev ? { ...prev, heroTagline: e.target.value } : null))
+                      }
+                      placeholder="Looking for a reliable car in top-notch condition? Every vehicle is 100% certified, professionally detailed, and backed by a 6-month warranty for complete peace of mind."
+                      className="w-full p-3 rounded-lg border border-slate-300 text-xs focus:outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600 transition-all leading-relaxed"
+                    />
+                  </div>
+
+                  {/* CTA Buttons Config */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                    <div>
+                      <label className={labelCls}>Explore Cars Button Text</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.ctaExploreText ?? 'Explore Cars'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, ctaExploreText: e.target.value } : null))
+                        }
+                        placeholder="Explore Cars"
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Explore Cars Button Link Destination</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.ctaExploreLink ?? '/cars'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, ctaExploreLink: e.target.value } : null))
+                        }
+                        placeholder="/cars"
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 2: HERO CAROUSEL BACKGROUND IMAGES (Image 1 Background) */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-5">
+                <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-blue-500/10 flex items-center justify-center text-blue-600">
+                      <ImageIcon className="w-4 h-4" />
+                    </div>
+                    <div>
+                      <h3 className="font-bold text-sm text-[#0B1528]">Hero Background Carousel Slides</h3>
+                      <p className="text-[11px] text-slate-500">Add, reorder, or upload background images displayed in the hero carousel.</p>
+                    </div>
+                  </div>
+                  <span className="text-xs font-semibold px-2.5 py-1 rounded-full bg-slate-100 text-slate-700">
+                    {(homepageSettings?.heroSlides?.length ?? 3)} Slide(s)
+                  </span>
+                </div>
+
+                {/* Slides List */}
+                <div className="space-y-3">
+                  {(homepageSettings?.heroSlides && homepageSettings.heroSlides.length > 0
+                    ? homepageSettings.heroSlides
+                    : [
+                        {
+                          src: '/src/assets/images/hero_luxury_coupe_1794898128860.jpg',
+                          alt: 'Luxury satin charcoal grand tourer inside Wonder Cars showroom',
+                        },
+                        {
+                          src: '/src/assets/images/car_porsche_911_1794898129646.jpg',
+                          alt: 'Porsche 911 Carrera S in architectural showroom lighting',
+                        },
+                        {
+                          src: '/src/assets/images/car_audi_rs_etron_1794898131413.jpg',
+                          alt: 'Audi RS e-tron GT inside Wonder Cars flagship gallery',
+                        },
+                      ]
+                  ).map((slide, idx, arr) => (
+                    <div
+                      key={idx}
+                      className="p-3 rounded-xl border border-slate-200 bg-slate-50/60 flex flex-col sm:flex-row sm:items-center gap-3 transition-all hover:bg-slate-50"
+                    >
+                      {/* Image Preview */}
+                      <div className="w-20 h-14 rounded-lg bg-slate-900 border border-slate-200 overflow-hidden shrink-0 relative group">
+                        <img
+                          src={slide.src}
+                          alt={slide.alt || `Slide ${idx + 1}`}
+                          className="w-full h-full object-cover"
+                          onError={(e) => {
+                            (e.target as HTMLElement).style.display = 'none';
+                          }}
+                        />
+                        <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] font-bold px-1 rounded">
+                          #{idx + 1}
+                        </span>
+                      </div>
+
+                      {/* Inputs */}
+                      <div className="flex-1 grid grid-cols-1 sm:grid-cols-2 gap-2">
+                        <div>
+                          <input
+                            type="text"
+                            value={slide.src}
+                            onChange={(e) => {
+                              const newSrc = e.target.value;
+                              setHomepageSettings((prev) => {
+                                if (!prev) return prev;
+                                const list = [...(prev.heroSlides || arr)];
+                                list[idx] = { ...list[idx], src: newSrc };
+                                return { ...prev, heroSlides: list };
+                              });
+                            }}
+                            placeholder="Image URL (e.g. /uploads/... or https://...)"
+                            className="w-full h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <input
+                            type="text"
+                            value={slide.alt}
+                            onChange={(e) => {
+                              const newAlt = e.target.value;
+                              setHomepageSettings((prev) => {
+                                if (!prev) return prev;
+                                const list = [...(prev.heroSlides || arr)];
+                                list[idx] = { ...list[idx], alt: newAlt };
+                                return { ...prev, heroSlides: list };
+                              });
+                            }}
+                            placeholder="Alt description / Vehicle caption"
+                            className="w-full h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white"
+                          />
+                        </div>
+                      </div>
+
+                      {/* Controls (Move Up / Down / Delete) */}
+                      <div className="flex items-center gap-1 shrink-0 self-end sm:self-center">
+                        <button
+                          type="button"
+                          disabled={idx === 0}
+                          onClick={() => {
+                            setHomepageSettings((prev) => {
+                              if (!prev) return prev;
+                              const list = [...(prev.heroSlides || arr)];
+                              if (idx <= 0) return prev;
+                              const temp = list[idx];
+                              list[idx] = list[idx - 1];
+                              list[idx - 1] = temp;
+                              return { ...prev, heroSlides: list };
+                            });
+                          }}
+                          className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-30 cursor-pointer"
+                          title="Move Slide Up"
+                        >
+                          <ArrowUp className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={idx === arr.length - 1}
+                          onClick={() => {
+                            setHomepageSettings((prev) => {
+                              if (!prev) return prev;
+                              const list = [...(prev.heroSlides || arr)];
+                              if (idx >= list.length - 1) return prev;
+                              const temp = list[idx];
+                              list[idx] = list[idx + 1];
+                              list[idx + 1] = temp;
+                              return { ...prev, heroSlides: list };
+                            });
+                          }}
+                          className="p-1.5 rounded-lg border border-slate-200 text-slate-600 hover:bg-white disabled:opacity-30 cursor-pointer"
+                          title="Move Slide Down"
+                        >
+                          <ArrowDown className="w-3.5 h-3.5" />
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setHomepageSettings((prev) => {
+                              if (!prev) return prev;
+                              const list = (prev.heroSlides || arr).filter((_, i) => i !== idx);
+                              return { ...prev, heroSlides: list };
+                            });
+                          }}
+                          className="p-1.5 rounded-lg border border-red-200 text-red-600 hover:bg-red-50 cursor-pointer"
+                          title="Delete Slide"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Add New Slide Form */}
+                <div className="p-4 rounded-xl border border-dashed border-slate-300 bg-slate-50/40 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                      <Plus className="w-3.5 h-3.5 text-blue-600" />
+                      Add New Hero Slide Image
+                    </span>
+                    {/* Direct Upload Button */}
+                    <label className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white border border-slate-300 hover:bg-slate-50 text-xs font-semibold text-slate-700 cursor-pointer shadow-2xs">
+                      {uploadingSlide ? <Loader2 className="w-3.5 h-3.5 animate-spin text-blue-600" /> : <Upload className="w-3.5 h-3.5 text-blue-600" />}
+                      <span>{uploadingSlide ? 'Uploading...' : 'Upload Image from PC'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        className="hidden"
+                        onChange={async (e) => {
+                          const files = e.target.files;
+                          if (!files || files.length === 0) return;
+                          setUploadingSlide(true);
+                          try {
+                            const urls = await uploadCarImages(Array.from(files));
+                            if (urls && urls.length > 0) {
+                              setHomepageSettings((prev) => {
+                                const currentSlides = prev?.heroSlides || [
+                                  { src: '/src/assets/images/hero_luxury_coupe_1794898128860.jpg', alt: 'Wonder Cars' },
+                                ];
+                                const newItems = urls.map((u, i) => ({
+                                  src: u,
+                                  alt: `Wonder Cars Slide ${currentSlides.length + i + 1}`,
+                                }));
+                                return {
+                                  ...(prev || {} as HomepageSettings),
+                                  heroSlides: [...currentSlides, ...newItems],
+                                };
+                              });
+                              setSaveFeedback({ type: 'success', text: 'Slide image uploaded! Click Save to apply.' });
+                            }
+                          } catch (err: unknown) {
+                            setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Upload failed.' });
+                          } finally {
+                            setUploadingSlide(false);
+                            e.target.value = '';
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-2.5">
+                    <div className="sm:col-span-6">
+                      <input
+                        type="text"
+                        value={newSlideUrl}
+                        onChange={(e) => setNewSlideUrl(e.target.value)}
+                        placeholder="Or paste direct image URL (e.g. /uploads/... or https://...)"
+                        className="w-full h-9 px-3 text-xs rounded-lg border border-slate-300 bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-4">
+                      <input
+                        type="text"
+                        value={newSlideAlt}
+                        onChange={(e) => setNewSlideAlt(e.target.value)}
+                        placeholder="Slide caption / alt text"
+                        className="w-full h-9 px-3 text-xs rounded-lg border border-slate-300 bg-white"
+                      />
+                    </div>
+                    <div className="sm:col-span-2">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (!newSlideUrl.trim()) return;
+                          setHomepageSettings((prev) => {
+                            const current = prev?.heroSlides || [];
+                            return {
+                              ...(prev || {} as HomepageSettings),
+                              heroSlides: [
+                                ...current,
+                                { src: newSlideUrl.trim(), alt: newSlideAlt.trim() || 'Showroom vehicle showcase' },
+                              ],
+                            };
+                          });
+                          setNewSlideUrl('');
+                          setNewSlideAlt('');
+                        }}
+                        className="w-full h-9 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center justify-center gap-1.5 cursor-pointer"
+                      >
+                        <Plus className="w-3.5 h-3.5" />
+                        <span>Add Slide</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 3: QUICK SEARCH FILTER BAR (Image 2) */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-6">
+                <div className="flex items-center gap-2.5 pb-3 border-b border-slate-100">
+                  <div className="w-8 h-8 rounded-lg bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                    <Search className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h3 className="font-bold text-sm text-[#0B1528]">Quick Search Filter Bar Settings (Image 2)</h3>
+                    <p className="text-[11px] text-slate-500">
+                      Customize all labels, placeholders, budget tiers, and powertrain options for the 4 search filters under the hero section.
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                  {/* Filter 1: Search Model or City */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">1. Search Model or City (Input)</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Text Filter</span>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Field Label</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.searchLabel ?? 'Search Model or City'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, searchLabel: e.target.value } : null))
+                        }
+                        placeholder="Search Model or City"
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Input Placeholder Text</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.searchPlaceholder ?? 'e.g. 911, G63, Mumbai'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, searchPlaceholder: e.target.value } : null))
+                        }
+                        placeholder="e.g. 911, G63, Mumbai"
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+
+                  {/* Filter 2: Marque / Brand */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">2. Marque / Brand (Select)</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Dropdown</span>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Field Label</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.brandLabel ?? 'Marque / Brand'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, brandLabel: e.target.value } : null))
+                        }
+                        placeholder="Marque / Brand"
+                        className={inputCls}
+                      />
+                    </div>
+                    <div>
+                      <label className={labelCls}>Default Option Text</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.brandDefaultText ?? 'All Brands'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, brandDefaultText: e.target.value } : null))
+                        }
+                        placeholder="All Brands"
+                        className={inputCls}
+                      />
+                    </div>
+                    <p className="text-[11px] text-slate-500 italic">
+                      * Brand dropdown items are automatically synced from your showroom Brands.
+                    </p>
+                  </div>
+
+                  {/* Filter 3: Max Budget (INR) */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">3. Max Budget (INR) (Select & Custom Tiers)</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Budget Tiers</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className={labelCls}>Field Label</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.budgetLabel ?? 'Max Budget (INR)'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, budgetLabel: e.target.value } : null))
+                          }
+                          placeholder="Max Budget (INR)"
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Default Option Text</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.budgetDefaultText ?? 'Any Budget'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, budgetDefaultText: e.target.value } : null))
+                          }
+                          placeholder="Any Budget"
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Budget Options List */}
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-2">
+                        Active Budget Tiers in Dropdown:
+                      </label>
+                      <div className="space-y-2">
+                        {(homepageSettings?.budgetOptions || [
+                          { label: 'Up to ₹1.50 Cr', value: '15000000' },
+                          { label: 'Up to ₹2.00 Cr', value: '20000000' },
+                          { label: 'Up to ₹3.00 Cr', value: '30000000' },
+                          { label: 'Up to ₹4.00 Cr', value: '40000000' },
+                        ]).map((bOpt, bIdx, bArr) => (
+                          <div
+                            key={bIdx}
+                            className="flex items-center gap-2 p-2 bg-white rounded-lg border border-slate-200 text-xs"
+                          >
+                            <span className="font-semibold text-slate-800 flex-1">{bOpt.label}</span>
+                            <span className="font-mono text-slate-500 text-[11px] px-2 py-0.5 rounded bg-slate-100">
+                              Value: ₹{Number(bOpt.value).toLocaleString('en-IN')}
+                            </span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setHomepageSettings((prev) => {
+                                  if (!prev) return prev;
+                                  const nextOpts = (prev.budgetOptions || bArr).filter((_, i) => i !== bIdx);
+                                  return { ...prev, budgetOptions: nextOpts };
+                                });
+                              }}
+                              className="p-1 rounded text-red-500 hover:bg-red-50 cursor-pointer"
+                              title="Delete budget tier"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+
+                      {/* Add Budget Tier Row */}
+                      <div className="grid grid-cols-1 sm:grid-cols-12 gap-2 mt-3 pt-3 border-t border-slate-200">
+                        <div className="sm:col-span-5">
+                          <input
+                            type="text"
+                            value={newBudgetLabel}
+                            onChange={(e) => setNewBudgetLabel(e.target.value)}
+                            placeholder="Option Label (e.g. Up to ₹50 Lakh)"
+                            className="w-full h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white"
+                          />
+                        </div>
+                        <div className="sm:col-span-4">
+                          <input
+                            type="number"
+                            value={newBudgetValue}
+                            onChange={(e) => setNewBudgetValue(e.target.value)}
+                            placeholder="Amount in INR (e.g. 5000000)"
+                            className="w-full h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white font-mono"
+                          />
+                        </div>
+                        <div className="sm:col-span-3">
+                          <button
+                            type="button"
+                            onClick={() => {
+                              if (!newBudgetLabel.trim() || !newBudgetValue.trim()) return;
+                              setHomepageSettings((prev) => {
+                                const list = prev?.budgetOptions || [
+                                  { label: 'Up to ₹1.50 Cr', value: '15000000' },
+                                  { label: 'Up to ₹2.00 Cr', value: '20000000' },
+                                  { label: 'Up to ₹3.00 Cr', value: '30000000' },
+                                  { label: 'Up to ₹4.00 Cr', value: '40000000' },
+                                ];
+                                return {
+                                  ...(prev || {} as HomepageSettings),
+                                  budgetOptions: [...list, { label: newBudgetLabel.trim(), value: newBudgetValue.trim() }],
+                                };
+                              });
+                              setNewBudgetLabel('');
+                              setNewBudgetValue('');
+                            }}
+                            className="w-full h-8 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs flex items-center justify-center gap-1 cursor-pointer"
+                          >
+                            <Plus className="w-3.5 h-3.5" />
+                            <span>Add Tier</span>
+                          </button>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Filter 4: Powertrain / Fuel Types */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">4. Powertrain / Fuel Types (Select & Custom Options)</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Fuel Options</span>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                      <div>
+                        <label className={labelCls}>Field Label</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.fuelLabel ?? 'Powertrain'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, fuelLabel: e.target.value } : null))
+                          }
+                          placeholder="Powertrain"
+                          className={inputCls}
+                        />
+                      </div>
+                      <div>
+                        <label className={labelCls}>Default Option Text</label>
+                        <input
+                          type="text"
+                          value={homepageSettings?.fuelDefaultText ?? 'All Fuel Types'}
+                          onChange={(e) =>
+                            setHomepageSettings((prev) => (prev ? { ...prev, fuelDefaultText: e.target.value } : null))
+                          }
+                          placeholder="All Fuel Types"
+                          className={inputCls}
+                        />
+                      </div>
+                    </div>
+
+                    {/* Fuel Options Chips */}
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-700 mb-2">
+                        Active Fuel Types in Dropdown:
+                      </label>
+                      <div className="flex flex-wrap gap-2">
+                        {(homepageSettings?.fuelOptions || ['Petrol', 'Diesel', 'Electric', 'Hybrid']).map((fuel, fIdx, fArr) => (
+                          <span
+                            key={fuel}
+                            className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 border border-blue-200 text-xs font-semibold"
+                          >
+                            <span>{fuel}</span>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setHomepageSettings((prev) => {
+                                  if (!prev) return prev;
+                                  const nextFuels = (prev.fuelOptions || fArr).filter((_, i) => i !== fIdx);
+                                  return { ...prev, fuelOptions: nextFuels };
+                                });
+                              }}
+                              className="w-3.5 h-3.5 rounded-full hover:bg-blue-200 flex items-center justify-center text-blue-900 cursor-pointer"
+                              title={`Remove ${fuel}`}
+                            >
+                              <X className="w-2.5 h-2.5" />
+                            </button>
+                          </span>
+                        ))}
+                      </div>
+
+                      {/* Add Fuel Option Row */}
+                      <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-200">
+                        <input
+                          type="text"
+                          value={newFuelType}
+                          onChange={(e) => setNewFuelType(e.target.value)}
+                          placeholder="Add new fuel type (e.g. CNG, Plug-in Hybrid)"
+                          className="max-w-xs h-8 px-2.5 text-xs rounded-lg border border-slate-300 bg-white"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => {
+                            if (!newFuelType.trim()) return;
+                            setHomepageSettings((prev) => {
+                              const list = prev?.fuelOptions || ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
+                              if (list.includes(newFuelType.trim())) return prev;
+                              return {
+                                ...(prev || {} as HomepageSettings),
+                                fuelOptions: [...list, newFuelType.trim()],
+                              };
+                            });
+                            setNewFuelType('');
+                          }}
+                          className="h-8 px-3 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs flex items-center gap-1 cursor-pointer"
+                        >
+                          <Plus className="w-3.5 h-3.5" />
+                          <span>Add Fuel</span>
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Filter 5: Search Button Text */}
+                  <div className="p-4 rounded-xl border border-slate-200 bg-slate-50/50 space-y-3 md:col-span-2">
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-800">5. Search Action Button</span>
+                      <span className="text-[10px] font-mono text-slate-500 bg-white px-2 py-0.5 rounded border border-slate-200">Button CTA</span>
+                    </div>
+                    <div>
+                      <label className={labelCls}>Search Button Label</label>
+                      <input
+                        type="text"
+                        value={homepageSettings?.searchButtonText ?? 'Search Cars'}
+                        onChange={(e) =>
+                          setHomepageSettings((prev) => (prev ? { ...prev, searchButtonText: e.target.value } : null))
+                        }
+                        placeholder="Search Cars"
+                        className={inputCls}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* CARD 4: PROMOTIONAL TOP ANNOUNCEMENT BAR */}
+              <div className="p-5 rounded-2xl bg-amber-50/70 border border-amber-200/80 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-900 flex items-center gap-1.5">
+                    <Sparkles className="w-4 h-4 text-amber-600" />
+                    Festive Promotional Top Announcement Bar
+                  </span>
+                  <label className="flex items-center gap-2 text-xs font-semibold text-amber-900 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={Boolean(homepageSettings?.promotionalBannerActive)}
+                      onChange={(e) =>
+                        setHomepageSettings((prev) =>
+                          prev ? { ...prev, promotionalBannerActive: e.target.checked } : null
+                        )
+                      }
+                      className="rounded text-amber-600"
+                    />
+                    <span>Active</span>
+                  </label>
+                </div>
+                <input
+                  type="text"
+                  value={homepageSettings?.promotionalBannerText || ''}
+                  onChange={(e) =>
+                    setHomepageSettings((prev) =>
+                      prev ? { ...prev, promotionalBannerText: e.target.value } : null
+                    )
+                  }
+                  placeholder="Special Festive Offer: 0% Processing Fee on Luxury Auto Loans..."
+                  className={inputCls}
+                />
+              </div>
+
+              {/* BOTTOM SAVE BUTTON */}
+              <div className="flex justify-end pt-2 pb-6">
                 <button
                   type="button"
+                  disabled={savingHomepage}
                   onClick={async () => {
                     if (!homepageSettings) return;
+                    setSavingHomepage(true);
                     try {
-                      await updateHomepageSettings(homepageSettings);
-                      setSaveFeedback({ type: 'success', text: 'Homepage settings updated successfully.' });
+                      const updated = await updateHomepageSettings(homepageSettings);
+                      setHomepageSettings(updated);
+                      setSaveFeedback({ type: 'success', text: 'Homepage configuration saved and live on website!' });
                     } catch (err: unknown) {
                       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to update homepage settings' });
+                    } finally {
+                      setSavingHomepage(false);
                     }
                   }}
-                  className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm cursor-pointer"
+                  className="px-8 py-3 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-sm shadow-md shadow-blue-600/30 flex items-center gap-2 cursor-pointer transition-all disabled:opacity-60"
                 >
-                  Save Homepage Configuration
+                  {savingHomepage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
+                  <span>Save Homepage Configuration</span>
                 </button>
               </div>
             </div>

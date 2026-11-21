@@ -251,6 +251,11 @@ export interface BrandItem {
   logo?: string;
 }
 
+export interface BudgetOption {
+  label: string;
+  value: string;
+}
+
 export interface HomepageSettings {
   heroHeading: string;
   heroSubheadline: string;
@@ -261,9 +266,23 @@ export interface HomepageSettings {
   promotionalBannerActive: boolean;
   featuredCarIds: string[];
   ctaExploreText: string;
+  ctaExploreLink?: string;
   ctaCompareText: string;
   whyChooseHeading: string;
   whyChooseSubheading: string;
+
+  // Search Filter Bar Settings
+  searchLabel?: string;
+  searchPlaceholder?: string;
+  brandLabel?: string;
+  brandDefaultText?: string;
+  budgetLabel?: string;
+  budgetDefaultText?: string;
+  budgetOptions?: BudgetOption[];
+  fuelLabel?: string;
+  fuelDefaultText?: string;
+  fuelOptions?: string[];
+  searchButtonText?: string;
 }
 
 export interface AboutSettings {

@@ -213,6 +213,26 @@ export function HomePage() {
     navigate(`/cars${params.toString() ? `?${params.toString()}` : ''}`);
   }
 
+  const heroSlides =
+    homepageSettings?.heroSlides && homepageSettings.heroSlides.length > 0
+      ? homepageSettings.heroSlides
+      : HERO_SLIDES;
+
+  const budgetOptions =
+    homepageSettings?.budgetOptions && homepageSettings.budgetOptions.length > 0
+      ? homepageSettings.budgetOptions
+      : [
+          { label: 'Up to ₹1.50 Cr', value: '15000000' },
+          { label: 'Up to ₹2.00 Cr', value: '20000000' },
+          { label: 'Up to ₹3.00 Cr', value: '30000000' },
+          { label: 'Up to ₹4.00 Cr', value: '40000000' },
+        ];
+
+  const fuelOptions =
+    homepageSettings?.fuelOptions && homepageSettings.fuelOptions.length > 0
+      ? homepageSettings.fuelOptions
+      : ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
+
   return (
     <div className="bg-white dark:bg-[#09090B] text-slate-900 dark:text-[#FAFAFA] transition-colors duration-200">
       <SeoHead
@@ -223,18 +243,19 @@ export function HomePage() {
       {/* 1. Full-Screen Hero Section (dark contrast scrim preserved over photography in both modes) */}
       <section ref={heroRef} className="relative min-h-[92vh] pt-24 pb-4 sm:pb-5 flex flex-col justify-between overflow-hidden bg-slate-950">
         <motion.div style={{ y: heroImageY }} className="absolute inset-0 z-0 will-change-transform">
-          {HERO_SLIDES.map((slide, idx) => {
+          {heroSlides.map((slide, idx) => {
             const isActive = idx === heroSlideIndex;
             return (
               <div
-                key={slide.src}
+                key={slide.src || idx}
                 aria-hidden={!isActive}
-                className={`absolute inset-0 transition-all duration-[1200ms] ease-out ${isActive ? 'opacity-100 scale-105' : 'opacity-0 scale-110'
-                  }`}
+                className={`absolute inset-0 transition-all duration-[1200ms] ease-out ${
+                  isActive ? 'opacity-100 scale-105' : 'opacity-0 scale-110'
+                }`}
               >
                 <VehicleImage
                   src={slide.src}
-                  alt={slide.alt}
+                  alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
                   loading="eager"
                   className="w-full h-full object-cover object-center"
                 />
@@ -283,7 +304,7 @@ export function HomePage() {
               className="flex flex-row items-center gap-3 pt-2"
             >
               <Link
-                to="/cars"
+                to={homepageSettings?.ctaExploreLink || '/cars'}
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap shadow-md shadow-amber-600/25"
               >
                 <span>{homepageSettings?.ctaExploreText || 'Explore Cars'}</span>
@@ -301,11 +322,11 @@ export function HomePage() {
           className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 space-y-2.5 translate-y-2 sm:translate-y-4"
         >
           <div className="flex items-center justify-end gap-2 pr-1" role="tablist" aria-label="Hero showcase slides">
-            {HERO_SLIDES.map((slide, idx) => {
+            {heroSlides.map((slide, idx) => {
               const active = idx === heroSlideIndex;
               return (
                 <button
-                  key={slide.src}
+                  key={slide.src || idx}
                   type="button"
                   role="tab"
                   aria-selected={active}
@@ -325,21 +346,21 @@ export function HomePage() {
           >
             <div>
               <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
-                Search Model or City
+                {homepageSettings?.searchLabel || 'Search Model or City'}
               </label>
               <input
                 id="hero-search"
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="e.g. 911, G63, Mumbai"
+                placeholder={homepageSettings?.searchPlaceholder || 'e.g. 911, G63, Mumbai'}
                 className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200"
               />
             </div>
 
             <div>
               <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
-                Marque / Brand
+                {homepageSettings?.brandLabel || 'Marque / Brand'}
               </label>
               <select
                 id="hero-brand"
@@ -347,7 +368,9 @@ export function HomePage() {
                 onChange={(e) => setSelectedBrand(e.target.value)}
                 className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
-                <option value="All" className="bg-[#121215] text-white">All Brands</option>
+                <option value="All" className="bg-[#121215] text-white">
+                  {homepageSettings?.brandDefaultText || 'All Brands'}
+                </option>
                 {HERO_BRAND_OPTIONS.map((brandName) => (
                   <option key={brandName} value={brandName} className="bg-[#121215] text-white">
                     {brandName}
@@ -358,7 +381,7 @@ export function HomePage() {
 
             <div>
               <label htmlFor="hero-budget" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
-                Max Budget (INR)
+                {homepageSettings?.budgetLabel || 'Max Budget (INR)'}
               </label>
               <select
                 id="hero-budget"
@@ -366,17 +389,20 @@ export function HomePage() {
                 onChange={(e) => setMaxPrice(e.target.value)}
                 className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
-                <option value="" className="bg-[#121215] text-white">Any Budget</option>
-                <option value="15000000" className="bg-[#121215] text-white">Up to ₹1.50 Cr</option>
-                <option value="20000000" className="bg-[#121215] text-white">Up to ₹2.00 Cr</option>
-                <option value="30000000" className="bg-[#121215] text-white">Up to ₹3.00 Cr</option>
-                <option value="40000000" className="bg-[#121215] text-white">Up to ₹4.00 Cr</option>
+                <option value="" className="bg-[#121215] text-white">
+                  {homepageSettings?.budgetDefaultText || 'Any Budget'}
+                </option>
+                {budgetOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value} className="bg-[#121215] text-white">
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
 
             <div>
               <label htmlFor="hero-fuel" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
-                Powertrain
+                {homepageSettings?.fuelLabel || 'Powertrain'}
               </label>
               <select
                 id="hero-fuel"
@@ -384,11 +410,14 @@ export function HomePage() {
                 onChange={(e) => setFuelType(e.target.value)}
                 className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200 appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23E5E7EB%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E')] bg-[length:9px_9px] bg-[right_14px_center] bg-no-repeat pr-8 cursor-pointer"
               >
-                <option value="All" className="bg-[#121215] text-white">All Fuel Types</option>
-                <option value="Petrol" className="bg-[#121215] text-white">Petrol</option>
-                <option value="Diesel" className="bg-[#121215] text-white">Diesel</option>
-                <option value="Electric" className="bg-[#121215] text-white">Electric</option>
-                <option value="Hybrid" className="bg-[#121215] text-white">Hybrid</option>
+                <option value="All" className="bg-[#121215] text-white">
+                  {homepageSettings?.fuelDefaultText || 'All Fuel Types'}
+                </option>
+                {fuelOptions.map((fuel) => (
+                  <option key={fuel} value={fuel} className="bg-[#121215] text-white">
+                    {fuel}
+                  </option>
+                ))}
               </select>
             </div>
 
@@ -397,7 +426,7 @@ export function HomePage() {
               className="w-full h-11 px-6 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-sm inline-flex items-center justify-center gap-2 transition-all duration-150 active:scale-[0.98] cursor-pointer shadow-lg shadow-amber-600/30"
             >
               <Search className="w-4 h-4" />
-              <span>Search Cars</span>
+              <span>{homepageSettings?.searchButtonText || 'Search Cars'}</span>
             </button>
           </form>
         </motion.div>
