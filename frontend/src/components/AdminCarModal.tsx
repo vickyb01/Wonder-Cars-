@@ -33,7 +33,7 @@ import type {
   TyreDetail,
   UsageHistory,
 } from '../types/car';
-import { createCar, fetchCloudinaryStatus, updateCar, uploadCarImages } from '../utils/api';
+import { createCar, fetchBrands, fetchCloudinaryStatus, updateCar, uploadCarImages } from '../utils/api';
 import {
   createDefaultAccidentHistory,
   createDefaultBattery,
@@ -63,8 +63,47 @@ const PHOTO_CATEGORIES: PhotoCategory[] = [
   'Underbody & Storage',
 ];
 
+const POPULAR_BRANDS = [
+  'Maruti Suzuki',
+  'Hyundai',
+  'Tata',
+  'Mahindra',
+  'Toyota',
+  'Kia',
+  'MG',
+  'Honda',
+  'Volkswagen',
+  'Skoda',
+  'BMW',
+  'Mercedes-Benz',
+  'Audi',
+  'Porsche',
+  'Land Rover',
+  'Range Rover',
+  'Jaguar',
+  'Volvo',
+  'Jeep',
+  'Mini',
+  'Renault',
+  'Nissan',
+  'Citroen',
+  'Force Motors',
+  'Lexus',
+  'BYD',
+  'Aston Martin',
+  'Bentley',
+  'Rolls-Royce',
+  'Ferrari',
+  'Lamborghini',
+  'Maserati',
+  'McLaren',
+  'Tesla',
+];
+
 export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProps) {
   const [activeTab, setActiveTab] = useState<ModalTab>('basic');
+  const [availableBrands, setAvailableBrands] = useState<string[]>(POPULAR_BRANDS);
+  const [isCustomBrand, setIsCustomBrand] = useState(false);
 
   // Basic & Pricing
   const [brand, setBrand] = useState('');
@@ -180,13 +219,43 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   };
 
   useEffect(() => {
+    if (open) {
+      fetchBrands()
+        .then((brandList) => {
+          if (Array.isArray(brandList) && brandList.length > 0) {
+            const names = brandList.map((b) => b.name).filter(Boolean);
+            setAvailableBrands((prev) => {
+              const lower = new Set(prev.map((p) => p.toLowerCase()));
+              const added = names.filter((n) => !lower.has(n.toLowerCase()));
+              return [...prev, ...added];
+            });
+          }
+        })
+        .catch(() => {});
+    }
+  }, [open]);
+
+  useEffect(() => {
     if (!open) return;
     setActiveTab('basic');
     setError('');
     setFieldErrors({});
 
     if (car) {
-      setBrand(car.brand);
+      const currentBrand = (car.brand || '').trim();
+      const matched = availableBrands.find(
+        (b) => b.toLowerCase() === currentBrand.toLowerCase()
+      );
+      if (matched) {
+        setBrand(matched);
+        setIsCustomBrand(false);
+      } else if (currentBrand) {
+        setBrand(currentBrand);
+        setIsCustomBrand(true);
+      } else {
+        setBrand('');
+        setIsCustomBrand(false);
+      }
       setModel(car.model);
       setVariant(car.variant);
       setYear(String(car.year));
@@ -256,6 +325,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setDocuments(car.documents || createDefaultDocuments());
     } else {
       setBrand('');
+      setIsCustomBrand(false);
       setModel('');
       setVariant('');
       setYear('2023');
@@ -445,7 +515,8 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       }
 
       setTimeout(() => {
-        const el = document.getElementById(`field-${firstKey}`);
+        const targetId = firstKey === 'brand' && isCustomBrand ? 'field-brand-custom' : `field-${firstKey}`;
+        const el = document.getElementById(targetId) || document.getElementById(`field-${firstKey}`);
         if (el) {
           el.scrollIntoView({ behavior: 'smooth', block: 'center' });
           el.focus();
@@ -605,20 +676,78 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             <div className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
-                    Brand <span className="text-rose-500">*</span>
-                  </label>
-                  <input
+                  <div className="flex items-center justify-between mb-1">
+                    <label className="text-xs font-medium text-slate-600 dark:text-zinc-400">
+                      Brand <span className="text-rose-500">*</span>
+                    </label>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        const next = !isCustomBrand;
+                        setIsCustomBrand(next);
+                        if (next) {
+                          setTimeout(() => document.getElementById('field-brand-custom')?.focus(), 50);
+                        } else {
+                          const matched = availableBrands.find(
+                            (b) => b.toLowerCase() === brand.trim().toLowerCase()
+                          );
+                          setBrand(matched || '');
+                        }
+                      }}
+                      className="text-[11px] font-semibold text-blue-600 dark:text-blue-400 hover:underline cursor-pointer"
+                    >
+                      {isCustomBrand ? '📋 Choose from List' : '✏️ Custom Brand'}
+                    </button>
+                  </div>
+
+                  {/* Brand Selector Dropdown */}
+                  <select
                     id="field-brand"
-                    type="text"
-                    value={brand}
+                    value={isCustomBrand ? '__custom__' : (brand || '')}
                     onChange={(e) => {
-                      setBrand(e.target.value);
-                      clearFieldError('brand');
+                      const val = e.target.value;
+                      if (val === '__custom__') {
+                        setIsCustomBrand(true);
+                        setBrand('');
+                        setTimeout(() => document.getElementById('field-brand-custom')?.focus(), 50);
+                      } else {
+                        setIsCustomBrand(false);
+                        setBrand(val);
+                        clearFieldError('brand');
+                      }
                     }}
-                    placeholder="Porsche"
                     className={getInputClass('brand')}
-                  />
+                  >
+                    <option value="">-- Select Brand --</option>
+                    {availableBrands.map((b) => (
+                      <option key={b} value={b}>
+                        {b}
+                      </option>
+                    ))}
+                    <option value="__custom__">✏️ Custom / Other Brand (Type Manually)...</option>
+                  </select>
+
+                  {/* Custom Brand Text Input (shown if Custom Brand is chosen) */}
+                  {isCustomBrand && (
+                    <div className="mt-2 space-y-1">
+                      <input
+                        id="field-brand-custom"
+                        type="text"
+                        value={brand}
+                        onChange={(e) => {
+                          setBrand(e.target.value);
+                          clearFieldError('brand');
+                        }}
+                        placeholder="Type custom brand (e.g. Mg, Lotus, Pagani)"
+                        className={getInputClass('brand')}
+                        autoFocus
+                      />
+                      <p className="text-[11px] text-slate-500 dark:text-zinc-400">
+                        Type any custom brand name if it's not in the list.
+                      </p>
+                    </div>
+                  )}
+
                   {fieldErrors.brand && (
                     <p className="text-[11px] font-medium text-rose-600 dark:text-rose-400 mt-1 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3 shrink-0" />
