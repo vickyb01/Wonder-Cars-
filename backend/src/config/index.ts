@@ -28,3 +28,12 @@ export const DATA_DIR = path.resolve(BACKEND_ROOT, 'data');
 export const DB_PATH = path.join(DATA_DIR, 'db.json');
 export const UPLOADS_DIR = path.resolve(BACKEND_ROOT, 'src', 'uploads');
 
+// Email Lead Notification Configuration
+export const LEAD_NOTIFICATION_EMAIL = process.env.LEAD_NOTIFICATION_EMAIL || 'vickybhelave25@navgurukul.org';
+export const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
+export const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
+export const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
+export const SMTP_USER = process.env.SMTP_USER || '';
+export const SMTP_PASS = process.env.SMTP_PASS || '';
+export const SMTP_FROM = process.env.SMTP_FROM || 'Wonder Cars Leads <leads@wondercars.in>';
+

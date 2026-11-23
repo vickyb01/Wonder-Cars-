@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import type { Enquiry, NotificationItem } from '../models/types.ts';
+import { sendEnquiryNotificationEmail } from '../services/email.service.ts';
 
 export function createEnquiry(req: Request, res: Response): void {
   const body = req.body || {};
@@ -64,6 +65,12 @@ export function createEnquiry(req: Request, res: Response): void {
   db.notifications = [newNotif, ...(db.notifications || [])].slice(0, 100);
   writeDb(db);
   logActivity('System', 'New Enquiry Received', `${name} submitted enquiry for ${carTitle || 'car'}`);
+  
+  // Send email notification to owner/admin (vickybhelave25@navgurukul.org)
+  sendEnquiryNotificationEmail(newEnquiry).catch((err) => {
+    console.error('[EnquiryController] Error sending lead notification email:', err);
+  });
+
   res.status(201).json(newEnquiry);
 }
 

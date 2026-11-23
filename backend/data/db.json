@@ -5058,6 +5058,17 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795411609863",
+      "type": "general",
+      "name": "Test Lead Customer",
+      "email": "leadtest@example.com",
+      "phone": "9876543210",
+      "city": "Preet Vihar, Delhi",
+      "message": "I am interested in scheduling a test drive for the 2025 Scorpio-N tomorrow.",
+      "status": "New",
+      "createdAt": "2026-11-23T05:26:49.863Z"
+    },
+    {
       "id": "enq-1795291320612",
       "type": "test-drive",
       "carId": "car-audi-rs-etron-2023",
@@ -5774,6 +5785,15 @@
   },
   "notifications": [
     {
+      "id": "notif-1795411609863",
+      "title": "New Enquiry: Car Enquiry",
+      "message": "Test Lead Customer enquired about a car (9876543210)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T05:26:49.863Z"
+    },
+    {
       "id": "notif-1795291320612",
       "title": "New Enquiry: Test Drive",
       "message": "Vicky Bhelave enquired about 2023 Audi RS e-tron GT (SM-4910) (7654576543345)",
@@ -5819,6 +5839,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795411609872-mnji",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Test Lead Customer submitted enquiry for car",
+      "timestamp": "2026-11-23T05:26:49.872Z"
+    },
     {
       "id": "act-1795406097624-ojax",
       "userEmail": "admin",
