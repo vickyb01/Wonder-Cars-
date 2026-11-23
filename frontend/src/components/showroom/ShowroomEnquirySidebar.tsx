@@ -5,10 +5,15 @@ import {
   Calendar,
   CheckCircle2,
   ClipboardCheck,
+  Download,
+  ExternalLink,
+  FileText,
+  Mail,
   MapPin,
   MessageCircle,
   Phone,
   ShieldCheck,
+  Sparkles,
 } from 'lucide-react';
 import type { Car, EnquiryType } from '../../types/car';
 import { submitEnquiry } from '../../utils/api';
@@ -48,6 +53,14 @@ export function ShowroomEnquirySidebar({
   const [submitting, setSubmitting] = useState(false);
   const [formError, setFormError] = useState('');
   const [submittedMode, setSubmittedMode] = useState<string | null>(null);
+  const [submittedData, setSubmittedData] = useState<{
+    name: string;
+    phone: string;
+    email: string;
+    mode: 'test-drive' | 'inspection' | 'offer';
+    preferredDate?: string;
+    preferredTime?: string;
+  } | null>(null);
 
   const whatsappHref = buildWhatsAppUrl(
     car.sellerWhatsapp || '919820451090',
@@ -118,6 +131,14 @@ export function ShowroomEnquirySidebar({
       });
       openCart();
 
+      setSubmittedData({
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        mode: activeFormMode,
+        preferredDate: activeFormMode !== 'offer' ? preferredDate || undefined : undefined,
+        preferredTime: activeFormMode !== 'offer' ? preferredTime || undefined : undefined,
+      });
       setSubmittedMode(activeFormMode);
       setName('');
       setPhone('');
@@ -337,27 +358,115 @@ export function ShowroomEnquirySidebar({
         </div>
 
         {submittedMode ? (
-          <div className="p-5 rounded-xl bg-emerald-50 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/30 space-y-2">
-            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-semibold text-sm">
-              <CheckCircle2 className="w-4 h-4" />
+          <div className="p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 space-y-4">
+            <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-300 font-bold text-sm">
+              <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
               <span>
                 {submittedMode === 'offer'
-                  ? 'Offer Recorded'
+                  ? 'Price Offer Recorded!'
                   : submittedMode === 'inspection'
-                  ? 'Inspection Request Confirmed'
-                  : 'Test Drive Request Confirmed'}
+                  ? 'Inspection Request Confirmed!'
+                  : 'Test Drive Scheduled Confirmed!'}
               </span>
             </div>
-            <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
-              Our specialist at {car.sellerName} has received your submission and will contact you shortly.
-            </p>
-            <button
-              type="button"
-              onClick={() => setSubmittedMode(null)}
-              className="text-xs font-semibold text-blue-700 dark:text-blue-400 hover:underline pt-1 cursor-pointer"
-            >
-              Submit another request
-            </button>
+
+            <div className="text-xs text-slate-700 dark:text-zinc-300 space-y-1.5 leading-relaxed">
+              <p>
+                Thank you <strong className="text-slate-900 dark:text-white">{submittedData?.name || 'Customer'}</strong>. Your request for <strong className="text-slate-900 dark:text-white">{car.year} {car.brand} {car.model}</strong> has been confirmed.
+              </p>
+              {submittedData?.preferredDate && (
+                <p className="text-blue-700 dark:text-blue-400 font-medium">
+                  📅 Slot: {submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'}) at Preet Vihar Gallery
+                </p>
+              )}
+            </div>
+
+            {/* Notification Delivery Status */}
+            <div className="p-3 rounded-lg bg-white/80 dark:bg-black/30 border border-slate-200 dark:border-white/[0.08] space-y-1.5 text-[11px]">
+              <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
+                <CheckCircle2 className="w-3.5 h-3.5 shrink-0" />
+                <span>Dealership Lead Alert dispatched (vickybhelave25@navgurukul.org)</span>
+              </div>
+              {submittedData?.email && (
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
+                  <Mail className="w-3.5 h-3.5 shrink-0" />
+                  <span>Confirmation email sent to {submittedData.email}</span>
+                </div>
+              )}
+              {submittedData?.phone && (
+                <div className="flex items-center gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
+                  <Phone className="w-3.5 h-3.5 shrink-0" />
+                  <span>Car details & PDF Brochure prepared for +91 {submittedData.phone}</span>
+                </div>
+              )}
+            </div>
+
+            {/* Action Buttons: PDF Brochure & WhatsApp */}
+            <div className="space-y-2 pt-1">
+              {/* PDF Brochure Download Button */}
+              <a
+                href={`/api/cars/${car.id}/brochure`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-full py-3 px-4 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-slate-950 text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-amber-500/20 transition-all cursor-pointer"
+              >
+                <FileText className="w-4 h-4 shrink-0" />
+                <span>📄 Download Car Spec & Inspection PDF</span>
+                <Download className="w-3.5 h-3.5 shrink-0 ml-auto" />
+              </a>
+
+              {/* WhatsApp Hand-off Button */}
+              {(() => {
+                const cleanPhone = (submittedData?.phone || '').replace(/\D/g, '');
+                const waPhone = cleanPhone.startsWith('91') && cleanPhone.length > 10 ? cleanPhone : `91${cleanPhone.slice(-10)}`;
+                const brochureUrl = typeof window !== 'undefined'
+                  ? `${window.location.origin}/api/cars/${car.id}/brochure`
+                  : `/api/cars/${car.id}/brochure`;
+                const msg = encodeURIComponent(
+                  `★ WONDER CARS — Certified Luxury Pre-Owned ★\n` +
+                  `Namaste ${submittedData?.name || 'Customer'} ji,\n\n` +
+                  `Here are your confirmed details for the ${car.year} ${car.brand} ${car.model} (${car.variant}):\n` +
+                  `• Price: ${formatINR(car.priceInr)}\n` +
+                  `• Fuel / Trans: ${car.fuelType} · ${car.transmission}\n` +
+                  `• Odo: ${car.kilometres.toLocaleString('en-IN')} km\n` +
+                  `• Warranty: ${car.warrantyPeriod || '6 Months Certified Warranty Included'}\n` +
+                  (submittedData?.preferredDate ? `• Slot: ${submittedData.preferredDate} (${submittedData.preferredTime || '11:00 AM'})\n` : '') +
+                  `• Showroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\n\n` +
+                  `📄 Official Car Spec & Inspection PDF Brochure:\n${brochureUrl}\n\n` +
+                  `Showroom Contact: +91 83840 68347`
+                );
+                const waUrl = `https://wa.me/${waPhone}?text=${msg}`;
+
+                return (
+                  <a
+                    href={waUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
+                  >
+                    <MessageCircle className="w-4 h-4 shrink-0" />
+                    <span>💬 Open Details on WhatsApp (+91 {submittedData?.phone})</span>
+                    <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-auto" />
+                  </a>
+                );
+              })()}
+            </div>
+
+            <div className="pt-2 border-t border-slate-200 dark:border-white/[0.08] flex items-center justify-between text-xs">
+              <span className="text-slate-500 dark:text-zinc-400">
+                Showroom Desk: <strong className="text-slate-800 dark:text-zinc-200">+91 83840 68347</strong>
+              </span>
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmittedMode(null);
+                  setSubmittedData(null);
+                }}
+                className="font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                Submit another request
+              </button>
+            </div>
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">

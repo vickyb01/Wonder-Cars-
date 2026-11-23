@@ -2,6 +2,7 @@ import { Router } from 'express';
 import {
   getCars,
   getCarByIdOrSlug,
+  getCarBrochurePdf,
   createCar,
   updateCar,
   deleteCar,
@@ -12,6 +13,10 @@ import {
 import { requireAdmin } from '../middleware/auth.middleware.ts';
 
 const router = Router();
+
+// Public car brochure / printable PDF endpoint
+router.get('/cars/:id/brochure', getCarBrochurePdf);
+router.get('/cars/:id/pdf', getCarBrochurePdf);
 
 // Public & filtered car listings
 router.get('/cars', getCars);

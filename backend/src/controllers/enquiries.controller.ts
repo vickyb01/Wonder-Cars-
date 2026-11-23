@@ -1,7 +1,8 @@
 import type { Request, Response } from 'express';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
-import type { Enquiry, NotificationItem } from '../models/types.ts';
-import { sendEnquiryNotificationEmail } from '../services/email.service.ts';
+import type { Enquiry, NotificationItem, Car } from '../models/types.ts';
+import { sendEnquiryNotificationEmail, sendCustomerConfirmationEmail } from '../services/email.service.ts';
+import { recordCustomerWhatsappMessage } from '../services/whatsapp.service.ts';
 
 export function createEnquiry(req: Request, res: Response): void {
   const body = req.body || {};
@@ -66,10 +67,26 @@ export function createEnquiry(req: Request, res: Response): void {
   writeDb(db);
   logActivity('System', 'New Enquiry Received', `${name} submitted enquiry for ${carTitle || 'car'}`);
   
-  // Send email notification to owner/admin (vickybhelave25@navgurukul.org)
+  // Find car details if carId is present
+  let car: Car | undefined;
+  if (body.carId) {
+    car = db.cars.find((c) => c.id === body.carId || c.slug === body.carId);
+  }
+
+  // 1. Send lead alert email to dealership / owner (vickybhelave25@navgurukul.org)
   sendEnquiryNotificationEmail(newEnquiry).catch((err) => {
     console.error('[EnquiryController] Error sending lead notification email:', err);
   });
+
+  // 2. Send booking confirmation email to customer (if email provided)
+  if (email && email !== 'Not Provided') {
+    sendCustomerConfirmationEmail(newEnquiry, car).catch((err) => {
+      console.error('[EnquiryController] Error sending customer confirmation email:', err);
+    });
+  }
+
+  // 3. Record & prepare WhatsApp details + PDF brochure delivery for customer's phone
+  recordCustomerWhatsappMessage(newEnquiry, car);
 
   res.status(201).json(newEnquiry);
 }

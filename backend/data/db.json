@@ -5058,6 +5058,21 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795412424442",
+      "type": "test-drive",
+      "carId": "car-1795405569642",
+      "carTitle": "2021 Maruti Suzuki Baleno Zeta",
+      "name": "Rohan Sharma",
+      "email": "rohan.sharma.test@gmail.com",
+      "phone": "9811223344",
+      "preferredDate": "2026-11-25",
+      "preferredTime": "11:00 AM",
+      "city": "Delhi NCR",
+      "message": "Would love to test drive this vehicle at the Preet Vihar gallery.",
+      "status": "New",
+      "createdAt": "2026-11-23T05:40:24.442Z"
+    },
+    {
       "id": "enq-1795411609863",
       "type": "general",
       "name": "Test Lead Customer",
@@ -5785,6 +5800,15 @@
   },
   "notifications": [
     {
+      "id": "notif-1795412424442",
+      "title": "New Enquiry: Test Drive",
+      "message": "Rohan Sharma enquired about 2021 Maruti Suzuki Baleno Zeta (9811223344)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T05:40:24.442Z"
+    },
+    {
       "id": "notif-1795411609863",
       "title": "New Enquiry: Car Enquiry",
       "message": "Test Lead Customer enquired about a car (9876543210)",
@@ -5839,6 +5863,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795412424457-6j7e",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Rohan Sharma submitted enquiry for 2021 Maruti Suzuki Baleno Zeta",
+      "timestamp": "2026-11-23T05:40:24.457Z"
+    },
     {
       "id": "act-1795411609872-mnji",
       "userEmail": "System",

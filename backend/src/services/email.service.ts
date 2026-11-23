@@ -1,7 +1,7 @@
 import fs from 'fs';
 import path from 'path';
 import nodemailer from 'nodemailer';
-import type { Enquiry } from '../models/types.ts';
+import type { Enquiry, Car } from '../models/types.ts';
 import {
   DATA_DIR,
   LEAD_NOTIFICATION_EMAIL,
@@ -371,6 +371,260 @@ export async function sendEnquiryNotificationEmail(enquiry: Enquiry): Promise<{
   return {
     success: true,
     message: `Lead email recorded for ${recipient}`,
+    method: 'recorded_locally',
+  };
+}
+
+export function buildCustomerConfirmationHtml(enquiry: Enquiry, car?: Car, baseUrl = 'http://localhost:5000'): string {
+  const cleanPhone = enquiry.phone.replace(/\D/g, '');
+  const carTitle = car
+    ? `${car.year} ${car.brand} ${car.model} (${car.variant})`
+    : enquiry.carTitle || 'Certified Pre-Owned Luxury Car';
+
+  const brochureUrl = car
+    ? `${baseUrl}/api/cars/${car.id}/brochure`
+    : `${baseUrl}/inventory`;
+
+  const waUrl = `https://wa.me/918384068347?text=${encodeURIComponent(
+    `Hello Wonder Cars, I booked a test drive for ${carTitle}. Customer Name: ${enquiry.name}.`
+  )}`;
+
+  const carImageUrl = car?.images?.[0]
+    ? (car.images[0].startsWith('http') ? car.images[0] : `${baseUrl}${car.images[0]}`)
+    : 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=800&q=80';
+
+  const priceText = car ? `₹${car.priceInr.toLocaleString('en-IN')}` : 'Market Competitive';
+  const warrantyText = car?.warrantyPeriod && car.warrantyPeriod !== 'No Warranty'
+    ? `${car.warrantyPeriod} Warranty Included`
+    : '6 Months Certified Warranty Included';
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Confirmation: ${carTitle}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0B0E14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; color: #E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0B0E14; padding: 24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width: 620px; background-color: #121722; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1C2433 0%, #0F141F 100%); padding: 28px 24px; border-bottom: 2px solid #F59E0B; text-align: center;">
+              <div style="font-size: 24px; font-weight: 800; letter-spacing: 2px; color: #F59E0B; text-transform: uppercase; margin-bottom: 4px;">
+                ★ WONDER CARS ★
+              </div>
+              <div style="font-size: 12px; color: #94A3B8; letter-spacing: 1px; text-transform: uppercase;">
+                Certified Pre-Owned Luxury · Preet Vihar, Delhi
+              </div>
+              <div style="margin-top: 14px; display: inline-block; background-color: #10B981; color: #FFFFFF; font-size: 11px; font-weight: 700; padding: 6px 14px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.8px;">
+                ✓ Test Drive Request Confirmed
+              </div>
+            </td>
+          </tr>
+
+          <!-- Welcome Message -->
+          <tr>
+            <td style="padding: 24px 24px 12px 24px;">
+              <h2 style="margin: 0 0 8px 0; font-size: 18px; color: #FFFFFF; font-weight: 700;">
+                Namaste ${enquiry.name} ji,
+              </h2>
+              <p style="margin: 0; font-size: 14px; line-height: 1.6; color: #CBD5E1;">
+                Thank you for choosing <strong>Wonder Cars</strong>. Your private test drive and viewing reservation for the vehicle below has been received and scheduled with our showroom team.
+              </p>
+            </td>
+          </tr>
+
+          <!-- Vehicle Showcase Card -->
+          <tr>
+            <td style="padding: 12px 24px;">
+              <table role="presentation" width="100%" style="background-color: #0A0D14; border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.08); overflow: hidden;">
+                ${
+                  carImageUrl
+                    ? `<tr>
+                        <td>
+                          <img src="${carImageUrl}" alt="${carTitle}" style="width: 100%; height: auto; max-height: 240px; object-fit: cover; display: block;" />
+                        </td>
+                      </tr>`
+                    : ''
+                }
+                <tr>
+                  <td style="padding: 20px;">
+                    <div style="font-size: 18px; font-weight: 700; color: #FFFFFF; margin-bottom: 6px;">
+                      ${carTitle}
+                    </div>
+                    <div style="font-size: 20px; font-weight: 800; color: #F59E0B; margin-bottom: 12px;">
+                      ${priceText}
+                    </div>
+                    
+                    <table role="presentation" width="100%" style="font-size: 12px; color: #94A3B8; border-collapse: collapse;">
+                      ${car ? `
+                      <tr>
+                        <td style="padding: 4px 0; color: #64748B;">Fuel / Transmission:</td>
+                        <td style="padding: 4px 0; color: #E2E8F0; font-weight: 600; text-align: right;">${car.fuelType} · ${car.transmission}</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #64748B;">Odometer:</td>
+                        <td style="padding: 4px 0; color: #E2E8F0; font-weight: 600; text-align: right;">${car.kilometres.toLocaleString('en-IN')} km</td>
+                      </tr>
+                      <tr>
+                        <td style="padding: 4px 0; color: #64748B;">Ownership / State:</td>
+                        <td style="padding: 4px 0; color: #E2E8F0; font-weight: 600; text-align: right;">${car.ownership} · ${car.registrationState}</td>
+                      </tr>
+                      ` : ''}
+                      <tr>
+                        <td style="padding: 4px 0; color: #64748B;">Warranty:</td>
+                        <td style="padding: 4px 0; color: #10B981; font-weight: 700; text-align: right;">${warrantyText}</td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Appointment Slot & Location -->
+          <tr>
+            <td style="padding: 12px 24px;">
+              <table role="presentation" width="100%" style="background-color: #161D2C; border-radius: 12px; padding: 18px; border-left: 4px solid #3B82F6;">
+                <tr>
+                  <td>
+                    <div style="font-size: 11px; text-transform: uppercase; color: #93C5FD; font-weight: 700; letter-spacing: 1px; margin-bottom: 4px;">
+                      📍 Showroom Appointment Details
+                    </div>
+                    <div style="font-size: 14px; font-weight: 700; color: #FFFFFF; margin-bottom: 4px;">
+                      ${enquiry.preferredDate ? `${enquiry.preferredDate} at ${enquiry.preferredTime || '11:00 AM'}` : 'Timing: Flexible (Showroom 10:00 AM - 8:00 PM)'}
+                    </div>
+                    <div style="font-size: 12px; color: #CBD5E1; line-height: 1.5;">
+                      <strong>Location:</strong> Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.
+                    </div>
+                    <div style="font-size: 12px; color: #CBD5E1; margin-top: 4px;">
+                      <strong>Executive Contact:</strong> Naman Jain · <a href="tel:8384068347" style="color: #60A5FA; text-decoration: none; font-weight: 600;">+91 83840 68347</a>
+                    </div>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- PDF Brochure Action Buttons -->
+          <tr>
+            <td style="padding: 16px 24px; text-align: center;">
+              <table role="presentation" width="100%">
+                <tr>
+                  <td align="center" style="padding-bottom: 12px;">
+                    <a href="${brochureUrl}" target="_blank" style="display: inline-block; background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%); color: #000000; font-weight: 800; font-size: 14px; padding: 14px 28px; border-radius: 10px; text-decoration: none; box-shadow: 0 4px 15px rgba(245, 158, 11, 0.35);">
+                      📄 Download Official Car Spec & Inspection PDF
+                    </a>
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <a href="${waUrl}" target="_blank" style="display: inline-block; background-color: #059669; color: #FFFFFF; font-weight: 700; font-size: 13px; padding: 10px 22px; border-radius: 8px; text-decoration: none;">
+                      💬 Chat on WhatsApp with Showroom
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); text-align: center;">
+              <p style="margin: 0 0 6px 0; font-size: 12px; color: #94A3B8;">
+                ★ 210-Point Certified Inspection · 100% Non-Accidental Verified · Clean Documentation ★
+              </p>
+              <p style="margin: 0; font-size: 11px; color: #64748B;">
+                Wonder Cars · Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92
+              </p>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+}
+
+export async function sendCustomerConfirmationEmail(
+  enquiry: Enquiry,
+  car?: Car
+): Promise<{ success: boolean; message: string; method?: string }> {
+  if (!enquiry.email || enquiry.email === 'Not Provided' || !enquiry.email.includes('@')) {
+    return { success: false, message: 'No customer email provided' };
+  }
+
+  const recipient = enquiry.email;
+  const carTitle = car ? `${car.year} ${car.brand} ${car.model}` : (enquiry.carTitle || 'Certified Car');
+  const subject = `🚗 Booking Confirmed: ${carTitle} — Wonder Cars Preet Vihar`;
+  const html = buildCustomerConfirmationHtml(enquiry, car);
+  const text = `Namaste ${enquiry.name} ji,\n\nYour test drive request for ${carTitle} has been confirmed at Wonder Cars Preet Vihar.\nLocation: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nExecutive Contact: Naman Jain (+91 83840 68347)\n\nDownload Car Spec & Inspection PDF Brochure: http://localhost:5000/api/cars/${car?.id || enquiry.carId}/brochure\n\nWonder Cars Team`;
+
+  const logPayload = {
+    id: `email-cust-${Date.now()}`,
+    enquiryId: enquiry.id,
+    recipient,
+    subject,
+    customerName: enquiry.name,
+    customerPhone: enquiry.phone,
+    timestamp: new Date().toISOString(),
+    status: 'pending',
+    method: 'unknown',
+  };
+
+  if (SMTP_USER && SMTP_PASS) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_SECURE,
+        auth: {
+          user: SMTP_USER,
+          pass: SMTP_PASS,
+        },
+      });
+
+      const info = await transporter.sendMail({
+        from: SMTP_FROM,
+        to: recipient,
+        subject,
+        text,
+        html,
+      });
+
+      logPayload.status = 'sent';
+      logPayload.method = `smtp:${SMTP_HOST}`;
+      saveOutgoingEmailLog(logPayload);
+      console.log(`[EmailService] ✓ Customer confirmation email sent to ${recipient}. MessageId: ${info.messageId}`);
+      return { success: true, message: `Confirmation delivered to ${recipient}`, method: 'smtp' };
+    } catch (err: any) {
+      console.error('[EmailService] SMTP customer confirmation send error:', err?.message || err);
+      logPayload.status = 'failed';
+      logPayload.method = 'smtp_error';
+    }
+  }
+
+  logPayload.status = 'recorded_locally';
+  logPayload.method = 'local_record';
+  saveOutgoingEmailLog(logPayload);
+
+  console.log(`\n======================================================`);
+  console.log(`[Customer Confirmation Email Generated for: ${recipient}]`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Customer: ${enquiry.name} | Phone: ${enquiry.phone}`);
+  console.log(`Car: ${carTitle}`);
+  console.log(`Brochure URL: http://localhost:5000/api/cars/${car?.id || enquiry.carId}/brochure`);
+  console.log(`======================================================\n`);
+
+  return {
+    success: true,
+    message: `Customer confirmation email recorded for ${recipient}`,
     method: 'recorded_locally',
   };
 }
