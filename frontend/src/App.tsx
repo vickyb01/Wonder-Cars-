@@ -20,10 +20,23 @@ import { TermsPage } from './pages/TermsPage';
 import { AdminPage } from './pages/AdminPage';
 
 function ScrollToTop() {
-  const { pathname } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    window.scrollTo(0, 0);
-  }, [pathname]);
+    if (hash) {
+      const timer = setTimeout(() => {
+        const id = hash.replace('#', '');
+        const element = document.getElementById(id);
+        if (element) {
+          const yOffset = -80;
+          const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 120);
+      return () => clearTimeout(timer);
+    } else {
+      window.scrollTo(0, 0);
+    }
+  }, [pathname, hash]);
   return null;
 }
 
@@ -58,6 +71,7 @@ function AppLayout({ mapsQuotaExceeded }: { mapsQuotaExceeded: boolean }) {
           <Route path="/compare" element={<Navigate to="/cars" replace />} />
           <Route path="/sell" element={<Navigate to="/cars" replace />} />
           <Route path="/about" element={<AboutPage />} />
+          <Route path="/gallery" element={<Navigate to="/about#gallery" replace />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />

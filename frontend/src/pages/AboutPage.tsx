@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'motion/react';
 import {
   ArrowRight,
@@ -111,6 +111,22 @@ export function AboutPage() {
       active = false;
     };
   }, []);
+
+  const location = useLocation();
+
+  useEffect(() => {
+    if (location.hash === '#gallery') {
+      const timer = setTimeout(() => {
+        const el = document.getElementById('gallery');
+        if (el) {
+          const yOffset = -80;
+          const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: 'smooth' });
+        }
+      }, 150);
+      return () => clearTimeout(timer);
+    }
+  }, [location.hash, liveSettings]);
 
   // Gallery Lightbox Modal State
   const [selectedGalleryIndex, setSelectedGalleryIndex] = useState<number | null>(null);

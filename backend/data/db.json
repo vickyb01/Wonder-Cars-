@@ -1,6 +1,527 @@
 {
   "cars": [
     {
+      "id": "car-1795405569642",
+      "listingCode": "WC-9642",
+      "slug": "2021-maruti-suzuki-baleno-9642",
+      "brand": "Maruti Suzuki",
+      "model": "Baleno",
+      "variant": "Zeta",
+      "year": 2021,
+      "registrationYear": 2021,
+      "registrationDate": "",
+      "priceInr": 535000,
+      "priceType": "Negotiable",
+      "priceLastUpdated": "2026-11-23T03:46:09.642Z",
+      "priceExplanation": "",
+      "discountNote": "",
+      "marketComparisonNote": "",
+      "kilometres": 65000,
+      "fuelType": "Petrol",
+      "transmission": "Automatic",
+      "ownership": "1st Owner",
+      "location": "Delhi, DL",
+      "status": "Available",
+      "featured": false,
+      "category": "Luxury Sedan",
+      "bodyType": "Sedan",
+      "color": "",
+      "interiorColor": "",
+      "seatingCapacity": 5,
+      "doors": 4,
+      "engineCc": "",
+      "engine": "",
+      "cylinders": "",
+      "power": "",
+      "torque": "",
+      "drivetrain": "",
+      "claimedMileage": "",
+      "emissionStandard": "BS6",
+      "registrationState": "",
+      "insuranceValidUntil": "Comprehensive (Valid)",
+      "warrantyPeriod": "6 Months",
+      "warrantyDetails": "Engine, Gearbox, Electronics & 24×7 Roadside Assistance",
+      "images": [
+        "/uploads/1795405469089-11.jpeg",
+        "/uploads/1795405468993-13.jpeg",
+        "/uploads/1795405468761-17.jpeg",
+        "/uploads/1795405468849-16.jpeg",
+        "/uploads/1795405468956-14.jpeg",
+        "/uploads/1795405468907-15.jpeg",
+        "/uploads/1795405469060-12.jpeg",
+        "/uploads/1795405468574-19.jpeg",
+        "/uploads/1795405468655-18.jpeg",
+        "/uploads/1795405469106-0.jpeg"
+      ],
+      "gallery": [
+        {
+          "id": "photo-1795405500055-8",
+          "url": "/uploads/1795405469089-11.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 0
+        },
+        {
+          "id": "photo-1795405500055-6",
+          "url": "/uploads/1795405468993-13.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 1
+        },
+        {
+          "id": "photo-1795405500055-2",
+          "url": "/uploads/1795405468761-17.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 2
+        },
+        {
+          "id": "photo-1795405500055-3",
+          "url": "/uploads/1795405468849-16.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 3
+        },
+        {
+          "id": "photo-1795405500055-5",
+          "url": "/uploads/1795405468956-14.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 4
+        },
+        {
+          "id": "photo-1795405500055-4",
+          "url": "/uploads/1795405468907-15.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 5
+        },
+        {
+          "id": "photo-1795405500055-7",
+          "url": "/uploads/1795405469060-12.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 6
+        },
+        {
+          "id": "photo-1795405500055-0",
+          "url": "/uploads/1795405468574-19.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 7
+        },
+        {
+          "id": "photo-1795405500055-1",
+          "url": "/uploads/1795405468655-18.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 8
+        },
+        {
+          "id": "photo-1795405500055-9",
+          "url": "/uploads/1795405469106-0.jpeg",
+          "category": "Exterior",
+          "angleLabel": "Front-Left 45° View",
+          "order": 9
+        }
+      ],
+      "videoWalkthroughUrl": "",
+      "description": "Well-maintained 2021 Maruti Suzuki Baleno Zeta Petrol Manual in Magna Grey color. Single owner car with 65,000 km driven and complete service record (WSR).",
+      "highlights": [
+        "Single Owner",
+        "65,000 km with Service Record (WSR)",
+        "Magna Grey Color",
+        "Delhi (DL) Registration"
+      ],
+      "features": {
+        "comfort": [],
+        "entertainment": [],
+        "safety": [],
+        "exterior": []
+      },
+      "usageHistory": {
+        "previousOwnersCount": 0,
+        "usageType": "Personal",
+        "drivingPattern": "Not Disclosed",
+        "reasonForSelling": "",
+        "registrationHistoryNote": "",
+        "recordVerification": "Seller Provided"
+      },
+      "exteriorReport": [
+        {
+          "component": "Front bumper",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear bumper",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Bonnet",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Roof",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front left door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front right door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear left door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear right door",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Left and right fenders",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Side mirrors",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Headlights",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Taillights",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Windshield",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Other windows",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Paint condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Visible scratches",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Dents",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rust",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Repainted panels",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "interiorReport": [
+        {
+          "component": "Steering wheel",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Dashboard",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Instrument cluster",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Front seats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Rear seats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Seat belts",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Door panels",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Roof lining",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Floor mats",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "AC system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Power windows",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Music system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Infotainment screen",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Speakers",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Gear lever",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Centre console",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Boot interior",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "mechanicalReport": [
+        {
+          "component": "Engine condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Engine oil leakage check",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Gearbox condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Clutch condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Brake condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Suspension",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Steering",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Battery",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Cooling system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Radiator",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Electrical systems",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Tyre condition",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Exhaust system",
+          "status": "Not Inspected",
+          "notes": ""
+        },
+        {
+          "component": "Warning lights",
+          "status": "Not Inspected",
+          "notes": ""
+        }
+      ],
+      "tyreDetails": [
+        {
+          "position": "Front Left",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Front Right",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Rear Left",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Rear Right",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        },
+        {
+          "position": "Spare Tyre",
+          "brand": "",
+          "treadCondition": "Not Inspected",
+          "replacementNote": ""
+        }
+      ],
+      "batteryDetails": {
+        "brand": "",
+        "age": "",
+        "condition": "Not Inspected",
+        "replacementHistory": ""
+      },
+      "accidentHistory": {
+        "overallStatus": "Not Disclosed",
+        "majorAccidents": "Not Disclosed",
+        "minorAccidents": "Not Disclosed",
+        "repaintedPanels": "Not Inspected",
+        "replacedParts": "Not Disclosed",
+        "floodDamage": "Not Disclosed",
+        "structuralDamage": "Not Inspected",
+        "insuranceClaims": "Verification Pending",
+        "majorMechanicalRepairs": "Not Disclosed",
+        "otherRepairNotes": "",
+        "evidenceNote": ""
+      },
+      "serviceHistory": {
+        "lastServiceDate": "",
+        "records": []
+      },
+      "documents": [
+        {
+          "key": "rc",
+          "label": "Registration Certificate (RC)",
+          "status": "Verified",
+          "note": "Original (Verified)"
+        },
+        {
+          "key": "insurance",
+          "label": "Comprehensive Insurance",
+          "status": "Verified",
+          "note": "Comprehensive (Valid)"
+        },
+        {
+          "key": "puc",
+          "label": "Pollution Under Control (PUC)",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "fitness",
+          "label": "Fitness Certificate",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "noc",
+          "label": "Inter-State NOC",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "hypothecation",
+          "label": "Loan / Hypothecation Status",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "challans",
+          "label": "Pending Traffic Challans",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "transfer",
+          "label": "Ownership Transfer Assistance",
+          "status": "Not Verified",
+          "note": ""
+        },
+        {
+          "key": "tax",
+          "label": "Road Tax Status",
+          "status": "Not Verified",
+          "note": ""
+        }
+      ],
+      "sellerName": "Strada Worli Flagship Gallery",
+      "sellerType": "Certified Gallery",
+      "sellerProfile": "Curated pre-owned automotive dealership in East Delhi with 210-point inspection and warranty.",
+      "sellerPhone": "+91 98204 51090",
+      "sellerWhatsapp": "919820451090",
+      "createdAt": "2026-11-23T03:46:09.642Z"
+    },
+    {
       "id": "car-1795284037654",
       "listingCode": "WC-7654",
       "slug": "2025-mahindra-scorpio-n-7654",
@@ -5298,6 +5819,20 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795405632571-tdap",
+      "userEmail": "admin",
+      "action": "Updated Car",
+      "details": "Updated 2021 Maruti Suzuki Baleno",
+      "timestamp": "2026-11-23T03:47:12.571Z"
+    },
+    {
+      "id": "act-1795405569672-kp1l",
+      "userEmail": "admin",
+      "action": "Created Car",
+      "details": "Added 2021 Maruti Suzuki Baleno (WC-9642)",
+      "timestamp": "2026-11-23T03:46:09.672Z"
+    },
     {
       "id": "act-1795291320644-za0f",
       "userEmail": "System",

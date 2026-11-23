@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowRight, Search, ShieldCheck, X, Sparkles, Car, ChevronRight } from 'lucide-react';
+import { ArrowRight, Search, ShieldCheck, X, Sparkles, Car, ChevronRight, Camera } from 'lucide-react';
 import type { Car as CarType, HomepageSettings, TestimonialItem } from '../types/car';
 import { fetchCars, fetchHomepageSettings, fetchTestimonials } from '../utils/api';
 import { CarCard } from '../components/CarCard';
@@ -356,7 +356,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-row items-center gap-3 pt-2"
+              className="flex flex-wrap items-center gap-3 pt-2"
             >
               <Link
                 to={homepageSettings?.ctaExploreLink || '/cars'}
@@ -364,6 +364,14 @@ export function HomePage() {
               >
                 <span>{homepageSettings?.ctaExploreText || 'Explore Cars'}</span>
                 <ArrowRight className="w-4 h-4" />
+              </Link>
+
+              <Link
+                to="/about#gallery"
+                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-amber-400/60 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap shadow-md shadow-black/20 group cursor-pointer"
+              >
+                <Camera className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
+                <span>View Photos</span>
               </Link>
             </motion.div>
           </div>
