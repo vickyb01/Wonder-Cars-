@@ -127,6 +127,7 @@ import {
   updateAdminUser,
   updateBrand,
   updateBusinessLocation,
+  normalizeMediaUrl,
   updateCar,
   updateCategory,
   updateEnquiry,
@@ -1228,7 +1229,7 @@ export function AdminPage() {
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-10 rounded-lg overflow-hidden bg-slate-200 shrink-0">
                             {car.images?.[0] ? (
-                              <img src={car.images[0]} alt={car.model} className="w-full h-full object-cover" />
+                              <VehicleImage src={car.images[0]} alt={car.model} className="w-full h-full object-cover" />
                             ) : (
                               <div className="w-full h-full flex items-center justify-center text-slate-400"><Car className="w-4 h-4" /></div>
                             )}
@@ -1370,7 +1371,7 @@ export function AdminPage() {
                               <div className="flex items-center gap-3">
                                 <div className="w-14 h-11 rounded-lg overflow-hidden bg-slate-100 shrink-0 border border-slate-200">
                                   {car.images?.[0] ? (
-                                    <img src={car.images[0]} alt={car.model} className="w-full h-full object-cover" />
+                                    <VehicleImage src={car.images[0]} alt={car.model} className="w-full h-full object-cover" />
                                   ) : (
                                     <div className="w-full h-full flex items-center justify-center text-slate-400"><Car className="w-4 h-4" /></div>
                                   )}

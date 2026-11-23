@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { CarFront } from 'lucide-react';
+import { LIVE_BACKEND_URL, normalizeMediaUrl } from '../utils/api';
 
 interface VehicleImageProps {
   src?: string;
@@ -10,25 +11,52 @@ interface VehicleImageProps {
 
 export function VehicleImage({ src, alt, className = '', loading = 'lazy' }: VehicleImageProps) {
   const [failed, setFailed] = useState(false);
-  const [currentSrc, setCurrentSrc] = useState(src);
+  const [currentSrc, setCurrentSrc] = useState<string>('');
+  const triedFallbackRef = useRef(false);
 
   useEffect(() => {
-    setCurrentSrc(src);
+    triedFallbackRef.current = false;
+    if (!src) {
+      setCurrentSrc('');
+      setFailed(true);
+      return;
+    }
+    const normalized = normalizeMediaUrl(src);
+    setCurrentSrc(normalized);
     setFailed(false);
   }, [src]);
 
   function handleError() {
-    if (currentSrc && (currentSrc.startsWith('http://') || currentSrc.startsWith('https://'))) {
-      try {
-        const parsed = new URL(currentSrc);
-        if (parsed.pathname.startsWith('/uploads/')) {
-          setCurrentSrc(parsed.pathname);
+    if (triedFallbackRef.current) {
+      setFailed(true);
+      return;
+    }
+    triedFallbackRef.current = true;
+
+    if (!currentSrc) {
+      setFailed(true);
+      return;
+    }
+
+    // Fallback attempt 1: If full Render URL failed, attempt root relative /uploads (Vercel proxy rewrite)
+    if (currentSrc.includes('/uploads/')) {
+      const match = currentSrc.match(/\/uploads\/[^?#]+/);
+      if (match) {
+        const relativePath = match[0];
+        if (currentSrc !== relativePath) {
+          setCurrentSrc(relativePath);
           return;
+        } else {
+          // If relative failed, attempt absolute Render live backend URL
+          const absoluteUrl = `${LIVE_BACKEND_URL.replace(/\/$/, '')}${relativePath}`;
+          if (currentSrc !== absoluteUrl) {
+            setCurrentSrc(absoluteUrl);
+            return;
+          }
         }
-      } catch {
-        // invalid url
       }
     }
+
     setFailed(true);
   }
 

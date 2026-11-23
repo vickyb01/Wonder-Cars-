@@ -1,12 +1,19 @@
 {
-  "version": 2,
   "buildCommand": "cd frontend && npm install && npm run build",
   "outputDirectory": "frontend/dist",
+  "framework": "vite",
   "rewrites": [
+    {
+      "source": "/uploads/:path*",
+      "destination": "https://wonder-cars-1.onrender.com/uploads/:path*"
+    },
+    {
+      "source": "/api/:path*",
+      "destination": "https://wonder-cars-1.onrender.com/api/:path*"
+    },
     {
       "source": "/(.*)",
       "destination": "/index.html"
     }
   ]
 }
-

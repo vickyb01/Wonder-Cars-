@@ -66,10 +66,12 @@ export const API_BASE = (
 
 export function normalizeMediaUrl(url?: string): string {
   if (!url) return '';
-  if (url.startsWith('http://') || url.startsWith('https://') || url.startsWith('data:')) {
-    return url;
+  const trimmed = url.trim();
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
+    return trimmed;
   }
-  if (url.startsWith('/uploads/')) {
+  if (trimmed.startsWith('/uploads/') || trimmed.startsWith('uploads/')) {
+    const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
     const isLocal =
       typeof window !== 'undefined' &&
       (window.location.hostname === 'localhost' ||
@@ -78,12 +80,12 @@ export function normalizeMediaUrl(url?: string): string {
         window.location.hostname.startsWith('10.') ||
         window.location.hostname.endsWith('.local'));
     if (isLocal) {
-      return url;
+      return cleanPath;
     }
     const base = API_BASE || LIVE_BACKEND_URL;
-    return `${base}${url}`;
+    return `${base}${cleanPath}`;
   }
-  return url;
+  return trimmed;
 }
 
 export function normalizeCarImages(car: Car): Car {
@@ -139,7 +141,8 @@ export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
   const res = await apiFetch(`/api/cars${query ? `?${query}` : ''}`, {
     headers: filters.includeDrafts === 'true' ? authHeaders() : undefined,
   });
-  return handleJsonResponse<Car[]>(res);
+  const data = await handleJsonResponse<Car[]>(res);
+  return Array.isArray(data) ? data.map(normalizeCarImages) : [];
 }
 
 export async function fetchCarDetail(id: string): Promise<{
@@ -148,11 +151,16 @@ export async function fetchCarDetail(id: string): Promise<{
   sellerOtherCars: Car[];
 }> {
   const res = await apiFetch(`/api/cars/${encodeURIComponent(id)}`);
-  return handleJsonResponse<{
+  const data = await handleJsonResponse<{
     car: Car;
     similar: Car[];
     sellerOtherCars: Car[];
   }>(res);
+  return {
+    car: normalizeCarImages(data.car),
+    similar: (data.similar || []).map(normalizeCarImages),
+    sellerOtherCars: (data.sellerOtherCars || []).map(normalizeCarImages),
+  };
 }
 
 export async function submitEnquiry(payload: {
@@ -266,7 +274,8 @@ export async function createCar(payload: Partial<Car>): Promise<Car> {
     },
     body: JSON.stringify(payload),
   });
-  return handleJsonResponse<Car>(res);
+  const data = await handleJsonResponse<Car>(res);
+  return normalizeCarImages(data);
 }
 
 export async function updateCar(id: string, payload: Partial<Car>): Promise<Car> {
@@ -278,7 +287,8 @@ export async function updateCar(id: string, payload: Partial<Car>): Promise<Car>
     },
     body: JSON.stringify(payload),
   });
-  return handleJsonResponse<Car>(res);
+  const data = await handleJsonResponse<Car>(res);
+  return normalizeCarImages(data);
 }
 
 export async function deleteCar(id: string): Promise<void> {
@@ -298,7 +308,7 @@ export async function uploadCarImages(files: File[]): Promise<string[]> {
     body: formData,
   });
   const data = await handleJsonResponse<{ urls: string[]; storage?: string; warning?: string }>(res);
-  return data.urls;
+  return (data.urls || []).map((u) => normalizeMediaUrl(u));
 }
 
 export async function fetchCloudinaryStatus(): Promise<{

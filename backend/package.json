@@ -4,8 +4,11 @@
   "type": "module",
   "scripts": {
     "dev": "tsx server.ts",
-    "build": "node -e \"const fs = require('fs'), { execSync } = require('child_process'); if (fs.existsSync('../frontend')) { console.log('Building frontend from backend build hook...'); execSync('npm --prefix ../frontend install && npm --prefix ../frontend run build', { stdio: 'inherit' }); } else { console.log('Backend build ready'); }\"",
+    "build": "node -e \"console.log('Wonder Cars Backend build ready')\"",
     "start": "tsx server.ts"
+  },
+  "engines": {
+    "node": ">=18.0.0"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

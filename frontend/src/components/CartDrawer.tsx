@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatINR } from '../utils/format';
+import { VehicleImage } from './VehicleImage';
 
 interface CartDrawerProps {
   showroomPhone?: string;
@@ -208,7 +209,7 @@ export function CartDrawer({ showroomPhone = '+919810023456' }: CartDrawerProps)
                             title={`View ${item.carTitle}`}
                           >
                             {item.carImage ? (
-                              <img
+                              <VehicleImage
                                 src={item.carImage}
                                 alt={item.carTitle}
                                 className="w-20 h-16 sm:w-24 sm:h-18 object-cover rounded-lg border border-slate-200 dark:border-white/10 shrink-0 group-hover:scale-[1.03] group-hover:border-blue-500/50 dark:group-hover:border-blue-400/50 transition-all duration-200"
