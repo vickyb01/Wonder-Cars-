@@ -1,5 +1,48 @@
 [
   {
+    "id": "email-cust-1795417159174",
+    "enquiryId": "enq-1795417158923",
+    "recipient": "amit.verma@example.com",
+    "subject": "🚗 Booking Confirmed: 2021 Maruti Suzuki Baleno — Wonder Cars Preet Vihar",
+    "customerName": "Amit Verma",
+    "customerPhone": "9899123456",
+    "timestamp": "2026-11-23T06:59:19.174Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-owner-1795417159168",
+    "enquiryId": "enq-1795417158923",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "Amit Verma",
+    "customerPhone": "9899123456",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "bookingTime": "Monday, 23 November 2026 at 12:29:18 pm",
+    "attachedFiles": [
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.html",
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.pdf"
+    ],
+    "timestamp": "2026-11-23T06:59:19.168Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-1795415607251",
+    "enquiryId": "enq-1795415607214",
+    "recipient": "vickybhelave25@navgurukul.org",
+    "subject": "🚗 New Lead: Yash Sinh (+91 8007316645) — Wonder Cars",
+    "customerName": "Yash Sinh",
+    "customerPhone": "8007316645",
+    "timestamp": "2026-11-23T06:33:27.251Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
     "id": "email-cust-1795414527221",
     "enquiryId": "enq-1795414527157",
     "recipient": "vickybhelave25@navgurukul.org",

@@ -1,5 +1,37 @@
 [
   {
+    "id": "wa-doc-1795417159131",
+    "enquiryId": "enq-1795417158923",
+    "customerName": "Amit Verma",
+    "customerPhone": "9899123456",
+    "recipientWhatsapp": "+919899123456",
+    "showroomWhatsapp": "9272150600",
+    "messageType": "document",
+    "carId": "car-1795405569642",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "documentUrl": "http://localhost:5000/api/cars/car-1795405569642/brochure",
+    "filename": "WonderCars-MarutiSuzuki-Baleno-Inspection-Brochure.pdf",
+    "caption": "★ WONDER CARS ★ Booking Dossier & 210-Point Inspection Certificate\nVehicle: 2021 Maruti Suzuki Baleno (Zeta)\nPrice: ₹5,35,000 · Warranty: 6 Months Warranty Included\nSlot: 2026-11-26 (01:00 PM)\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92\nConcierge: Naman Jain (+91 83840 68347)",
+    "timestamp": "2026-11-23T06:59:19.131Z",
+    "status": "pending_credentials",
+    "provider": "simulation_logged",
+    "error": "Live delivery ready: WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID not set in .env"
+  },
+  {
+    "id": "wa-1795415607255",
+    "enquiryId": "enq-1795415607214",
+    "customerName": "Yash Sinh",
+    "customerPhone": "8007316645",
+    "recipientWhatsapp": "+918007316645",
+    "carId": "car-1795284037654",
+    "carTitle": "2025 Mahindra Scorpio-N",
+    "brochureUrl": "http://localhost:5000/api/cars/car-1795284037654/brochure",
+    "messageText": "★ *WONDER CARS — Certified Luxury Pre-Owned* ★\nShop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\nNamaste *Yash Sinh* ji,\nThank you for reaching out for a test drive / viewing at Wonder Cars. Here are the official details of the car you selected:\n🚗 *Vehicle:* 2025 Mahindra Scorpio-N (Z8 S Diesel AT)\n💰 *Asking Price:* ₹20,50,000\n⚡ *Fuel / Transmission:* Diesel · Automatic\n🛣️ *Odometer:* 25,000 km\n🛡️ *Certification:* 6 Months Warranty Included (210-Point Inspected)\n📅 *Scheduled Slot:* 2026-11-24 (01:00 PM)\n📍 *Location:* Preet Vihar, East Delhi 110092\n📄 *Official Car Spec & Inspection PDF Brochure:*\nhttp://localhost:5000/api/cars/car-1795284037654/brochure\nOur Showroom Concierge (*Naman Jain: +91 83840 68347*) is preparing this vehicle for you. Feel free to reply here if you have any questions!",
+    "waDirectUrl": "https://wa.me/918007316645?text=%E2%98%85%20*WONDER%20CARS%20%E2%80%94%20Certified%20Luxury%20Pre-Owned*%20%E2%98%85%0AShop%20No.-3%2C%20Rajkamal%20Sadan%2C%20Preet%20Vihar%2C%20Commercial%20Complex%2C%20Delhi-92%0ANamaste%20*Yash%20Sinh*%20ji%2C%0AThank%20you%20for%20reaching%20out%20for%20a%20test%20drive%20%2F%20viewing%20at%20Wonder%20Cars.%20Here%20are%20the%20official%20details%20of%20the%20car%20you%20selected%3A%0A%F0%9F%9A%97%20*Vehicle%3A*%202025%20Mahindra%20Scorpio-N%20(Z8%20S%20Diesel%20AT)%0A%F0%9F%92%B0%20*Asking%20Price%3A*%20%E2%82%B920%2C50%2C000%0A%E2%9A%A1%20*Fuel%20%2F%20Transmission%3A*%20Diesel%20%C2%B7%20Automatic%0A%F0%9F%9B%A3%EF%B8%8F%20*Odometer%3A*%2025%2C000%20km%0A%F0%9F%9B%A1%EF%B8%8F%20*Certification%3A*%206%20Months%20Warranty%20Included%20(210-Point%20Inspected)%0A%F0%9F%93%85%20*Scheduled%20Slot%3A*%202026-11-24%20(01%3A00%20PM)%0A%F0%9F%93%8D%20*Location%3A*%20Preet%20Vihar%2C%20East%20Delhi%20110092%0A%F0%9F%93%84%20*Official%20Car%20Spec%20%26%20Inspection%20PDF%20Brochure%3A*%0Ahttp%3A%2F%2Flocalhost%3A5000%2Fapi%2Fcars%2Fcar-1795284037654%2Fbrochure%0AOur%20Showroom%20Concierge%20(*Naman%20Jain%3A%20%2B91%2083840%2068347*)%20is%20preparing%20this%20vehicle%20for%20you.%20Feel%20free%20to%20reply%20here%20if%20you%20have%20any%20questions!",
+    "timestamp": "2026-11-23T06:33:27.255Z",
+    "status": "prepared"
+  },
+  {
     "id": "wa-1795414527230",
     "enquiryId": "enq-1795414527157",
     "customerName": "Vicky Bhelave",

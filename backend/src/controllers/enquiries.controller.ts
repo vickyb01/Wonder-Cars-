@@ -1,8 +1,32 @@
 import type { Request, Response } from 'express';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import type { Enquiry, NotificationItem, Car } from '../models/types.ts';
-import { sendEnquiryNotificationEmail, sendCustomerConfirmationEmail } from '../services/email.service.ts';
-import { recordCustomerWhatsappMessage } from '../services/whatsapp.service.ts';
+import {
+  sendShowroomOwnerBookingEmail,
+  sendCustomerConfirmationEmail,
+} from '../services/email.service.ts';
+import { sendAutomaticCustomerWhatsappDocument } from '../services/whatsapp.service.ts';
+import { saveCarBrochureFile, generateCarBrochureHtml } from './cars.controller.ts';
+
+// Track recent submissions to prevent duplicate PDF & email dispatches
+const recentSubmissions = new Map<string, number>();
+
+function checkDuplicateBooking(phone: string, carId?: string, preferredDate?: string): boolean {
+  const clean = phone.replace(/\D/g, '').slice(-10);
+  const key = `${clean}_${carId || 'none'}_${preferredDate || 'none'}`;
+  const now = Date.now();
+  const lastTime = recentSubmissions.get(key);
+  if (lastTime && now - lastTime < 25_000) {
+    return true;
+  }
+  recentSubmissions.set(key, now);
+  if (recentSubmissions.size > 200) {
+    for (const [k, v] of recentSubmissions.entries()) {
+      if (now - v > 60_000) recentSubmissions.delete(k);
+    }
+  }
+  return false;
+}
 
 export function createEnquiry(req: Request, res: Response): void {
   const body = req.body || {};
@@ -35,6 +59,16 @@ export function createEnquiry(req: Request, res: Response): void {
   }
 
   const db = readDb();
+
+  // Prevent duplicate PDF sending on repeated submissions
+  const isDuplicate = checkDuplicateBooking(phone, body.carId, body.preferredDate);
+  if (isDuplicate) {
+    console.warn(`[EnquiryController] Duplicate booking submission prevented for ${phone}. Skipping duplicate PDF and email dispatches.`);
+    const existing = db.enquiries.find((e) => e.phone.replace(/\D/g, '').slice(-10) === phone.replace(/\D/g, '').slice(-10));
+    res.status(200).json(existing || { id: `enq-dup-${Date.now()}`, message: 'Booking already recorded' });
+    return;
+  }
+
   const carTitle = body.carTitle ? String(body.carTitle) : undefined;
   const newEnquiry: Enquiry = {
     id: `enq-${Date.now()}`,
@@ -53,6 +87,7 @@ export function createEnquiry(req: Request, res: Response): void {
     createdAt: new Date().toISOString(),
   };
 
+  // 1. Save booking to database first (guarantees booking is saved even if WhatsApp/Email fails)
   db.enquiries.unshift(newEnquiry);
   const newNotif: NotificationItem = {
     id: `notif-${Date.now()}`,
@@ -67,26 +102,42 @@ export function createEnquiry(req: Request, res: Response): void {
   writeDb(db);
   logActivity('System', 'New Enquiry Received', `${name} submitted enquiry for ${carTitle || 'car'}`);
   
-  // Find car details if carId is present
+  // 2. Find car details
   let car: Car | undefined;
   if (body.carId) {
     car = db.cars.find((c) => c.id === body.carId || c.slug === body.carId);
   }
 
-  // 1. Send lead alert email to dealership / owner (vickybhelave25@navgurukul.org)
-  sendEnquiryNotificationEmail(newEnquiry).catch((err) => {
-    console.error('[EnquiryController] Error sending lead notification email:', err);
+  // 3. Run existing PDF/brochure generation logic (reuses existing design & layout)
+  let brochureHtml = '';
+  let brochureUrl = '';
+  if (car) {
+    try {
+      const saved = saveCarBrochureFile(car);
+      brochureHtml = saved.brochureHtml;
+      brochureUrl = saved.brochureUrl;
+    } catch (err) {
+      console.error('[EnquiryController] Error generating brochure file:', err);
+      brochureHtml = generateCarBrochureHtml(car);
+    }
+  }
+
+  // 4. Automatically send existing PDF as document attachment to Customer's WhatsApp
+  sendAutomaticCustomerWhatsappDocument(newEnquiry, car, brochureUrl).catch((err) => {
+    console.error('[EnquiryController] Error dispatching automatic WhatsApp document:', err);
   });
 
-  // 2. Send booking confirmation email to customer (if email provided)
+  // 5. Automatically send Showroom Owner Notification Email (subject: "New Car Booking Received" with attached PDF)
+  sendShowroomOwnerBookingEmail(newEnquiry, car, brochureHtml).catch((err) => {
+    console.error('[EnquiryController] Error sending showroom owner notification email:', err);
+  });
+
+  // 6. Send customer confirmation email if customer email provided
   if (email && email !== 'Not Provided') {
     sendCustomerConfirmationEmail(newEnquiry, car).catch((err) => {
       console.error('[EnquiryController] Error sending customer confirmation email:', err);
     });
   }
-
-  // 3. Record & prepare WhatsApp details + PDF brochure delivery for customer's phone
-  recordCustomerWhatsappMessage(newEnquiry, car);
 
   res.status(201).json(newEnquiry);
 }

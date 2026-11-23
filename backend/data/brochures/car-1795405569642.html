@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>2021 Maruti Suzuki Baleno (WC-9642) — Wonder Cars Official Brochure</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap');
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background-color: #0d1117;
+      color: #1e293b;
+      line-height: 1.5;
+      padding-bottom: 40px;
+    }
+
+    /* Interactive Top Action Bar (hidden on print) */
+    .top-action-bar {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #161b22;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+    }
+
+    .action-brand {
+      color: #f59e0b;
+      font-weight: 800;
+      font-size: 15px;
+      letter-spacing: 1px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-buttons {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 700;
+      padding: 9px 18px;
+      border-radius: 8px;
+      text-decoration: none;
+      cursor: pointer;
+      border: none;
+      transition: all 0.2s;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+      color: #000;
+      box-shadow: 0 2px 10px rgba(245, 158, 11, 0.35);
+    }
+    .btn-primary:hover {
+      background: #eab308;
+    }
+
+    .btn-whatsapp {
+      background-color: #10b981;
+      color: #fff;
+    }
+    .btn-whatsapp:hover {
+      background-color: #059669;
+    }
+
+    .btn-secondary {
+      background: rgba(255, 255, 255, 0.1);
+      color: #e2e8f0;
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.18);
+    }
+
+    /* Main Printable Sheet */
+    .document-page {
+      max-width: 900px;
+      margin: 24px auto;
+      background: #ffffff;
+      border-radius: 12px;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      padding: 36px 40px;
+      border: 1px solid #e2e8f0;
+      position: relative;
+    }
+
+    /* Dealership Header */
+    .doc-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 2px solid #f59e0b;
+      padding-bottom: 18px;
+      margin-bottom: 24px;
+      gap: 20px;
+    }
+
+    .brand-title {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      line-height: 1.2;
+    }
+
+    .brand-tagline {
+      font-size: 11px;
+      font-weight: 700;
+      color: #d97706;
+      text-transform: uppercase;
+      letter-spacing: 1.2px;
+      margin-top: 3px;
+    }
+
+    .brand-address {
+      font-size: 11.5px;
+      color: #64748b;
+      margin-top: 5px;
+      line-height: 1.4;
+      max-width: 440px;
+    }
+
+    .doc-meta {
+      text-align: right;
+    }
+
+    .listing-badge {
+      display: inline-block;
+      background: #0f172a;
+      color: #f59e0b;
+      font-family: 'Space Grotesk', monospace;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 5px 12px;
+      border-radius: 6px;
+      letter-spacing: 1px;
+    }
+
+    .doc-status {
+      font-size: 11px;
+      color: #10b981;
+      font-weight: 700;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    /* Vehicle Banner */
+    .vehicle-intro {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .car-main-title {
+      font-size: 24px;
+      font-weight: 800;
+      color: #0f172a;
+      line-height: 1.2;
+    }
+
+    .car-variant {
+      font-size: 14px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    .car-pricing {
+      text-align: right;
+      shrink: 0;
+    }
+
+    .car-price {
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 26px;
+      font-weight: 800;
+      color: #d97706;
+      line-height: 1;
+    }
+
+    .car-price-note {
+      font-size: 11px;
+      font-weight: 600;
+      color: #64748b;
+      margin-top: 4px;
+    }
+
+    /* Image Gallery Grid */
+    .image-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 12px;
+      margin-bottom: 24px;
+    }
+
+    .hero-img {
+      width: 100%;
+      height: 280px;
+      object-fit: cover;
+      border-radius: 10px;
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
+    }
+
+    .thumb-column {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .thumb-img {
+      width: 100%;
+      height: 84px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid #e2e8f0;
+      background: #f1f5f9;
+    }
+
+    /* Quick Specifications Grid */
+    .section-heading {
+      font-size: 14px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: #0f172a;
+      border-left: 3px solid #f59e0b;
+      padding-left: 10px;
+      margin-bottom: 12px;
+    }
+
+    .spec-table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-bottom: 24px;
+      font-size: 12.5px;
+    }
+
+    .spec-table td {
+      padding: 9px 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+
+    .spec-table tr:nth-child(even) {
+      background-color: #f8fafc;
+    }
+
+    .spec-label {
+      font-weight: 600;
+      color: #64748b;
+      width: 25%;
+    }
+
+    .spec-val {
+      font-weight: 700;
+      color: #0f172a;
+      width: 25%;
+    }
+
+    /* 210-Point Inspection Section */
+    .inspection-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 10px;
+      padding: 16px 20px;
+      margin-bottom: 24px;
+    }
+
+    .inspection-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      font-weight: 600;
+      color: #1e293b;
+    }
+
+    .check-icon {
+      color: #10b981;
+      font-weight: 800;
+      font-size: 14px;
+    }
+
+    /* Certification Guarantee */
+    .guarantee-box {
+      border: 1.5px dashed #f59e0b;
+      background: #fffbeb;
+      border-radius: 10px;
+      padding: 16px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+
+    .guarantee-title {
+      font-size: 14px;
+      font-weight: 800;
+      color: #92400e;
+    }
+
+    .guarantee-desc {
+      font-size: 11.5px;
+      color: #78350f;
+      margin-top: 3px;
+    }
+
+    .seal-badge {
+      background: #f59e0b;
+      color: #000;
+      font-family: 'Space Grotesk', sans-serif;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      white-space: nowrap;
+    }
+
+    /* Dealership Contact Footer */
+    .doc-footer {
+      border-top: 2px solid #e2e8f0;
+      padding-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11.5px;
+      color: #64748b;
+    }
+
+    .footer-highlight {
+      color: #0f172a;
+      font-weight: 700;
+    }
+
+    /* Print Formatting Rules */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
+        padding-bottom: 0 !important;
+      }
+      .no-print {
+        display: none !important;
+      }
+      .document-page {
+        box-shadow: none !important;
+        border: none !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        max-width: 100% !important;
+      }
+      @page {
+        size: A4 portrait;
+        margin: 12mm 15mm;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Top Sticky Bar for user controls -->
+  <div class="top-action-bar no-print">
+    <div class="action-brand">
+      <span>★ WONDER CARS SPEC SHEET & BROCHURE</span>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-primary" onclick="window.print()">
+        🖨️ Print / Save as PDF
+      </button>
+      <a class="btn btn-whatsapp" id="waShareBtn" href="#" target="_blank">
+        💬 Send via WhatsApp
+      </a>
+      <a class="btn btn-secondary" href="/">
+        ← Showroom
+      </a>
+    </div>
+  </div>
+
+  <div class="document-page">
+    
+    <!-- Dealership Header -->
+    <div class="doc-header">
+      <div>
+        <div class="brand-title">WONDER CARS</div>
+        <div class="brand-tagline">Certified Pre-Owned Luxury Gallery</div>
+        <div class="brand-address">
+          Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.<br>
+          <strong>Dealership Contact:</strong> Naman Jain · +91 83840 68347 · amanjain.nj784@gmail.com
+        </div>
+      </div>
+      <div class="doc-meta">
+        <div class="listing-badge">WC-9642</div>
+        <div class="doc-status">✓ 100% Verified & Inspected</div>
+        <div style="font-size: 10px; color: #94a3b8; margin-top: 4px;">Date: 23 Nov 2026</div>
+      </div>
+    </div>
+
+    <!-- Vehicle Intro & Price -->
+    <div class="vehicle-intro">
+      <div>
+        <h1 class="car-main-title">2021 Maruti Suzuki Baleno</h1>
+        <div class="car-variant">Zeta ·  Exterior</div>
+      </div>
+      <div class="car-pricing">
+        <div class="car-price">₹5,35,000</div>
+        <div class="car-price-note">Negotiable Price · Ex-Gallery</div>
+      </div>
+    </div>
+
+    <!-- Images Showcase -->
+    <div class="image-grid">
+      <img src="/uploads/1795405469089-11.jpeg" alt="Maruti Suzuki Baleno" class="hero-img" />
+      <div class="thumb-column">
+        <img src="/uploads/1795405468993-13.jpeg" alt="Angle" class="thumb-img" /><img src="/uploads/1795405468761-17.jpeg" alt="Angle" class="thumb-img" /><img src="/uploads/1795405468849-16.jpeg" alt="Angle" class="thumb-img" />
+      </div>
+    </div>
+
+    <!-- Quick Specifications Table -->
+    <div class="section-heading">Certified Vehicle Specifications</div>
+    <table class="spec-table">
+      <tr>
+        <td class="spec-label">Model Year</td>
+        <td class="spec-val">2021</td>
+        <td class="spec-label">Kilometers</td>
+        <td class="spec-val">65,000 km</td>
+      </tr>
+      <tr>
+        <td class="spec-label">Fuel Type</td>
+        <td class="spec-val">Petrol</td>
+        <td class="spec-label">Transmission</td>
+        <td class="spec-val">Automatic</td>
+      </tr>
+      <tr>
+        <td class="spec-label">Ownership</td>
+        <td class="spec-val">1st Owner</td>
+        <td class="spec-label">Registration State</td>
+        <td class="spec-val"></td>
+      </tr>
+      <tr>
+        <td class="spec-label">Engine / Power</td>
+        <td class="spec-val">Standard </td>
+        <td class="spec-label">Drivetrain</td>
+        <td class="spec-val">Standard</td>
+      </tr>
+      <tr>
+        <td class="spec-label">Insurance Valid Until</td>
+        <td class="spec-val">Comprehensive (Valid)</td>
+        <td class="spec-label">Certified Warranty</td>
+        <td class="spec-val" style="color: #10b981;">6 Months Warranty Included</td>
+      </tr>
+    </table>
+
+    <!-- 210-Point Quality Inspection Summary -->
+    <div class="inspection-box">
+      <div class="section-heading" style="border: none; padding-left: 0; margin-bottom: 6px;">
+        ★ 210-Point Inspection & Verification Passed
+      </div>
+      <div class="inspection-grid">
+        <div class="check-item"><span class="check-icon">✓</span> Engine & Drivetrain Tested</div>
+        <div class="check-item"><span class="check-icon">✓</span> Transmission Smoothness OK</div>
+        <div class="check-item"><span class="check-icon">✓</span> Non-Accidental Verified</div>
+        <div class="check-item"><span class="check-icon">✓</span> Suspension & Brakes Inspected</div>
+        <div class="check-item"><span class="check-icon">✓</span> Electronics & AC Tested</div>
+        <div class="check-item"><span class="check-icon">✓</span> Genuine Odometer Verified</div>
+        <div class="check-item"><span class="check-icon">✓</span> Complete RC & Document Check</div>
+        <div class="check-item"><span class="check-icon">✓</span> No Bank / Hypothecation Issues</div>
+        <div class="check-item"><span class="check-icon">✓</span> Professional Detailing Done</div>
+      </div>
+    </div>
+
+    <!-- Dealership Guarantee Banner -->
+    <div class="guarantee-box">
+      <div>
+        <div class="guarantee-title">Wonder Cars Certified Ownership Guarantee</div>
+        <div class="guarantee-desc">
+          Every vehicle undergoes our 210-point rigorous technical inspection. Comes with peace-of-mind warranty and clear legal title guarantee.
+        </div>
+      </div>
+      <div class="seal-badge">★ 100% Certified ★</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="doc-footer">
+      <div>
+        <span class="footer-highlight">Wonder Cars Preet Vihar</span> · Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92
+      </div>
+      <div>
+        Call / WhatsApp: <span class="footer-highlight">+91 83840 68347</span> · Mon–Sun (10:00 AM – 8:00 PM)
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+    const cleanPhone = '8384068347';
+    const waText = encodeURIComponent(
+      '★ Wonder Cars Official Car Brochure ★\n' +
+      'Vehicle: 2021 Maruti Suzuki Baleno (WC-9642)\n' +
+      'Price: ₹5,35,000\n' +
+      'Fuel/Trans: Petrol · Automatic\n' +
+      'Warranty: 6 Months Warranty Included\n' +
+      'Location: Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92\n\n' +
+      'View Full Brochure: ' + window.location.href
+    );
+    const waLink = document.getElementById('waShareBtn');
+    if (waLink) {
+      waLink.href = 'https://wa.me/?text=' + waText;
+    }
+
+    // Auto-trigger print / save-as-PDF prompt when auto=true or print=true
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auto') === 'true' || urlParams.get('print') === 'true') {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          window.print();
+        }, 500);
+      });
+    }
+  </script>
+
+</body>
+</html>

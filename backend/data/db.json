@@ -5058,6 +5058,36 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795417158923",
+      "type": "test-drive",
+      "carId": "car-1795405569642",
+      "carTitle": "2021 Maruti Suzuki Baleno Zeta",
+      "name": "Amit Verma",
+      "email": "amit.verma@example.com",
+      "phone": "9899123456",
+      "preferredDate": "2026-11-26",
+      "preferredTime": "01:00 PM",
+      "city": "Delhi NCR",
+      "message": "Requesting test drive with complete inspection document.",
+      "status": "New",
+      "createdAt": "2026-11-23T06:59:18.923Z"
+    },
+    {
+      "id": "enq-1795415607214",
+      "type": "test-drive",
+      "carId": "car-1795284037654",
+      "carTitle": "2025 Mahindra Scorpio-N (WC-7654)",
+      "name": "Yash Sinh",
+      "email": "Not Provided",
+      "phone": "8007316645",
+      "preferredDate": "2026-11-24",
+      "preferredTime": "01:00 PM",
+      "city": "Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.",
+      "message": "Car testing karna hai hame bro",
+      "status": "New",
+      "createdAt": "2026-11-23T06:33:27.214Z"
+    },
+    {
       "id": "enq-1795414527157",
       "type": "test-drive",
       "carId": "car-1795405569642",
@@ -5815,6 +5845,24 @@
   },
   "notifications": [
     {
+      "id": "notif-1795417158923",
+      "title": "New Enquiry: Test Drive",
+      "message": "Amit Verma enquired about 2021 Maruti Suzuki Baleno Zeta (9899123456)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T06:59:18.923Z"
+    },
+    {
+      "id": "notif-1795415607214",
+      "title": "New Enquiry: Test Drive",
+      "message": "Yash Sinh enquired about 2025 Mahindra Scorpio-N (WC-7654) (8007316645)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T06:33:27.214Z"
+    },
+    {
       "id": "notif-1795414527157",
       "title": "New Enquiry: Test Drive",
       "message": "Vicky Bhelave enquired about 2021 Maruti Suzuki Baleno (WC-9642) (9272150600)",
@@ -5887,6 +5935,20 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795417158983-8aih",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Amit Verma submitted enquiry for 2021 Maruti Suzuki Baleno Zeta",
+      "timestamp": "2026-11-23T06:59:18.983Z"
+    },
+    {
+      "id": "act-1795415607237-v086",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Yash Sinh submitted enquiry for 2025 Mahindra Scorpio-N (WC-7654)",
+      "timestamp": "2026-11-23T06:33:27.237Z"
+    },
     {
       "id": "act-1795414527193-rnp4",
       "userEmail": "System",

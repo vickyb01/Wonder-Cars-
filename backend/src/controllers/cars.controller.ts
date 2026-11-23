@@ -1,3 +1,5 @@
+import fs from 'fs';
+import path from 'path';
 import type { Request, Response } from 'express';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import { isAdminRequest } from '../middleware/auth.middleware.ts';
@@ -6,6 +8,7 @@ import { matchesBrandFilter } from '../utils/brands.ts';
 import { DEFAULT_EMI_CONFIG, estimateCarEmiWithConfig } from '../utils/emi.ts';
 import { slugifyCar } from '../utils/slugify.ts';
 import type { Car } from '../models/types.ts';
+import { DATA_DIR, APP_BASE_URL } from '../config/index.ts';
 
 export function getCars(req: Request, res: Response): void {
   const db = readDb();
@@ -323,6 +326,30 @@ export function getCarBrochurePdf(req: Request, res: Response): void {
     return;
   }
 
+  const html = generateCarBrochureHtml(car);
+  res.setHeader('Content-Type', 'text/html; charset=utf-8');
+  res.send(html);
+}
+
+export function saveCarBrochureFile(
+  car: Car,
+  baseUrl = APP_BASE_URL
+): { filePath: string; fileName: string; brochureHtml: string; brochureUrl: string } {
+  const brochureDir = path.join(DATA_DIR, 'brochures');
+  if (!fs.existsSync(brochureDir)) {
+    fs.mkdirSync(brochureDir, { recursive: true });
+  }
+  const brochureHtml = generateCarBrochureHtml(car, baseUrl);
+  const cleanBrand = (car.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
+  const cleanModel = (car.model || 'Model').replace(/[^a-zA-Z0-9_-]/g, '');
+  const fileName = `WonderCars-${cleanBrand}-${cleanModel}-Brochure.html`;
+  const filePath = path.join(brochureDir, `${car.id}.html`);
+  fs.writeFileSync(filePath, brochureHtml, 'utf-8');
+  const brochureUrl = `${baseUrl.replace(/\/$/, '')}/api/cars/${car.id}/brochure`;
+  return { filePath, fileName, brochureHtml, brochureUrl };
+}
+
+export function generateCarBrochureHtml(car: Car, baseUrl = APP_BASE_URL): string {
   const priceFormatted = `₹${car.priceInr.toLocaleString('en-IN')}`;
   const kmFormatted = `${car.kilometres.toLocaleString('en-IN')} km`;
   const warrantyText = car.warrantyPeriod && car.warrantyPeriod !== 'No Warranty'
@@ -332,7 +359,7 @@ export function getCarBrochurePdf(req: Request, res: Response): void {
   const heroImage = car.images?.[0] || 'https://images.unsplash.com/photo-1617814076367-b759c7d7e738?auto=format&fit=crop&w=1200&q=80';
   const additionalImages = (car.images || []).slice(1, 4);
 
-  const html = `<!DOCTYPE html>
+  return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -892,9 +919,6 @@ export function getCarBrochurePdf(req: Request, res: Response): void {
 
 </body>
 </html>`;
-
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.send(html);
 }
 
 

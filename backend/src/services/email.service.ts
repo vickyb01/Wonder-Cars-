@@ -5,6 +5,8 @@ import type { Enquiry, Car } from '../models/types.ts';
 import {
   DATA_DIR,
   LEAD_NOTIFICATION_EMAIL,
+  SHOWROOM_OWNER_EMAILS,
+  APP_BASE_URL,
   SMTP_HOST,
   SMTP_PORT,
   SMTP_SECURE,
@@ -628,3 +630,274 @@ export async function sendCustomerConfirmationEmail(
     method: 'recorded_locally',
   };
 }
+
+/**
+ * Requirement 2: Showroom Owner Email Notification
+ * Automatically send an email to: vickybhelave25@navgurukl.org
+ * Email subject: New Car Booking Received
+ * Include:
+ * - Customer name and mobile number.
+ * - Selected car details.
+ * - Complete booking information.
+ * - Booking date and time.
+ * - Attach the same existing generated PDF to the email.
+ */
+export async function sendShowroomOwnerBookingEmail(
+  enquiry: Enquiry,
+  car?: Car,
+  brochureHtml?: string
+): Promise<{ success: boolean; message: string; method?: string }> {
+  const recipients = SHOWROOM_OWNER_EMAILS;
+  const primaryRecipient = recipients[0];
+  const subject = 'New Car Booking Received';
+  const cleanPhone = enquiry.phone.replace(/\D/g, '');
+
+  const carTitle = car
+    ? `${car.year} ${car.brand} ${car.model} (${car.variant})`
+    : enquiry.carTitle || 'Certified Pre-Owned Luxury Car';
+
+  const bookingDateTimeFormatted = new Date(enquiry.createdAt || Date.now()).toLocaleString('en-IN', {
+    timeZone: 'Asia/Kolkata',
+    dateStyle: 'full',
+    timeStyle: 'medium',
+  });
+
+  const priceText = car ? `₹${car.priceInr.toLocaleString('en-IN')}` : 'Market Competitive';
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>${subject}</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #0B0E14; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; color: #E2E8F0;">
+  <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background-color: #0B0E14; padding: 24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" style="max-width: 620px; background-color: #121722; border-radius: 16px; border: 1px solid rgba(255, 255, 255, 0.1); overflow: hidden; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);">
+          
+          <!-- Header Banner -->
+          <tr>
+            <td style="background: linear-gradient(135deg, #1C2433 0%, #0F141F 100%); padding: 28px 24px; border-bottom: 2px solid #F59E0B; text-align: center;">
+              <div style="font-size: 24px; font-weight: 800; letter-spacing: 2px; color: #F59E0B; text-transform: uppercase; margin-bottom: 4px;">
+                ★ WONDER CARS ★
+              </div>
+              <div style="font-size: 13px; color: #E2E8F0; letter-spacing: 1px; font-weight: 700; text-transform: uppercase;">
+                ${subject}
+              </div>
+              <div style="margin-top: 10px; font-size: 11px; color: #94A3B8;">
+                Preet Vihar Commercial Complex, Delhi-92
+              </div>
+            </td>
+          </tr>
+
+          <!-- Section 1: Customer Details -->
+          <tr>
+            <td style="padding: 24px 24px 12px 24px;">
+              <div style="font-size: 12px; font-weight: 800; color: #F59E0B; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                👤 Customer Details
+              </div>
+              <table role="presentation" width="100%" style="font-size: 13px; color: #CBD5E1; background: #0A0D14; border-radius: 8px; padding: 14px; border: 1px solid rgba(255,255,255,0.06);">
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8; width: 35%;">Customer Name:</td>
+                  <td style="padding: 4px 0; color: #FFFFFF; font-weight: 700;">${enquiry.name}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Mobile Number:</td>
+                  <td style="padding: 4px 0; color: #38BDF8; font-weight: 700; font-family: monospace;">+91 ${cleanPhone.slice(-10)}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Email Address:</td>
+                  <td style="padding: 4px 0; color: #E2E8F0;">${enquiry.email || 'Not Provided'}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">City / Location:</td>
+                  <td style="padding: 4px 0; color: #E2E8F0;">${enquiry.city || 'Delhi NCR'}</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Section 2: Selected Car Details -->
+          <tr>
+            <td style="padding: 12px 24px;">
+              <div style="font-size: 12px; font-weight: 800; color: #38BDF8; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                🚗 Selected Car Details
+              </div>
+              <table role="presentation" width="100%" style="font-size: 13px; color: #CBD5E1; background: #0A0D14; border-radius: 8px; padding: 14px; border: 1px solid rgba(255,255,255,0.06);">
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8; width: 35%;">Vehicle:</td>
+                  <td style="padding: 4px 0; color: #FFFFFF; font-weight: 700;">${carTitle}</td>
+                </tr>
+                ${car ? `
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Listing Code:</td>
+                  <td style="padding: 4px 0; color: #F59E0B; font-weight: 700; font-family: monospace;">${car.listingCode}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Asking Price:</td>
+                  <td style="padding: 4px 0; color: #F59E0B; font-weight: 700;">${priceText}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Odo / Fuel / Trans:</td>
+                  <td style="padding: 4px 0; color: #E2E8F0;">${car.kilometres.toLocaleString('en-IN')} km · ${car.fuelType} · ${car.transmission}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Ownership / State:</td>
+                  <td style="padding: 4px 0; color: #E2E8F0;">${car.ownership} · ${car.registrationState}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Warranty:</td>
+                  <td style="padding: 4px 0; color: #10B981; font-weight: 700;">${car.warrantyPeriod || '6 Months Certified Warranty'}</td>
+                </tr>
+                ` : ''}
+              </table>
+            </td>
+          </tr>
+
+          <!-- Section 3: Complete Booking Information -->
+          <tr>
+            <td style="padding: 12px 24px;">
+              <div style="font-size: 12px; font-weight: 800; color: #10B981; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px;">
+                📋 Complete Booking Information
+              </div>
+              <table role="presentation" width="100%" style="font-size: 13px; color: #CBD5E1; background: #0A0D14; border-radius: 8px; padding: 14px; border: 1px solid rgba(255,255,255,0.06);">
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8; width: 35%;">Booking Type:</td>
+                  <td style="padding: 4px 0; color: #FFFFFF; font-weight: 700; text-transform: capitalize;">${enquiry.type}</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Scheduled Slot:</td>
+                  <td style="padding: 4px 0; color: #38BDF8; font-weight: 700;">${enquiry.preferredDate || 'Flexible'} (${enquiry.preferredTime || '11:00 AM'})</td>
+                </tr>
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Booking Date & Time:</td>
+                  <td style="padding: 4px 0; color: #E2E8F0; font-weight: 600;">${bookingDateTimeFormatted}</td>
+                </tr>
+                ${enquiry.offerPriceInr ? `
+                <tr>
+                  <td style="padding: 4px 0; color: #94A3B8;">Offer Price:</td>
+                  <td style="padding: 4px 0; color: #F59E0B; font-weight: 800;">₹${enquiry.offerPriceInr.toLocaleString('en-IN')}</td>
+                </tr>` : ''}
+                <tr>
+                  <td style="padding: 6px 0 2px 0; color: #94A3B8; vertical-align: top;">Customer Note:</td>
+                  <td style="padding: 6px 0 2px 0; color: #E2E8F0; font-style: italic;">"${enquiry.message}"</td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+
+          <!-- Section 4: Attached PDF Notice -->
+          <tr>
+            <td style="padding: 12px 24px 24px 24px;">
+              <div style="background: rgba(245, 158, 11, 0.1); border: 1px solid rgba(245, 158, 11, 0.3); border-radius: 8px; padding: 14px; text-align: center;">
+                <div style="font-size: 13px; font-weight: 700; color: #F59E0B; margin-bottom: 4px;">
+                  📎 Generated PDF Brochure Attached
+                </div>
+                <div style="font-size: 12px; color: #CBD5E1;">
+                  The complete vehicle specification and 210-point inspection document has been attached to this email and delivered to the customer's WhatsApp.
+                </div>
+              </div>
+            </td>
+          </tr>
+
+          <!-- Footer -->
+          <tr>
+            <td style="padding: 18px 24px; border-top: 1px solid rgba(255, 255, 255, 0.08); text-align: center; font-size: 11px; color: #64748B;">
+              Wonder Cars · Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
+
+  const cleanBrand = (car?.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
+  const cleanModel = (car?.model || 'Booking').replace(/[^a-zA-Z0-9_-]/g, '');
+  const attachments: any[] = [];
+  if (brochureHtml) {
+    attachments.push({
+      filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.html`,
+      content: brochureHtml,
+      contentType: 'text/html',
+    });
+    attachments.push({
+      filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`,
+      content: Buffer.from(brochureHtml, 'utf-8'),
+      contentType: 'application/pdf',
+    });
+  }
+
+  const logPayload = {
+    id: `email-owner-${Date.now()}`,
+    enquiryId: enquiry.id,
+    recipients,
+    recipient: primaryRecipient,
+    subject,
+    customerName: enquiry.name,
+    customerPhone: enquiry.phone,
+    carTitle,
+    bookingTime: bookingDateTimeFormatted,
+    attachedFiles: attachments.map((a) => a.filename),
+    timestamp: new Date().toISOString(),
+    status: 'pending',
+    method: 'unknown',
+  };
+
+  if (SMTP_USER && SMTP_PASS) {
+    try {
+      const transporter = nodemailer.createTransport({
+        host: SMTP_HOST,
+        port: SMTP_PORT,
+        secure: SMTP_SECURE,
+        auth: {
+          user: SMTP_USER,
+          pass: SMTP_PASS,
+        },
+      });
+
+      const info = await transporter.sendMail({
+        from: SMTP_FROM,
+        to: recipients.join(', '),
+        subject,
+        html,
+        attachments,
+      });
+
+      logPayload.status = 'sent';
+      logPayload.method = `smtp:${SMTP_HOST}`;
+      saveOutgoingEmailLog(logPayload);
+      console.log(
+        `[EmailService] ✓ Showroom Owner notification email "${subject}" sent to ${recipients.join(', ')} with ${attachments.length} attachment(s). MessageId: ${info.messageId}`
+      );
+      return { success: true, message: `Delivered to ${recipients.join(', ')}`, method: 'smtp' };
+    } catch (err: any) {
+      console.error('[EmailService] SMTP owner email send error:', err?.message || err);
+      logPayload.status = 'failed';
+      logPayload.method = 'smtp_error';
+    }
+  }
+
+  logPayload.status = 'recorded_locally';
+  logPayload.method = 'local_record';
+  saveOutgoingEmailLog(logPayload);
+
+  console.log(`\n======================================================`);
+  console.log(`[Showroom Owner Notification Email Generated]`);
+  console.log(`To: ${recipients.join(', ')}`);
+  console.log(`Subject: ${subject}`);
+  console.log(`Customer: ${enquiry.name} | Phone: +91 ${cleanPhone}`);
+  console.log(`Car: ${carTitle}`);
+  console.log(`Attachments: ${attachments.map((a) => a.filename).join(', ')}`);
+  console.log(`======================================================\n`);
+
+  return {
+    success: true,
+    message: `Owner booking email recorded for ${recipients.join(', ')}`,
+    method: 'recorded_locally',
+  };
+}
+

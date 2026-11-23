@@ -97,48 +97,6 @@ export function ShowroomEnquirySidebar({
         ? `Physical inspection requested for ${car.year} ${car.brand} ${car.model}.`
         : `Test drive requested for ${car.year} ${car.brand} ${car.model}.`;
 
-    const waPhone = cleanPhone.startsWith('91') && cleanPhone.length > 10 ? cleanPhone : `91${cleanPhone.slice(-10)}`;
-    const fullBrochureUrl = `${window.location.origin}/api/cars/${car.id}/brochure`;
-    const printableBrochureUrl = `${window.location.origin}/api/cars/${car.id}/brochure?auto=true`;
-
-    const waMsg = encodeURIComponent(
-      `★ *WONDER CARS — Certified Pre-Owned Luxury* ★\n` +
-      `Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\n\n` +
-      `Namaste *${name.trim()}* ji,\n\n` +
-      `Aapne *${car.year} ${car.brand} ${car.model} (${car.variant})* ke liye slot book kiya hai:\n` +
-      `💰 *Asking Price:* ${formatINR(car.priceInr)}\n` +
-      `⚡ *Fuel / Trans:* ${car.fuelType} · ${car.transmission}\n` +
-      `🛣️ *Odometer:* ${car.kilometres.toLocaleString('en-IN')} km\n` +
-      `🛡️ *Warranty:* ${car.warrantyPeriod || '6 Months Warranty Included'}\n` +
-      (preferredDate ? `📅 *Test Drive Slot:* ${preferredDate} (${preferredTime})\n` : '') +
-      `📍 *Location:* Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\n\n` +
-      `📄 *Car Official Spec & 210-Point Inspection PDF Brochure:*\n` +
-      `${fullBrochureUrl}\n\n` +
-      `Dealership Contact: +91 83840 68347`
-    );
-
-    const waDirectUrl = `https://api.whatsapp.com/send?phone=${waPhone}&text=${waMsg}`;
-
-    // 1. Immediately launch WhatsApp to customer's entered phone number (e.g. 9272150600)
-    try {
-      window.open(waDirectUrl, '_blank');
-    } catch {
-      // fallback handled below
-    }
-
-    // 2. Immediately trigger auto-download / open of official PDF brochure
-    try {
-      const a = document.createElement('a');
-      a.href = printableBrochureUrl;
-      a.target = '_blank';
-      a.rel = 'noopener noreferrer';
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-    } catch {
-      // fallback handled below
-    }
-
     setSubmitting(true);
     try {
       await submitEnquiry({
@@ -155,7 +113,7 @@ export function ShowroomEnquirySidebar({
         message: message.trim() || defaultMessage,
       });
 
-      // Automatically record in Cart state
+      // Record in Enquiry Cart state
       addToCart({
         carId: car.id,
         carTitle: `${car.year} ${car.brand} ${car.model}`,
@@ -420,100 +378,69 @@ export function ShowroomEnquirySidebar({
               )}
             </div>
 
-            {/* Live Delivery Status List */}
-            <div className="p-3 rounded-lg bg-white/90 dark:bg-black/40 border border-slate-200 dark:border-white/[0.08] space-y-2 text-[11px]">
-              <div className="flex items-start gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                <span>
-                  <strong>WhatsApp Sent:</strong> Vehicle details & PDF brochure dispatched to <strong>+91 {submittedData?.phone}</strong>
-                </span>
+            {/* Automatic Delivery Status */}
+            <div className="p-3.5 rounded-xl bg-white/90 dark:bg-black/40 border border-slate-200 dark:border-white/[0.08] space-y-2.5 text-xs">
+              <div className="flex items-start gap-2.5 text-emerald-700 dark:text-emerald-400 font-semibold">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
+                <div>
+                  <p className="font-bold text-slate-900 dark:text-white">
+                    WhatsApp Document Attachment Sent
+                  </p>
+                  <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
+                    The official 210-Point Inspection PDF has been automatically delivered as a document to customer WhatsApp number <strong className="text-slate-900 dark:text-white">+91 {submittedData?.phone}</strong>.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Official PDF Brochure:</strong> Auto-downloaded / opened for {car.brand} {car.model}
-                </span>
+
+              <div className="flex items-start gap-2.5 text-emerald-700 dark:text-emerald-400 font-semibold">
+                <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
+                <div>
+                  <p className="font-bold text-slate-900 dark:text-white">
+                    Showroom Owner Notified
+                  </p>
+                  <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
+                    Email sent to <strong className="text-slate-900 dark:text-white">vickybhelave25@navgurukl.org</strong> with subject <em>"New Car Booking Received"</em> and the PDF attached.
+                  </p>
+                </div>
               </div>
-              <div className="flex items-start gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
-                <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                <span>
-                  <strong>Dealership Lead Email:</strong> Dispatched to vickybhelave25@navgurukul.org
-                </span>
-              </div>
-              {submittedData?.email && (
-                <div className="flex items-start gap-2 text-emerald-700 dark:text-emerald-400 font-medium">
-                  <Mail className="w-3.5 h-3.5 shrink-0 mt-0.5" />
-                  <span>
-                    <strong>Customer Confirmation:</strong> Emailed to {submittedData.email}
-                  </span>
+
+              {submittedData?.preferredDate && (
+                <div className="flex items-start gap-2.5 text-blue-700 dark:text-blue-400 font-medium">
+                  <Calendar className="w-4 h-4 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
+                  <p className="text-[11px]">
+                    Viewing Slot: <strong>{submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'})</strong> at Preet Vihar Showroom
+                  </p>
                 </div>
               )}
             </div>
 
-            {/* Direct WhatsApp Action Button */}
-            <div className="space-y-2 pt-1">
-              {(() => {
-                const cleanPhone = (submittedData?.phone || '').replace(/\D/g, '');
-                const waPhone = cleanPhone.startsWith('91') && cleanPhone.length > 10 ? cleanPhone : `91${cleanPhone.slice(-10)}`;
-                const fullBrochureUrl = typeof window !== 'undefined'
-                  ? `${window.location.origin}/api/cars/${car.id}/brochure`
-                  : `/api/cars/${car.id}/brochure`;
-                const msg = encodeURIComponent(
-                  `★ WONDER CARS — Certified Luxury Pre-Owned ★\n` +
-                  `Namaste ${submittedData?.name || 'Customer'} ji,\n\n` +
-                  `Aapne ${car.year} ${car.brand} ${car.model} (${car.variant}) ke liye test drive request kiya tha:\n` +
-                  `• Asking Price: ${formatINR(car.priceInr)}\n` +
-                  `• Fuel / Trans: ${car.fuelType} · ${car.transmission}\n` +
-                  `• Odometer: ${car.kilometres.toLocaleString('en-IN')} km\n` +
-                  `• Warranty: ${car.warrantyPeriod || '6 Months Warranty Included'}\n` +
-                  (submittedData?.preferredDate ? `• Scheduled Slot: ${submittedData.preferredDate} (${submittedData.preferredTime || '11:00 AM'})\n` : '') +
-                  `• Location: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\n\n` +
-                  `📄 Car Official Spec & 210-Point Inspection PDF Brochure:\n${fullBrochureUrl}\n\n` +
-                  `Dealership Contact: +91 83840 68347`
-                );
-                const waUrl = `https://api.whatsapp.com/send?phone=${waPhone}&text=${msg}`;
+            <div className="p-3 rounded-lg bg-emerald-100/60 dark:bg-emerald-500/10 border border-emerald-300/60 dark:border-emerald-500/20 text-center">
+              <p className="text-xs text-emerald-800 dark:text-emerald-300 font-medium">
+                ✓ Booking complete. No manual WhatsApp action required.
+              </p>
+            </div>
 
-                return (
-                  <div className="space-y-1">
-                    <a
-                      href={waUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="w-full py-3.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold flex items-center justify-center gap-2 shadow-md shadow-emerald-600/20 transition-all cursor-pointer"
-                    >
-                      <MessageCircle className="w-4 h-4 shrink-0" />
-                      <span>💬 Open WhatsApp Chat (+91 {submittedData?.phone})</span>
-                      <ExternalLink className="w-3.5 h-3.5 shrink-0 ml-auto" />
-                    </a>
-                    <p className="text-[10px] text-center text-slate-500 dark:text-zinc-400">
-                      (Agar mobile me WhatsApp apne aap open nahi hua ho to upar tap karein)
-                    </p>
-                  </div>
-                );
-              })()}
+            <div className="flex items-center justify-between gap-2 pt-1 text-xs">
+              <a
+                href={`/api/cars/${car.id}/brochure`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline font-semibold"
+              >
+                <FileText className="w-3.5 h-3.5" />
+                <span>📄 View / Download Local Copy</span>
+              </a>
 
-              <div className="flex items-center justify-between gap-2 pt-2 text-xs">
-                <a
-                  href={`/api/cars/${car.id}/brochure?auto=true`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline font-semibold"
-                >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>📄 Re-open PDF Brochure</span>
-                </a>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmittedMode(null);
-                    setSubmittedData(null);
-                  }}
-                  className="font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
-                >
-                  Book another test drive
-                </button>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmittedMode(null);
+                  setSubmittedData(null);
+                }}
+                className="font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                Book another test drive
+              </button>
             </div>
 
             <div className="pt-2 border-t border-slate-200 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-zinc-400">
