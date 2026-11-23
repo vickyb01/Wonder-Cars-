@@ -1,5 +1,27 @@
 [
   {
+    "id": "email-cust-1795414527221",
+    "enquiryId": "enq-1795414527157",
+    "recipient": "vickybhelave25@navgurukul.org",
+    "subject": "🚗 Booking Confirmed: 2021 Maruti Suzuki Baleno — Wonder Cars Preet Vihar",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "timestamp": "2026-11-23T06:15:27.222Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-1795414527212",
+    "enquiryId": "enq-1795414527157",
+    "recipient": "vickybhelave25@navgurukul.org",
+    "subject": "🚗 New Lead: Vicky Bhelave (+91 9272150600) — Wonder Cars",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "timestamp": "2026-11-23T06:15:27.212Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
     "id": "email-cust-1795412424470",
     "enquiryId": "enq-1795412424442",
     "recipient": "rohan.sharma.test@gmail.com",

@@ -878,6 +878,16 @@ export function getCarBrochurePdf(req: Request, res: Response): void {
     if (waLink) {
       waLink.href = 'https://wa.me/?text=' + waText;
     }
+
+    // Auto-trigger print / save-as-PDF prompt when auto=true or print=true
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get('auto') === 'true' || urlParams.get('print') === 'true') {
+      window.addEventListener('load', function() {
+        setTimeout(function() {
+          window.print();
+        }, 500);
+      });
+    }
   </script>
 
 </body>

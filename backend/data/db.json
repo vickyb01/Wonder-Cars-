@@ -5058,6 +5058,21 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795414527157",
+      "type": "test-drive",
+      "carId": "car-1795405569642",
+      "carTitle": "2021 Maruti Suzuki Baleno (WC-9642)",
+      "name": "Vicky Bhelave",
+      "email": "vickybhelave25@navgurukul.org",
+      "phone": "9272150600",
+      "preferredDate": "2026-11-24",
+      "preferredTime": "11:00 AM",
+      "city": "Delhi, DL",
+      "message": "book now",
+      "status": "New",
+      "createdAt": "2026-11-23T06:15:27.157Z"
+    },
+    {
       "id": "enq-1795412424442",
       "type": "test-drive",
       "carId": "car-1795405569642",
@@ -5800,6 +5815,15 @@
   },
   "notifications": [
     {
+      "id": "notif-1795414527157",
+      "title": "New Enquiry: Test Drive",
+      "message": "Vicky Bhelave enquired about 2021 Maruti Suzuki Baleno (WC-9642) (9272150600)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T06:15:27.157Z"
+    },
+    {
       "id": "notif-1795412424442",
       "title": "New Enquiry: Test Drive",
       "message": "Rohan Sharma enquired about 2021 Maruti Suzuki Baleno Zeta (9811223344)",
@@ -5863,6 +5887,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795414527193-rnp4",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "Vicky Bhelave submitted enquiry for 2021 Maruti Suzuki Baleno (WC-9642)",
+      "timestamp": "2026-11-23T06:15:27.193Z"
+    },
     {
       "id": "act-1795412424457-6j7e",
       "userEmail": "System",

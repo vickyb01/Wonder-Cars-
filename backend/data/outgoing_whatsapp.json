@@ -1,5 +1,19 @@
 [
   {
+    "id": "wa-1795414527230",
+    "enquiryId": "enq-1795414527157",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "recipientWhatsapp": "+919272150600",
+    "carId": "car-1795405569642",
+    "carTitle": "2021 Maruti Suzuki Baleno",
+    "brochureUrl": "http://localhost:5000/api/cars/car-1795405569642/brochure",
+    "messageText": "★ *WONDER CARS — Certified Luxury Pre-Owned* ★\nShop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92\nNamaste *Vicky Bhelave* ji,\nThank you for reaching out for a test drive / viewing at Wonder Cars. Here are the official details of the car you selected:\n🚗 *Vehicle:* 2021 Maruti Suzuki Baleno (Zeta)\n💰 *Asking Price:* ₹5,35,000\n⚡ *Fuel / Transmission:* Petrol · Automatic\n🛣️ *Odometer:* 65,000 km\n🛡️ *Certification:* 6 Months Warranty Included (210-Point Inspected)\n📅 *Scheduled Slot:* 2026-11-24 (11:00 AM)\n📍 *Location:* Preet Vihar, East Delhi 110092\n📄 *Official Car Spec & Inspection PDF Brochure:*\nhttp://localhost:5000/api/cars/car-1795405569642/brochure\nOur Showroom Concierge (*Naman Jain: +91 83840 68347*) is preparing this vehicle for you. Feel free to reply here if you have any questions!",
+    "waDirectUrl": "https://wa.me/919272150600?text=%E2%98%85%20*WONDER%20CARS%20%E2%80%94%20Certified%20Luxury%20Pre-Owned*%20%E2%98%85%0AShop%20No.-3%2C%20Rajkamal%20Sadan%2C%20Preet%20Vihar%2C%20Commercial%20Complex%2C%20Delhi-92%0ANamaste%20*Vicky%20Bhelave*%20ji%2C%0AThank%20you%20for%20reaching%20out%20for%20a%20test%20drive%20%2F%20viewing%20at%20Wonder%20Cars.%20Here%20are%20the%20official%20details%20of%20the%20car%20you%20selected%3A%0A%F0%9F%9A%97%20*Vehicle%3A*%202021%20Maruti%20Suzuki%20Baleno%20(Zeta)%0A%F0%9F%92%B0%20*Asking%20Price%3A*%20%E2%82%B95%2C35%2C000%0A%E2%9A%A1%20*Fuel%20%2F%20Transmission%3A*%20Petrol%20%C2%B7%20Automatic%0A%F0%9F%9B%A3%EF%B8%8F%20*Odometer%3A*%2065%2C000%20km%0A%F0%9F%9B%A1%EF%B8%8F%20*Certification%3A*%206%20Months%20Warranty%20Included%20(210-Point%20Inspected)%0A%F0%9F%93%85%20*Scheduled%20Slot%3A*%202026-11-24%20(11%3A00%20AM)%0A%F0%9F%93%8D%20*Location%3A*%20Preet%20Vihar%2C%20East%20Delhi%20110092%0A%F0%9F%93%84%20*Official%20Car%20Spec%20%26%20Inspection%20PDF%20Brochure%3A*%0Ahttp%3A%2F%2Flocalhost%3A5000%2Fapi%2Fcars%2Fcar-1795405569642%2Fbrochure%0AOur%20Showroom%20Concierge%20(*Naman%20Jain%3A%20%2B91%2083840%2068347*)%20is%20preparing%20this%20vehicle%20for%20you.%20Feel%20free%20to%20reply%20here%20if%20you%20have%20any%20questions!",
+    "timestamp": "2026-11-23T06:15:27.230Z",
+    "status": "prepared"
+  },
+  {
     "id": "wa-1795412424474",
     "enquiryId": "enq-1795412424442",
     "customerName": "Rohan Sharma",
