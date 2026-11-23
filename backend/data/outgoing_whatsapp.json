@@ -1,5 +1,23 @@
 [
   {
+    "id": "wa-doc-1795461930737",
+    "enquiryId": "enq-1795461930567",
+    "customerName": "vicky bhelave",
+    "customerPhone": "9272150600",
+    "recipientWhatsapp": "+919272150600",
+    "showroomWhatsapp": "8384068347",
+    "messageType": "document",
+    "carId": "car-1795284037654",
+    "carTitle": "2025 Mahindra Scorpio-N (Z8 S Diesel AT)",
+    "documentUrl": "http://localhost:5000/api/cars/car-1795284037654/brochure",
+    "filename": "WonderCars-Mahindra-Scorpio-N-Inspection-Brochure.pdf",
+    "caption": "★ WONDER CARS ★ Booking Dossier & 210-Point Inspection Certificate\nVehicle: 2025 Mahindra Scorpio-N (Z8 S Diesel AT)\nPrice: ₹20,50,000 · Warranty: 6 Months Warranty Included\nSlot: 2026-12-10 (01:00 PM)\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nConcierge: Naman Jain (+91 83840 68347)",
+    "timestamp": "2026-11-23T19:25:30.737Z",
+    "status": "pending_credentials",
+    "provider": "simulation_logged",
+    "error": "WHATSAPP_ACCESS_TOKEN and/or WHATSAPP_PHONE_NUMBER_ID are not configured in .env. Live WhatsApp document delivery is suspended until Meta Cloud API credentials are provided."
+  },
+  {
     "id": "wa-doc-1795442865056",
     "enquiryId": "enq-1795442864998",
     "customerName": "vicky bhelave",

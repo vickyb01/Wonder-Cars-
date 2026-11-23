@@ -1,9 +1,9 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowRight, Search, ShieldCheck, X, Sparkles, Car, ChevronRight, Camera } from 'lucide-react';
-import type { Car as CarType, HomepageSettings, TestimonialItem } from '../types/car';
-import { fetchCars, fetchHomepageSettings, fetchTestimonials } from '../utils/api';
+import { ArrowRight, Search, X, Sparkles, Car, ChevronRight, Camera } from 'lucide-react';
+import type { Car as CarType, HomepageSettings } from '../types/car';
+import { fetchCars, fetchHomepageSettings } from '../utils/api';
 import { CarCard } from '../components/CarCard';
 import { SeoHead } from '../components/SeoHead';
 import { VehicleImage } from '../components/VehicleImage';
@@ -63,27 +63,6 @@ const WHY_CHOOSE_PILLARS = [
   },
 ];
 
-const TESTIMONIALS = [
-  {
-    quote:
-      'Acquired a 2022 Porsche 911 Carrera S from the Preet Vihar showroom. Inspection readings and verified service records were shared upfront.',
-    name: 'Aarav Mehta',
-    role: 'Managing Director, Mehta Precision Forgings · New Delhi',
-  },
-  {
-    quote:
-      'Wonder Cars handled both the valuation of my vehicle and my upgrade within five business days, including seamless state RC transfer.',
-    name: 'Neha Singhania',
-    role: 'Principal Architect, Studio N+S · New Delhi',
-  },
-  {
-    quote:
-      'No pushy brokers, zero inflated listing prices. The car arrived in pristine condition looking genuinely factory-fresh.',
-    name: 'Karthik Subramanian',
-    role: 'Founder, Veloce Cloud Systems · New Delhi',
-  },
-];
-
 export function HomePage() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
@@ -98,7 +77,6 @@ export function HomePage() {
   const [latestCars, setLatestCars] = useState<CarType[]>([]);
   const [latestVisibleCount, setLatestVisibleCount] = useState(6);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
-  const [dynamicTestimonials, setDynamicTestimonials] = useState<TestimonialItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   // Hero 3-image auto carousel state
@@ -189,17 +167,15 @@ export function HomePage() {
     let active = true;
     async function load() {
       try {
-        const [all, homeSet, tests] = await Promise.all([
+        const [all, homeSet] = await Promise.all([
           fetchCars({ status: 'Available', sort: 'newest' }).catch(() => []),
           fetchHomepageSettings().catch(() => null),
-          fetchTestimonials().catch(() => []),
         ]);
         if (!active) return;
         setAllCars(all);
         setFeaturedCars(all.filter((c) => c.featured).slice(0, 6));
         setLatestCars(all);
         if (homeSet) setHomepageSettings(homeSet);
-        if (tests && tests.length > 0) setDynamicTestimonials(tests);
       } catch {
         // Keep empty gracefully
       } finally {
@@ -661,61 +637,29 @@ export function HomePage() {
         </div>
       </section>
 
-      {/* 5. Why Choose Us + Adjacent Verified Testimonials */}
+      {/* 5. The Wonder Cars Standard */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 py-20">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
-          <div className="lg:col-span-7 space-y-8">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2">The Wonder Cars Standard</p>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight [text-wrap:balance]">
-                Why Discerning Collectors Choose Wonder Cars
-              </h2>
-            </div>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-              {WHY_CHOOSE_PILLARS.map((pillar) => (
-                <div
-                  key={pillar.index}
-                  className="p-6 rounded-xl bg-slate-50 dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] space-y-3"
-                >
-                  <span className="font-mono text-xs font-semibold text-blue-700 dark:text-blue-400 tabular-nums">
-                    {pillar.index}.
-                  </span>
-                  <h3 className="font-display text-lg font-semibold text-slate-900 dark:text-white">{pillar.title}</h3>
-                  <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">{pillar.description}</p>
-                </div>
-              ))}
-            </div>
+        <div className="space-y-8">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-wider text-amber-600 dark:text-amber-400 mb-2">The Wonder Cars Standard</p>
+            <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight [text-wrap:balance]">
+              Why Discerning Collectors Choose Wonder Cars
+            </h2>
           </div>
 
-          {/* Adjacent Client Proof / Testimonials */}
-          <div className="lg:col-span-5 space-y-5">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-zinc-400">
-              <ShieldCheck className="w-4 h-4 text-blue-700 dark:text-blue-400" />
-              <span>Verified Client Acquisitions</span>
-            </div>
-
-            <div className="space-y-4">
-              {(dynamicTestimonials.length > 0
-                ? dynamicTestimonials.slice(0, 3).map((item) => ({
-                    quote: item.review,
-                    name: item.customerName || item.name || 'Verified Customer',
-                    role: `${item.carPurchased} • ${item.city}`,
-                  }))
-                : TESTIMONIALS
-              ).map((item) => (
-                <blockquote
-                  key={item.name}
-                  className="p-6 rounded-xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] shadow-sm dark:shadow-none space-y-4"
-                >
-                  <p className="text-sm text-slate-700 dark:text-zinc-300 leading-relaxed">&ldquo;{item.quote}&rdquo;</p>
-                  <footer className="pt-3 border-t border-slate-100 dark:border-white/[0.06]">
-                    <p className="text-sm font-semibold text-slate-900 dark:text-white">{item.name}</p>
-                    <p className="text-xs text-slate-500 mt-0.5">{item.role}</p>
-                  </footer>
-                </blockquote>
-              ))}
-            </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {WHY_CHOOSE_PILLARS.map((pillar) => (
+              <div
+                key={pillar.index}
+                className="p-6 rounded-xl bg-slate-50 dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] space-y-3"
+              >
+                <span className="font-mono text-xs font-semibold text-blue-700 dark:text-blue-400 tabular-nums">
+                  {pillar.index}.
+                </span>
+                <h3 className="font-display text-lg font-semibold text-slate-900 dark:text-white">{pillar.title}</h3>
+                <p className="text-sm text-slate-600 dark:text-zinc-400 leading-relaxed">{pillar.description}</p>
+              </div>
+            ))}
           </div>
         </div>
       </section>

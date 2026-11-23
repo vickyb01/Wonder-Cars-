@@ -5058,6 +5058,21 @@
   ],
   "enquiries": [
     {
+      "id": "enq-1795461930567",
+      "type": "test-drive",
+      "carId": "car-1795284037654",
+      "carTitle": "2025 Mahindra Scorpio-N (WC-7654)",
+      "name": "vicky bhelave",
+      "email": "bhelavevicky66@gmail.com",
+      "phone": "9272150600",
+      "preferredDate": "2026-12-10",
+      "preferredTime": "01:00 PM",
+      "city": "Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.",
+      "message": "biuyhjk",
+      "status": "New",
+      "createdAt": "2026-11-23T19:25:30.567Z"
+    },
+    {
       "id": "enq-1795442864998",
       "type": "test-drive",
       "carId": "car-1795405569642",
@@ -5904,6 +5919,15 @@
   },
   "notifications": [
     {
+      "id": "notif-1795461930567",
+      "title": "New Enquiry: Test Drive",
+      "message": "vicky bhelave enquired about 2025 Mahindra Scorpio-N (WC-7654) (9272150600)",
+      "type": "enquiry",
+      "read": false,
+      "link": "/admin?tab=enquiries",
+      "createdAt": "2026-11-23T19:25:30.567Z"
+    },
+    {
       "id": "notif-1795442864999",
       "title": "New Enquiry: Test Drive",
       "message": "vicky bhelave enquired about 2021 Maruti Suzuki Baleno (WC-9642) (8007316645)",
@@ -6030,6 +6054,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795461930594-vv26",
+      "userEmail": "System",
+      "action": "New Enquiry Received",
+      "details": "vicky bhelave submitted enquiry for 2025 Mahindra Scorpio-N (WC-7654)",
+      "timestamp": "2026-11-23T19:25:30.594Z"
+    },
     {
       "id": "act-1795442865027-mmn4",
       "userEmail": "System",
