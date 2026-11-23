@@ -1,5 +1,130 @@
 [
   {
+    "id": "email-cust-1795442865073",
+    "enquiryId": "enq-1795442864998",
+    "recipient": "bhelavevicky66@gmail.com",
+    "subject": "🚗 Booking Confirmed: 2021 Maruti Suzuki Baleno — Wonder Cars Preet Vihar",
+    "customerName": "vicky bhelave",
+    "customerPhone": "8007316645",
+    "timestamp": "2026-11-23T14:07:45.073Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-owner-1795442865063",
+    "enquiryId": "enq-1795442864998",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "vicky bhelave",
+    "customerPhone": "8007316645",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "bookingTime": "Monday, 23 November 2026 at 7:37:44 pm",
+    "attachedFiles": [
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.html",
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.pdf"
+    ],
+    "timestamp": "2026-11-23T14:07:45.063Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-cust-1795430655965",
+    "enquiryId": "enq-1795430655860",
+    "recipient": "vickybhelave25@navgurukul.org",
+    "subject": "🚗 Booking Confirmed: 2021 Maruti Suzuki Baleno — Wonder Cars Preet Vihar",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "timestamp": "2026-11-23T10:44:15.965Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-owner-1795430655958",
+    "enquiryId": "enq-1795430655860",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "bookingTime": "Monday, 23 November 2026 at 4:14:15 pm",
+    "attachedFiles": [
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.html",
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.pdf"
+    ],
+    "timestamp": "2026-11-23T10:44:15.958Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-cust-1795422664171",
+    "enquiryId": "enq-1795422664021",
+    "recipient": "vickybhelave25@navgurukul.org",
+    "subject": "🚗 Booking Confirmed: Certified Car — Wonder Cars Preet Vihar",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "timestamp": "2026-11-23T08:31:04.171Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-owner-1795422664163",
+    "enquiryId": "enq-1795422664021",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "9272150600",
+    "carTitle": "Certified Pre-Owned Luxury Car",
+    "bookingTime": "Monday, 23 November 2026 at 2:01:04 pm",
+    "attachedFiles": [],
+    "timestamp": "2026-11-23T08:31:04.164Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-cust-1795417727874",
+    "enquiryId": "enq-1795417727808",
+    "recipient": "bhelavevicky6@mail.com",
+    "subject": "🚗 Booking Confirmed: 2025 Mahindra Scorpio-N — Wonder Cars Preet Vihar",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "8007316645",
+    "timestamp": "2026-11-23T07:08:47.874Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
+    "id": "email-owner-1795417727863",
+    "enquiryId": "enq-1795417727808",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "Vicky Bhelave",
+    "customerPhone": "8007316645",
+    "carTitle": "2025 Mahindra Scorpio-N (Z8 S Diesel AT)",
+    "bookingTime": "Monday, 23 November 2026 at 12:38:47 pm",
+    "attachedFiles": [
+      "WonderCars-Mahindra-Scorpio-N-Brochure.html",
+      "WonderCars-Mahindra-Scorpio-N-Brochure.pdf"
+    ],
+    "timestamp": "2026-11-23T07:08:47.863Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
     "id": "email-cust-1795417159174",
     "enquiryId": "enq-1795417158923",
     "recipient": "amit.verma@example.com",

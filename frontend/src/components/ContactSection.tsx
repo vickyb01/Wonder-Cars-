@@ -13,9 +13,9 @@ const FALLBACK_CONTACT: BusinessLocationSettings = {
   phone: '+91 83840 68347',
   email: 'amanjain.nj784@gmail.com',
   whatsapp: '918384068347',
-  address: 'Preet Vihar',
-  city: 'East Delhi',
-  state: 'Delhi NCR',
+  address: 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+  city: 'Delhi',
+  state: 'Delhi',
   postalCode: '110092',
   latitude: '28.6396915',
   longitude: '77.2936307',
@@ -227,7 +227,7 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                       </span>
                     </div>
                     <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-300 mt-0.5 leading-relaxed">
-                      Preet Vihar, East Delhi, Delhi NCR 110092
+                      Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.
                     </p>
                   </div>
                 </a>
@@ -441,7 +441,7 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                           type="text"
                           value={city}
                           onChange={(e) => setCity(e.target.value)}
-                          placeholder="e.g. East Delhi"
+                          placeholder="e.g. Delhi"
                           className={inputCls}
                         />
                       </div>

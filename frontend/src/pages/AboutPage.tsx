@@ -1131,7 +1131,9 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Address</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {showroomAddress}, {showroomCity}, {showroomState} {showroomPincode}
+                        {showroomAddress.includes('Delhi-92') || showroomAddress.includes('110092')
+                          ? showroomAddress
+                          : `${showroomAddress}, ${showroomCity}, ${showroomState} ${showroomPincode}`}
                       </p>
                       <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5 font-medium">
                         Landmark: {showroomLandmark}

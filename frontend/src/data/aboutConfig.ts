@@ -195,7 +195,7 @@ export const ABOUT_DATA: AboutConfig = {
     bioParagraphs: [
       'Welcome to Wonder Cars. When I set out to establish this dealership, my goal was clear: transform the pre-owned automobile buying experience into one characterized by total transparency, genuine excitement, and lasting trust.',
       'Having been an automotive enthusiast and collector for over a decade, I understand the anxiety that often accompanies buying a second-hand car. That is why at Wonder Cars, every single car in our inventory is hand-picked, non-accidental, meter-verified, and subjected to a comprehensive 210-point mechanical and cosmetic audit before it ever touches our showroom floor.',
-      'When you step into our Preet Vihar gallery, you are not just purchasing a vehicle—you are welcoming our dealership into your automotive journey. We look forward to handing you the keys to your dream car.',
+      'When you step into our Preet Vihar showroom, you are not just purchasing a vehicle—you are welcoming our dealership into your automotive journey. We look forward to handing you the keys to your dream car.',
     ],
     philosophy: '“A reputation takes decades to build and seconds to compromise. That is why we treat every client like family and every car like our own.”',
     signatureText: 'Naman Jain',
@@ -361,7 +361,7 @@ export const ABOUT_DATA: AboutConfig = {
     badge: 'Our Atmosphere',
     title: 'Showroom, Fleet & Delivery Moments',
     description:
-      'Take a visual tour inside our Preet Vihar gallery, inspect our pristine pre-owned fleet, and witness unforgettable vehicle delivery celebrations.',
+      'Take a visual tour inside our Preet Vihar showroom, inspect our pristine pre-owned fleet, and witness unforgettable vehicle delivery celebrations.',
     categories: ['All', 'Showroom', 'Premium Fleet', 'Deliveries'],
     items: [
       {
@@ -573,10 +573,10 @@ export const ABOUT_DATA: AboutConfig = {
 
   showroom: {
     name: 'Wonder Cars Flagship Showroom',
-    address: 'Preet Vihar',
+    address: 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
     landmark: 'Near Preet Vihar Metro Station',
-    city: 'East Delhi',
-    state: 'Delhi NCR',
+    city: 'Delhi',
+    state: 'Delhi',
     pincode: '110092',
     phone: '+91 83840 68347',
     displayPhone: '+91 83840 68347',

@@ -249,7 +249,7 @@ export function BrandSelectionSection({ cars = [] }: BrandSelectionSectionProps)
                       No {selectedBrand.name} Cars Currently in Showroom
                     </h4>
                     <p className="text-xs sm:text-sm text-slate-500 dark:text-zinc-400 leading-relaxed">
-                      Wonder Cars inspects fewer than 10% of vehicles offered. Currently no {selectedBrand.name} is in our Preet Vihar gallery, but our sourcing team can procure a certified one on demand.
+                      Wonder Cars inspects fewer than 10% of vehicles offered. Currently no {selectedBrand.name} is in our Preet Vihar showroom, but our sourcing team can procure a certified one on demand.
                     </p>
                   </div>
 

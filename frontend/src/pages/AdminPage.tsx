@@ -4768,7 +4768,7 @@ export function AdminPage() {
                     value={locationForm.address}
                     onChange={(e) => setLocationForm({ ...locationForm, address: e.target.value })}
                     className={inputCls}
-                    placeholder="e.g. Preet Vihar, East Delhi"
+                    placeholder="e.g. Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92."
                   />
                 </div>
 

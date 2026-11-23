@@ -59,10 +59,10 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
                 : 'Certified Available'}
             </span>
             <span
-              className="text-zinc-200 font-mono tabular-nums truncate max-w-[52%] text-right text-[11px] sm:text-xs"
+              className="text-zinc-200 font-mono tabular-nums truncate max-w-[60%] text-right text-[11px] sm:text-xs"
               title={car.location}
             >
-              {car.location.includes('Preet Vihar') ? 'Preet Vihar, Delhi' : car.location}
+              {car.location}
             </span>
           </div>
         </Link>

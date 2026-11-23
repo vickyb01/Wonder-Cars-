@@ -243,7 +243,7 @@ export function normalizeCarRecord(raw: Partial<Car> & { id: string }): Car {
     fuelType: raw.fuelType || 'Petrol',
     transmission: raw.transmission || 'Automatic',
     ownership: raw.ownership || '1st Owner',
-    location: raw.location || 'Mumbai, MH',
+    location: raw.location || 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
     status: raw.status || 'Available',
     featured: Boolean(raw.featured),
     category: raw.category || 'Luxury & Performance',
@@ -306,13 +306,13 @@ export function normalizeCarRecord(raw: Partial<Car> & { id: string }): Car {
       records: Array.isArray(raw.serviceHistory?.records) ? raw.serviceHistory.records : [],
     },
     documents: mergeDocuments(raw.documents),
-    sellerName: raw.sellerName || 'Strada Worli Flagship Gallery',
+    sellerName: raw.sellerName || 'Wonder Cars Preet Vihar Showroom',
     sellerType: raw.sellerType || 'Certified Gallery',
     sellerProfile:
       raw.sellerProfile ||
-      'Curated luxury automobile gallery specializing in verified low-mileage collector vehicles with transparent documentation.',
-    sellerPhone: raw.sellerPhone || '+91 98204 51090',
-    sellerWhatsapp: raw.sellerWhatsapp || '919820451090',
+      'Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+    sellerPhone: raw.sellerPhone || '+91 83840 68347',
+    sellerWhatsapp: raw.sellerWhatsapp || '918384068347',
     createdAt: raw.createdAt || new Date().toISOString(),
   };
 }

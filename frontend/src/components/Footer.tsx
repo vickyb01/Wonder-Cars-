@@ -91,7 +91,7 @@ export function Footer() {
               />
             </Link>
             <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 max-w-sm lg:max-w-none">
-              Curated pre-owned luxury and performance automobiles across India. Every vehicle undergoes a 210–point forensic audit before entering our galleries.
+              Curated pre-owned luxury and performance automobiles across India. Every vehicle undergoes a 210–point forensic audit before entering our showroom.
             </p>
           </div>
 
@@ -122,9 +122,9 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Showroom Location */}
+          {/* Location Showroom */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Showroom Location</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Location Showroom</h3>
             <ul className="space-y-3 text-sm flex flex-col items-center lg:items-start">
               <li>
                 <a

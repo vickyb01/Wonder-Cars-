@@ -16,7 +16,7 @@ export function SellCarPage() {
   const [fuelType, setFuelType] = useState('Petrol');
   const [transmission, setTransmission] = useState('Automatic');
   const [ownership, setOwnership] = useState('1st Owner');
-  const [city, setCity] = useState('Mumbai');
+  const [city, setCity] = useState('Delhi');
   const [expectedPriceInr, setExpectedPriceInr] = useState('');
   const [ownerName, setOwnerName] = useState('');
   const [ownerPhone, setOwnerPhone] = useState('');
@@ -92,7 +92,7 @@ export function SellCarPage() {
               Sell Your Automobile with Zero Friction
             </h1>
             <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-400 leading-relaxed">
-              Skip unqualified classified callers. Strada Motors offers same-day bank-verified buyouts or discreet consignment inside our Mumbai, New Delhi, and Bengaluru flagship galleries.
+              Skip unqualified classified callers. Wonder Cars offers same-day bank-verified buyouts or discreet consignment inside our Preet Vihar, Delhi flagship showroom.
             </p>
 
             <div className="rounded-2xl overflow-hidden border border-slate-200 dark:border-white/[0.08] aspect-[4/3] shadow-sm dark:shadow-none">

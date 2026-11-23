@@ -59,28 +59,28 @@ const WHY_CHOOSE_PILLARS = [
     index: '04',
     title: 'Enclosed Pan-India Delivery',
     description:
-      'Private doorstep test drives in Mumbai, Delhi NCR, and Bengaluru, plus insured flatbed enclosed transport to any city in India.',
+      'Private doorstep test drives across Delhi NCR, plus insured flatbed enclosed transport to any city in India.',
   },
 ];
 
 const TESTIMONIALS = [
   {
     quote:
-      'Acquired a 2022 Porsche 911 Carrera S from the Worli gallery. Paint meter readings and Porsche Centre service records were shared upfront before I even flew in from Ahmedabad.',
+      'Acquired a 2022 Porsche 911 Carrera S from the Preet Vihar showroom. Inspection readings and verified service records were shared upfront.',
     name: 'Aarav Mehta',
-    role: 'Managing Director, Mehta Precision Forgings · Ahmedabad',
+    role: 'Managing Director, Mehta Precision Forgings · New Delhi',
   },
   {
     quote:
-      'Strada handled both the valuation of my Range Rover Sport and my upgrade to an AMG G63 within five business days, including seamless state RC transfer.',
+      'Wonder Cars handled both the valuation of my vehicle and my upgrade within five business days, including seamless state RC transfer.',
     name: 'Neha Singhania',
     role: 'Principal Architect, Studio N+S · New Delhi',
   },
   {
     quote:
-      'No pushy brokers, zero inflated listing prices. The RS e-tron GT arrived in Bengaluru in enclosed transport looking genuinely factory-fresh.',
+      'No pushy brokers, zero inflated listing prices. The car arrived in pristine condition looking genuinely factory-fresh.',
     name: 'Karthik Subramanian',
-    role: 'Founder, Veloce Cloud Systems · Bengaluru',
+    role: 'Founder, Veloce Cloud Systems · New Delhi',
   },
 ];
 

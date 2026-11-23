@@ -121,7 +121,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [fuelType, setFuelType] = useState<FuelType>('Petrol');
   const [transmission, setTransmission] = useState<TransmissionType>('Automatic');
   const [ownership, setOwnership] = useState('1st Owner');
-  const [location, setLocation] = useState('Mumbai, MH');
+  const [location, setLocation] = useState('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
   const [status, setStatus] = useState<CarStatus>('Available');
   const [featured, setFeatured] = useState(false);
   const [warrantyPeriod, setWarrantyPeriod] = useState('1 Year');
@@ -129,11 +129,11 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [videoWalkthroughUrl, setVideoWalkthroughUrl] = useState('');
   const [description, setDescription] = useState('');
   const [highlightsText, setHighlightsText] = useState('');
-  const [sellerName, setSellerName] = useState('Strada Worli Flagship Gallery');
+  const [sellerName, setSellerName] = useState('Wonder Cars Preet Vihar Showroom');
   const [sellerType, setSellerType] = useState<Car['sellerType']>('Certified Gallery');
-  const [sellerProfile, setSellerProfile] = useState('');
-  const [sellerPhone, setSellerPhone] = useState('+91 98204 51090');
-  const [sellerWhatsapp, setSellerWhatsapp] = useState('919820451090');
+  const [sellerProfile, setSellerProfile] = useState('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+  const [sellerPhone, setSellerPhone] = useState('+91 83840 68347');
+  const [sellerWhatsapp, setSellerWhatsapp] = useState('918384068347');
 
   // Categorized Gallery (up to 70 photos)
   const [gallery, setGallery] = useState<CarPhoto[]>([]);
@@ -346,7 +346,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setFuelType('Petrol');
       setTransmission('Automatic');
       setOwnership('1st Owner');
-      setLocation('Mumbai, MH');
+      setLocation('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
       setStatus('Available');
       setFeatured(false);
       setWarrantyPeriod('1 Year');
@@ -354,11 +354,11 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setVideoWalkthroughUrl('');
       setDescription('');
       setHighlightsText('');
-      setSellerName('Strada Worli Flagship Gallery');
+      setSellerName('Wonder Cars Preet Vihar Showroom');
       setSellerType('Certified Gallery');
-      setSellerProfile('');
-      setSellerPhone('+91 98204 51090');
-      setSellerWhatsapp('919820451090');
+      setSellerProfile('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+      setSellerPhone('+91 83840 68347');
+      setSellerWhatsapp('918384068347');
       setGallery([]);
 
       setCategory('Luxury Sedan');
@@ -996,7 +996,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                       type="text"
                       value={registrationState}
                       onChange={(e) => setRegistrationState(e.target.value)}
-                      placeholder="e.g. MH-02 (Mumbai), DL-03, HR-26"
+                      placeholder="e.g. DL-03, HR-26, UP-14"
                       className="w-full h-10 px-3 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
                     />
                   </div>

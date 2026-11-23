@@ -450,7 +450,7 @@ export function InventoryPage() {
             ? `${selectedBrandDisplay} Cars`
             : 'Browse Certified Pre-Owned Inventory'
         }
-        description="Explore verified luxury and performance pre-owned cars with transparent INR pricing across Mumbai, New Delhi, and Bengaluru."
+        description="Explore verified luxury and performance pre-owned cars with transparent INR pricing at Wonder Cars, Preet Vihar, Delhi."
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
@@ -608,8 +608,8 @@ export function InventoryPage() {
                   {isSavedOnly
                     ? 'You have not liked any vehicles yet. Click the heart icon on any vehicle card to add it to your favorites!'
                     : selectedBrandDisplay !== 'All'
-                    ? `We don't currently have active ${selectedBrandDisplay} listings in our galleries. Clear the brand filter to view all available vehicles.`
-                    : 'Adjust your price ceiling, marque, or powertrain filters to view additional curated vehicles in our galleries.'}
+                    ? `We don't currently have active ${selectedBrandDisplay} listings in our showroom. Clear the brand filter to view all available vehicles.`
+                    : 'Adjust your price ceiling, marque, or powertrain filters to view additional curated vehicles in our showroom.'}
                 </p>
                 <button
                   type="button"

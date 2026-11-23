@@ -371,7 +371,7 @@ export function ShowroomEnquirySidebar({
               ? cleanCustPhone
               : `91${cleanCustPhone.slice(-10)}`;
           const waDirectHref = `https://wa.me/${custWaPhone}?text=${encodeURIComponent(
-            `★ WONDER CARS ★ Booking Confirmation\n\nDear ${submittedData?.name || 'Customer'},\nYour booking request for the ${car.year} ${car.brand} ${car.model} (${car.listingCode}) has been confirmed.\n\n📄 210-Point Inspection Brochure: ${typeof window !== 'undefined' ? window.location.origin : ''}/api/cars/${car.id}/brochure\n\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92\nConcierge: Naman Jain (+91 83840 68347)`
+            `★ WONDER CARS ★ Booking Confirmation\n\nDear ${submittedData?.name || 'Customer'},\nYour booking request for the ${car.year} ${car.brand} ${car.model} (${car.listingCode}) has been confirmed.\n\n📄 210-Point Inspection Brochure: ${typeof window !== 'undefined' ? window.location.origin : ''}/api/cars/${car.id}/brochure\n\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nConcierge: Naman Jain (+91 83840 68347)`
           )}`;
 
           return (
@@ -401,7 +401,7 @@ export function ShowroomEnquirySidebar({
                 )}
                 {submittedData?.preferredDate && (
                   <p className="text-blue-700 dark:text-blue-400 font-medium">
-                    📅 Slot: {submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'}) at Preet Vihar Gallery
+                    📅 Slot: {submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'}) at Wonder Cars Preet Vihar Showroom
                   </p>
                 )}
               </div>
@@ -462,7 +462,7 @@ export function ShowroomEnquirySidebar({
                   <div className="flex items-start gap-2.5 text-blue-700 dark:text-blue-400 font-medium">
                     <Calendar className="w-4 h-4 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
                     <p className="text-[11px]">
-                      Viewing Slot: <strong>{submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'})</strong> at Preet Vihar Showroom
+                      Viewing Slot: <strong>{submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'})</strong> at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.
                     </p>
                   </div>
                 )}
@@ -503,7 +503,7 @@ export function ShowroomEnquirySidebar({
               </div>
 
               <div className="pt-2 border-t border-slate-200 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-zinc-400">
-                Showroom Concierge: <strong className="text-slate-800 dark:text-zinc-200">+91 83840 68347</strong> (Preet Vihar, Delhi)
+                Showroom Concierge: <strong className="text-slate-800 dark:text-zinc-200">+91 83840 68347</strong> (Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.)
               </div>
             </div>
           );
