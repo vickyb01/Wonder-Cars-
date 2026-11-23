@@ -790,9 +790,10 @@ export function AboutPage() {
                       onClick={() => setSelectedVideo(video)}
                       className="relative w-full h-full cursor-pointer group"
                     >
-                      <VehicleImage
-                        src={video.thumbnailUrl}
+                      <img
+                        src={video.thumbnailUrl || `https://img.youtube.com/vi/${video.youtubeId}/hqdefault.jpg`}
                         alt={video.title}
+                        loading="lazy"
                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                       />
                       <div className="absolute inset-0 bg-slate-950/40 group-hover:bg-slate-950/20 transition-colors" />
@@ -831,13 +832,20 @@ export function AboutPage() {
                     </p>
                   </div>
                   <div className="pt-2 flex items-center justify-between text-xs font-medium text-red-600 dark:text-red-400">
-                    <span className="inline-flex items-center gap-1 hover:underline">
+                    <span className="inline-flex items-center gap-1.5 font-semibold group-hover:underline">
+                      <Play className="w-3.5 h-3.5 fill-current" />
                       Watch Video
-                      <ExternalLink className="w-3 h-3" />
                     </span>
-                    <span className="text-slate-400 dark:text-zinc-500 text-[11px]">
-                      @usedcarsnearby
-                    </span>
+                    <a
+                      href={`https://www.youtube.com/watch?v=${video.youtubeId}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onClick={(e) => e.stopPropagation()}
+                      className="text-slate-400 dark:text-zinc-500 hover:text-red-600 dark:hover:text-red-400 text-[11px] inline-flex items-center gap-1 hover:underline"
+                    >
+                      <span>@usedcarsnearby</span>
+                      <ExternalLink className="w-2.5 h-2.5" />
+                    </a>
                   </div>
                 </div>
               </div>
