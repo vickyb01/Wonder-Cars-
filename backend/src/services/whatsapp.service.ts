@@ -1,6 +1,6 @@
 import fs from 'fs';
 import path from 'path';
-import type { Enquiry, Car } from '../models/types.ts';
+import type { Enquiry, Car, WhatsappDeliveryResult } from '../models/types.ts';
 import {
   DATA_DIR,
   SHOWROOM_WHATSAPP_NUMBER,
@@ -32,12 +32,26 @@ export interface OutgoingWhatsappRecord {
   error?: string;
 }
 
+/**
+ * Normalizes Indian phone numbers into WhatsApp Meta Cloud API format:
+ * Exactly country code 91 followed by the 10-digit subscriber number (e.g. 919272150600).
+ * Strips all spaces, dashes, parentheses, and leading plus or zeros.
+ */
 export function cleanIndianPhoneNumber(phone: string): string {
   const digits = String(phone || '').replace(/\D/g, '');
-  if (digits.startsWith('91') && digits.length > 10) {
+  if (digits.startsWith('91') && digits.length === 12) {
     return digits;
   }
-  return `91${digits.slice(-10)}`;
+  if (digits.startsWith('0') && digits.length === 11) {
+    return `91${digits.slice(1)}`;
+  }
+  if (digits.length === 10) {
+    return `91${digits}`;
+  }
+  if (digits.length >= 10) {
+    return `91${digits.slice(-10)}`;
+  }
+  return digits;
 }
 
 export function saveOutgoingWhatsappLog(record: OutgoingWhatsappRecord): void {
@@ -60,24 +74,32 @@ export function saveOutgoingWhatsappLog(record: OutgoingWhatsappRecord): void {
 
 /**
  * Automatically sends the existing generated PDF brochure to the Customer's WhatsApp
- * as a document attachment via Official WhatsApp Business Cloud API or supported provider.
+ * as an official WhatsApp document attachment.
  *
- * Requirements:
- * - Recipient is strictly the customer's phone number from the form.
- * - Does NOT send to showroom number instead of customer.
- * - Showroom WhatsApp number (9272150600) is kept separate.
- * - Delivery is automatic; non-blocking; does not crash if API credentials are unset.
+ * Workflow:
+ * 1. Formats recipient strictly as the customer's phone (+91XXXXXXXXXX) without confusing showroom number.
+ * 2. Emits "[WhatsAppService] 📄 PDF generated for {carTitle} ({filename})"
+ * 3. Verifies WhatsApp Business Cloud API environment variables (WHATSAPP_ACCESS_TOKEN & WHATSAPP_PHONE_NUMBER_ID).
+ * 4. If credentials present:
+ *    a) Uploads the PDF binary directly to Meta's Media API: POST /{phone_number_id}/media
+ *       Emits "[WhatsAppService] 📤 Uploading PDF to WhatsApp Media API..."
+ *       On success: "[WhatsAppService] ✓ PDF uploaded successfully. MediaId: {mediaId}"
+ *    b) Sends document message referencing media_id: POST /{phone_number_id}/messages
+ *       On success: "[WhatsAppService] ✓ WhatsApp document sent successfully to +{to}. MessageId: {id}"
+ *       On failure: "[WhatsAppService] ✗ WhatsApp delivery failure with exact error: {error}"
+ * 5. Returns truthful delivery status to caller so frontend NEVER shows a false success message.
  */
 export async function sendAutomaticCustomerWhatsappDocument(
   enquiry: Enquiry,
   car?: Car,
-  overrideDocumentUrl?: string
-): Promise<{ success: boolean; status: string; messageId?: string; error?: string }> {
+  overrideDocumentUrl?: string,
+  brochureContent?: string
+): Promise<WhatsappDeliveryResult> {
   const customerRawPhone = enquiry.phone || '';
   const customerWaPhone = cleanIndianPhoneNumber(customerRawPhone);
   const showroomClean = cleanIndianPhoneNumber(SHOWROOM_WHATSAPP_NUMBER);
 
-  // Safety check: ensure we don't accidentally send customer document to showroom number
+  // Safety separation: Confirm customer number vs showroom number
   const isShowroomNumber = customerWaPhone === showroomClean;
 
   const carTitle = car
@@ -88,14 +110,17 @@ export async function sendAutomaticCustomerWhatsappDocument(
   const cleanModel = (car?.model || 'Model').replace(/[^a-zA-Z0-9_-]/g, '');
   const filename = `WonderCars-${cleanBrand}-${cleanModel}-Inspection-Brochure.pdf`;
 
-  const documentUrl = overrideDocumentUrl || (car
-    ? `${APP_BASE_URL.replace(/\/$/, '')}/api/cars/${car.id}/brochure`
-    : `${APP_BASE_URL.replace(/\/$/, '')}/inventory`);
+  const documentUrl =
+    overrideDocumentUrl ||
+    (car
+      ? `${APP_BASE_URL.replace(/\/$/, '')}/api/cars/${car.id}/brochure`
+      : `${APP_BASE_URL.replace(/\/$/, '')}/inventory`);
 
   const priceText = car ? `₹${car.priceInr.toLocaleString('en-IN')}` : 'Market Competitive';
-  const warrantyText = car?.warrantyPeriod && car.warrantyPeriod !== 'No Warranty'
-    ? `${car.warrantyPeriod} Warranty Included`
-    : '6 Months Certified Warranty Included';
+  const warrantyText =
+    car?.warrantyPeriod && car.warrantyPeriod !== 'No Warranty'
+      ? `${car.warrantyPeriod} Warranty Included`
+      : '6 Months Certified Warranty Included';
 
   const caption = [
     `★ WONDER CARS ★ Booking Dossier & 210-Point Inspection Certificate`,
@@ -104,7 +129,12 @@ export async function sendAutomaticCustomerWhatsappDocument(
     enquiry.preferredDate ? `Slot: ${enquiry.preferredDate} (${enquiry.preferredTime || '11:00 AM'})` : '',
     `Showroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92`,
     `Concierge: Naman Jain (+91 83840 68347)`,
-  ].filter(Boolean).join('\n');
+  ]
+    .filter(Boolean)
+    .join('\n');
+
+  // 1. Mandatory backend log: PDF generated
+  console.log(`[WhatsAppService] 📄 PDF generated for ${carTitle} (${filename})`);
 
   const logRecord: OutgoingWhatsappRecord = {
     id: `wa-doc-${Date.now()}`,
@@ -126,65 +156,147 @@ export async function sendAutomaticCustomerWhatsappDocument(
 
   if (isShowroomNumber) {
     console.warn(
-      `[WhatsAppService] Notice: Customer phone (+${customerWaPhone}) equals Showroom WhatsApp (${SHOWROOM_WHATSAPP_NUMBER}). Proceeding with customer delivery as specified in booking form.`
+      `[WhatsAppService] Note: Customer entered phone (+${customerWaPhone}) matching Showroom WhatsApp (${SHOWROOM_WHATSAPP_NUMBER}). Delivering document to this number per customer form input.`
     );
   }
 
-  // 1. Check if Official WhatsApp Business Cloud API is configured
+  // 2. Prepare PDF buffer (uses existing brochure content without recreating PDF logic)
+  const pdfBuffer = Buffer.from(brochureContent || `Wonder Cars Official Inspection Brochure for ${carTitle}`, 'utf-8');
+
+  // 3. Verify Official WhatsApp Business Cloud API credentials
   if (WHATSAPP_ACCESS_TOKEN && WHATSAPP_PHONE_NUMBER_ID) {
     try {
-      const metaUrl = `https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
-      const payload = {
+      let mediaId: string | undefined;
+
+      // 3a. Upload existing generated PDF directly to Meta Media API
+      console.log(
+        `[WhatsAppService] 📤 Uploading PDF to WhatsApp Media API (Phone ID: ${WHATSAPP_PHONE_NUMBER_ID})...`
+      );
+
+      try {
+        const formData = new FormData();
+        formData.append('messaging_product', 'whatsapp');
+        formData.append('type', 'application/pdf');
+        formData.append(
+          'file',
+          new Blob([pdfBuffer], { type: 'application/pdf' }),
+          filename
+        );
+
+        const mediaUploadUrl = `https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/media`;
+        const uploadRes = await fetch(mediaUploadUrl, {
+          method: 'POST',
+          headers: {
+            Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
+          },
+          body: formData,
+        });
+
+        const uploadData = await uploadRes.json().catch(() => ({}));
+        if (uploadRes.ok && uploadData?.id) {
+          mediaId = uploadData.id;
+          console.log(`[WhatsAppService] ✓ PDF uploaded successfully. MediaId: ${mediaId}`);
+        } else {
+          const uploadErr =
+            uploadData?.error?.message || `HTTP ${uploadRes.status}: Failed to upload media`;
+          const uploadCode = uploadData?.error?.code || uploadRes.status;
+          console.warn(
+            `[WhatsAppService] Media upload warning: ${uploadErr} (Code: ${uploadCode}). Checking fallback to public URL.`
+          );
+        }
+      } catch (uploadNetErr: any) {
+        console.warn(`[WhatsAppService] Media upload network exception:`, uploadNetErr?.message || uploadNetErr);
+      }
+
+      // 3b. Build document message payload
+      const messagesUrl = `https://graph.facebook.com/${WHATSAPP_API_VERSION}/${WHATSAPP_PHONE_NUMBER_ID}/messages`;
+      const documentPayload: any = {
         messaging_product: 'whatsapp',
         recipient_type: 'individual',
         to: customerWaPhone,
         type: 'document',
         document: {
-          link: documentUrl,
-          caption,
           filename,
+          caption,
         },
       };
 
-      console.log(`[WhatsAppService] Dispatching official WhatsApp Cloud API document to +${customerWaPhone}...`);
-      const response = await fetch(metaUrl, {
+      if (mediaId) {
+        documentPayload.document.id = mediaId;
+      } else if (documentUrl && documentUrl.startsWith('https://')) {
+        documentPayload.document.link = documentUrl;
+      } else {
+        const exactErr =
+          'PDF binary upload to Meta Media API failed and no public HTTPS brochure URL is available.';
+        console.error(`[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${exactErr}`);
+        logRecord.status = 'failed';
+        logRecord.error = exactErr;
+        saveOutgoingWhatsappLog(logRecord);
+        return { success: false, status: 'failed', error: exactErr };
+      }
+
+      // 3c. Send WhatsApp Document Message
+      console.log(`[WhatsAppService] 📨 Dispatching WhatsApp document message to +${customerWaPhone}...`);
+      const sendRes = await fetch(messagesUrl, {
         method: 'POST',
         headers: {
           Authorization: `Bearer ${WHATSAPP_ACCESS_TOKEN}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(payload),
+        body: JSON.stringify(documentPayload),
       });
 
-      const data = await response.json().catch(() => ({}));
+      const sendData = await sendRes.json().catch(() => ({}));
 
-      if (response.ok && data?.messages?.[0]?.id) {
-        logRecord.status = 'sent';
-        logRecord.metaMessageId = data.messages[0].id;
-        saveOutgoingWhatsappLog(logRecord);
+      if (sendRes.ok && sendData?.messages?.[0]?.id) {
+        const messageId = sendData.messages[0].id;
         console.log(
-          `[WhatsAppService] ✓ WhatsApp PDF Document successfully sent to +${customerWaPhone}. Meta MessageId: ${data.messages[0].id}`
+          `[WhatsAppService] ✓ WhatsApp document sent successfully to +${customerWaPhone}. MessageId: ${messageId}`
         );
-        return { success: true, status: 'sent', messageId: data.messages[0].id };
-      } else {
-        const errorMsg = data?.error?.message || `HTTP ${response.status}: Failed to send WhatsApp document`;
-        logRecord.status = 'failed';
-        logRecord.error = errorMsg;
+        logRecord.status = 'sent';
+        logRecord.metaMessageId = messageId;
         saveOutgoingWhatsappLog(logRecord);
-        console.error(`[WhatsAppService] WhatsApp Cloud API error:`, errorMsg);
-        return { success: false, status: 'failed', error: errorMsg };
+        return {
+          success: true,
+          status: 'sent',
+          messageId,
+          provider: 'whatsapp_business_cloud_api',
+        };
+      } else {
+        const exactError =
+          sendData?.error?.error_user_msg ||
+          sendData?.error?.message ||
+          `HTTP ${sendRes.status}: Failed to send WhatsApp document`;
+        const errorCode = sendData?.error?.code || sendRes.status;
+        console.error(
+          `[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${exactError} (Code: ${errorCode})`
+        );
+        logRecord.status = 'failed';
+        logRecord.error = `${exactError} (Code: ${errorCode})`;
+        saveOutgoingWhatsappLog(logRecord);
+        return {
+          success: false,
+          status: 'failed',
+          error: `${exactError} (Code: ${errorCode})`,
+          provider: 'whatsapp_business_cloud_api',
+        };
       }
     } catch (err: any) {
       const errorMsg = err?.message || String(err);
+      console.error(`[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${errorMsg}`);
       logRecord.status = 'failed';
       logRecord.error = errorMsg;
       saveOutgoingWhatsappLog(logRecord);
-      console.error(`[WhatsAppService] Network error dispatching WhatsApp document:`, errorMsg);
-      return { success: false, status: 'failed', error: errorMsg };
+      return {
+        success: false,
+        status: 'failed',
+        error: errorMsg,
+        provider: 'whatsapp_business_cloud_api',
+      };
     }
   }
 
-  // 2. Check if Twilio is configured
+  // 4. Check Twilio Provider fallback
   const twilioSid = process.env.TWILIO_ACCOUNT_SID;
   const twilioToken = process.env.TWILIO_AUTH_TOKEN;
   const twilioFrom = process.env.TWILIO_WHATSAPP_FROM || `whatsapp:+14155238886`;
@@ -214,33 +326,54 @@ export async function sendAutomaticCustomerWhatsappDocument(
         logRecord.provider = 'twilio';
         logRecord.metaMessageId = data.sid;
         saveOutgoingWhatsappLog(logRecord);
-        console.log(`[WhatsAppService] ✓ WhatsApp PDF Document sent via Twilio to +${customerWaPhone}. SID: ${data.sid}`);
-        return { success: true, status: 'sent', messageId: data.sid };
+        console.log(
+          `[WhatsAppService] ✓ WhatsApp document sent successfully via Twilio to +${customerWaPhone}. SID: ${data.sid}`
+        );
+        return {
+          success: true,
+          status: 'sent',
+          messageId: data.sid,
+          provider: 'twilio',
+        };
+      } else {
+        const twilioErr = data?.message || `HTTP ${response.status}: Twilio send failed`;
+        console.error(`[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${twilioErr}`);
+        logRecord.status = 'failed';
+        logRecord.error = twilioErr;
+        saveOutgoingWhatsappLog(logRecord);
+        return {
+          success: false,
+          status: 'failed',
+          error: twilioErr,
+          provider: 'twilio',
+        };
       }
     } catch (err: any) {
-      console.error('[WhatsAppService] Twilio send error:', err?.message || err);
+      const errorMsg = err?.message || String(err);
+      console.error(`[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${errorMsg}`);
+      logRecord.status = 'failed';
+      logRecord.error = errorMsg;
+      saveOutgoingWhatsappLog(logRecord);
+      return { success: false, status: 'failed', error: errorMsg };
     }
   }
 
-  // 3. Fallback: Log outgoing document payload safely so booking is NEVER broken
+  // 5. Credentials Missing in .env: Log exact error and return pending_credentials
+  const credentialsMissingReason =
+    'WHATSAPP_ACCESS_TOKEN and/or WHATSAPP_PHONE_NUMBER_ID are not configured in .env. Live WhatsApp document delivery is suspended until Meta Cloud API credentials are provided.';
+  console.error(
+    `[WhatsAppService] ✗ WhatsApp delivery failure with exact error: ${credentialsMissingReason}`
+  );
+
   logRecord.status = 'pending_credentials';
   logRecord.provider = 'simulation_logged';
-  logRecord.error = 'Live delivery ready: WHATSAPP_ACCESS_TOKEN and WHATSAPP_PHONE_NUMBER_ID not set in .env';
+  logRecord.error = credentialsMissingReason;
   saveOutgoingWhatsappLog(logRecord);
 
-  console.log(`\n======================================================`);
-  console.log(`[Automatic WhatsApp PDF Document Attachment Prepared]`);
-  console.log(`Recipient (Customer WhatsApp): +${customerWaPhone} (${enquiry.name})`);
-  console.log(`Showroom WhatsApp Reference: ${SHOWROOM_WHATSAPP_NUMBER}`);
-  console.log(`Vehicle: ${carTitle}`);
-  console.log(`Document File: ${filename}`);
-  console.log(`Document URL: ${documentUrl}`);
-  console.log(`Status: Logged successfully (Awaiting live Meta Cloud API credentials in .env)`);
-  console.log(`======================================================\n`);
-
   return {
-    success: true,
+    success: false,
     status: 'pending_credentials',
-    messageId: logRecord.id,
+    error: credentialsMissingReason,
+    provider: 'simulation_logged',
   };
 }

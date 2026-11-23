@@ -179,6 +179,14 @@ export interface Car {
 export type EnquiryType = 'test-drive' | 'inspection' | 'offer' | 'car-enquiry' | 'general';
 export type EnquiryStatus = 'New' | 'Contacted' | 'Follow-up' | 'Interested' | 'Converted' | 'Closed' | 'Scheduled';
 
+export interface WhatsappDeliveryResult {
+  success: boolean;
+  status: 'sent' | 'pending_credentials' | 'failed' | 'logged';
+  messageId?: string;
+  error?: string;
+  provider?: 'whatsapp_business_cloud_api' | 'twilio' | 'simulation_logged';
+}
+
 export interface Enquiry {
   id: string;
   type: EnquiryType;
@@ -198,6 +206,7 @@ export interface Enquiry {
   source?: string;
   assignedTo?: string;
   createdAt: string;
+  whatsappDelivery?: WhatsappDeliveryResult;
 }
 
 export type SellRequestStatus = 'Pending Review' | 'Inspection Booked' | 'Offer Sent' | 'Closed';

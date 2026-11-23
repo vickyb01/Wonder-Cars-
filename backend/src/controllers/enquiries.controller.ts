@@ -28,7 +28,7 @@ function checkDuplicateBooking(phone: string, carId?: string, preferredDate?: st
   return false;
 }
 
-export function createEnquiry(req: Request, res: Response): void {
+export async function createEnquiry(req: Request, res: Response): Promise<void> {
   const body = req.body || {};
   const name = String(body.name || '').trim();
   const email = String(body.email || '').trim();
@@ -123,9 +123,17 @@ export function createEnquiry(req: Request, res: Response): void {
   }
 
   // 4. Automatically send existing PDF as document attachment to Customer's WhatsApp
-  sendAutomaticCustomerWhatsappDocument(newEnquiry, car, brochureUrl).catch((err) => {
+  let waDelivery: any = { success: false, status: 'pending_credentials' };
+  try {
+    waDelivery = await sendAutomaticCustomerWhatsappDocument(newEnquiry, car, brochureUrl, brochureHtml);
+  } catch (err) {
     console.error('[EnquiryController] Error dispatching automatic WhatsApp document:', err);
-  });
+    waDelivery = {
+      success: false,
+      status: 'failed',
+      error: err instanceof Error ? err.message : String(err),
+    };
+  }
 
   // 5. Automatically send Showroom Owner Notification Email (subject: "New Car Booking Received" with attached PDF)
   sendShowroomOwnerBookingEmail(newEnquiry, car, brochureHtml).catch((err) => {
@@ -138,6 +146,9 @@ export function createEnquiry(req: Request, res: Response): void {
       console.error('[EnquiryController] Error sending customer confirmation email:', err);
     });
   }
+
+  // Attach delivery status so the frontend and database have verifiable confirmation
+  newEnquiry.whatsappDelivery = waDelivery;
 
   res.status(201).json(newEnquiry);
 }
