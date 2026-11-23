@@ -96,6 +96,7 @@ export function HomePage() {
   const [allCars, setAllCars] = useState<CarType[]>([]);
   const [featuredCars, setFeaturedCars] = useState<CarType[]>([]);
   const [latestCars, setLatestCars] = useState<CarType[]>([]);
+  const [latestVisibleCount, setLatestVisibleCount] = useState(6);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [dynamicTestimonials, setDynamicTestimonials] = useState<TestimonialItem[]>([]);
   const [loading, setLoading] = useState(true);
@@ -195,8 +196,8 @@ export function HomePage() {
         ]);
         if (!active) return;
         setAllCars(all);
-        setFeaturedCars(all.filter((c) => c.featured).slice(0, 3));
-        setLatestCars(all.slice(0, 6));
+        setFeaturedCars(all.filter((c) => c.featured).slice(0, 6));
+        setLatestCars(all);
         if (homeSet) setHomepageSettings(homeSet);
         if (tests && tests.length > 0) setDynamicTestimonials(tests);
       } catch {
@@ -640,10 +641,23 @@ export function HomePage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestCars.map((car, index) => (
+            {latestCars.slice(0, latestVisibleCount).map((car, index) => (
               <CarCard key={car.id} car={car} index={index} />
             ))}
           </div>
+
+          {latestCars.length > latestVisibleCount && (
+            <div className="mt-10 text-center">
+              <button
+                type="button"
+                onClick={() => setLatestVisibleCount((prev) => prev + 6)}
+                className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/10 hover:border-amber-500 dark:hover:border-amber-500 font-semibold text-xs text-slate-900 dark:text-white transition-all shadow-sm hover:shadow-md cursor-pointer"
+              >
+                <span>Load More Cars ({Math.min(latestVisibleCount, latestCars.length)} of {latestCars.length})</span>
+                <ChevronRight className="w-4 h-4 text-amber-500" />
+              </button>
+            </div>
+          )}
         </div>
       </section>
 

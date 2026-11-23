@@ -32,9 +32,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Body parsing with 12mb limit for rich car data and base64 assets
-app.use(express.json({ limit: '12mb' }));
-app.use(express.urlencoded({ extended: true, limit: '12mb' }));
+// Body parsing with 50mb limit for rich car data and high-res asset arrays (up to 70 photos)
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ extended: true, limit: '50mb' }));
 
 // Ensure upload directory exists
 if (!fs.existsSync(UPLOADS_DIR)) {

@@ -43,7 +43,7 @@ router.delete('/admin/users/:id', requireAdmin, deleteUser);
 router.get('/admin/overview', requireAdmin, getOverview);
 
 // File uploads & Storage
-router.post('/admin/upload', requireAdmin, upload.array('images', 35), uploadMedia);
+router.post('/admin/upload', requireAdmin, upload.array('images', 70), uploadMedia);
 router.get('/admin/cloudinary/status', requireAdmin, getCloudinaryStatus);
 
 // Notifications & Activity

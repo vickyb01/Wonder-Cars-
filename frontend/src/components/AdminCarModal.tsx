@@ -135,7 +135,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [sellerPhone, setSellerPhone] = useState('+91 98204 51090');
   const [sellerWhatsapp, setSellerWhatsapp] = useState('919820451090');
 
-  // Categorized Gallery (up to 35 photos)
+  // Categorized Gallery (up to 70 photos)
   const [gallery, setGallery] = useState<CarPhoto[]>([]);
   const [uploadCategory, setUploadCategory] = useState<PhotoCategory>('Exterior');
   const [uploadAngleLabel, setUploadAngleLabel] = useState('Front-Left 45° View');
@@ -416,8 +416,8 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
     if (!fileList || fileList.length === 0) return;
-    if (gallery.length + fileList.length > 35) {
-      setError('Maximum 35 photographs allowed per vehicle listing.');
+    if (gallery.length + fileList.length > 70) {
+      setError('Maximum 70 photographs allowed per vehicle listing.');
       return;
     }
     setError('');
@@ -445,8 +445,8 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   function handleAddImageUrl() {
     const trimmed = customImageUrl.trim();
     if (!trimmed) return;
-    if (gallery.length >= 35) {
-      setError('Maximum 35 photographs allowed per vehicle.');
+    if (gallery.length >= 70) {
+      setError('Maximum 70 photographs allowed per vehicle.');
       return;
     }
     setGallery((prev) => [
@@ -670,7 +670,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
         <div className="px-3.5 sm:px-6 py-2.5 sm:py-3 border-b border-slate-200 dark:border-white/[0.08] bg-slate-50 dark:bg-[#09090B]/60 flex flex-wrap gap-1.5 shrink-0">
           {[
             { id: 'basic', label: '1. Basic & Pricing' },
-            { id: 'gallery', label: `2. Photos (${gallery.length}/35)` },
+            { id: 'gallery', label: `2. Photos (${gallery.length}/70)` },
           ].map((tab) => {
             const hasErr = hasTabError(tab.id as ModalTab);
             return (
@@ -1191,7 +1191,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                   )}
                 </div>
                 <span className="text-[11px] text-slate-500 dark:text-zinc-400 font-mono">
-                  {gallery.length}/35 Photographs
+                  {gallery.length}/70 Photographs
                 </span>
               </div>
 
@@ -1226,7 +1226,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                 </p>
                 <span className="mt-3.5 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-bold text-xs shadow-md shadow-amber-600/20">
                   <ImagePlus className="w-4 h-4" />
-                  <span>Choose from Gallery ({gallery.length}/35)</span>
+                  <span>Choose from Gallery ({gallery.length}/70)</span>
                 </span>
               </label>
 
@@ -1292,7 +1292,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
               {gallery.length === 0 ? (
                 <div className="p-10 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.07] text-center text-xs text-slate-500 dark:text-zinc-400">
-                  No photos uploaded for this vehicle yet. Upload up to 35 actual photographs across Exterior, Interior, Engine &amp; Mechanical, and Underbody &amp; Storage.
+                  No photos uploaded for this vehicle yet. Upload up to 70 actual photographs across Exterior, Interior, Engine &amp; Mechanical, and Underbody &amp; Storage.
                 </div>
               ) : (
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">

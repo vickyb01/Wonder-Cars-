@@ -42,9 +42,9 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
           <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/20 to-transparent pointer-events-none" />
 
           {/* Clean explicit status label over dark photo scrim */}
-          <div className="absolute bottom-3 left-4 right-4 flex items-center justify-between gap-2 text-xs pointer-events-none">
+          <div className="absolute bottom-2.5 left-3 right-3 flex items-center justify-between gap-2 text-xs pointer-events-none">
             <span
-              className={`font-medium tracking-wide ${
+              className={`font-medium tracking-wide shrink-0 ${
                 car.status === 'Sold'
                   ? 'text-rose-300'
                   : car.status === 'Reserved'
@@ -58,7 +58,12 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
                 ? 'Status: Reserved'
                 : 'Certified Available'}
             </span>
-            <span className="text-zinc-200 font-mono tabular-nums">{car.location}</span>
+            <span
+              className="text-zinc-200 font-mono tabular-nums truncate max-w-[52%] text-right text-[11px] sm:text-xs"
+              title={car.location}
+            >
+              {car.location.includes('Preet Vihar') ? 'Preet Vihar, Delhi' : car.location}
+            </span>
           </div>
         </Link>
 
