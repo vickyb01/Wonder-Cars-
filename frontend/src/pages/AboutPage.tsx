@@ -432,11 +432,17 @@ export function AboutPage() {
             >
               <div className="relative rounded-3xl overflow-hidden border-2 border-amber-500/20 dark:border-amber-500/30 shadow-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#18181B] dark:to-[#121215] p-6 text-center">
                 {/* Visual Emblem / Portrait Frame */}
-                <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-full overflow-hidden border-4 border-amber-500/30 shadow-inner bg-white dark:bg-black p-4 flex items-center justify-center">
+                <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-full overflow-hidden border-4 border-amber-500/40 shadow-xl bg-white flex items-center justify-center">
                   <img
-                    src={ownerImage}
+                    src={ownerImage || '/assets/wonder-cars-emblem-clean.png'}
                     alt={ownerName}
-                    className="w-full h-full object-contain"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('wonder-cars-emblem-clean.png')) {
+                        target.src = '/assets/wonder-cars-emblem-clean.png';
+                      }
+                    }}
+                    className="w-full h-full object-cover"
                   />
                 </div>
 

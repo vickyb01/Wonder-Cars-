@@ -184,7 +184,7 @@ export const DEFAULT_ABOUT_SETTINGS: AboutSettings = {
   ],
   ownerPhilosophy: '“A reputation takes decades to build and seconds to compromise. That is why we treat every client like family and every car like our own.”',
   ownerSignature: 'Naman Jain',
-  ownerImage: '/assets/naman-jain-owner.jpg',
+  ownerImage: '/assets/wonder-cars-emblem-clean.png',
 
   // Why Choose Us
   whyChooseBadge: 'The Wonder Advantage',
@@ -449,7 +449,7 @@ export const DEFAULT_WEBSITE_SETTINGS: WebsiteSettings = {
   tagline: 'Delhi-NCR’s Most Trusted Pre-Owned Car Destination',
   logoLight: '/assets/wonder-cars-logo.png',
   logoDark: '/assets/wonder-cars-logo-dark.png',
-  faviconUrl: '/favicon.ico',
+  faviconUrl: '/favicon.png',
   primaryPhone: '+91 83840 68347',
   whatsappNumber: '918384068347',
   supportEmail: 'amanjain.nj784@gmail.com',
