@@ -122,21 +122,20 @@ export function Footer() {
             </ul>
           </div>
 
-          {/* Showrooms */}
+          {/* Showroom Location */}
           <div className="flex flex-col items-center lg:items-start">
-            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Galleries</h3>
+            <h3 className="text-sm font-semibold text-slate-900 dark:text-white mb-4">Showroom Location</h3>
             <ul className="space-y-3 text-sm flex flex-col items-center lg:items-start">
-              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
-                <span>Preet Vihar, East Delhi 110092</span>
-              </li>
-              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
-                <span>Worli Sea Face, Mumbai 400018</span>
-              </li>
-              <li className="flex items-center lg:items-start justify-center lg:justify-start gap-2.5">
-                <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0" />
-                <span>Lavelle Road, Bengaluru 560001</span>
+              <li>
+                <a
+                  href={loc.googleMapsUrl || 'https://maps.google.com/?q=Shop+No.-3,+Rajkamal+Sadan,+Preet+Vihar,+Commercial+Complex,+Delhi-92'}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-start justify-center lg:justify-start gap-2.5 hover:text-blue-700 dark:hover:text-white transition-colors group text-center lg:text-left"
+                >
+                  <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
+                  <span className="leading-relaxed">Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.</span>
+                </a>
               </li>
             </ul>
           </div>

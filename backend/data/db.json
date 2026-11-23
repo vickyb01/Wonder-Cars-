@@ -558,7 +558,7 @@
       "drivetrain": "",
       "claimedMileage": "",
       "emissionStandard": "BS6",
-      "registrationState": "HR",
+      "registrationState": "HR98 REG",
       "insuranceValidUntil": "Comprehensive (Valid)",
       "warrantyPeriod": "6 Months",
       "warrantyDetails": "Engine, Gearbox, Electronics & 24×7 Roadside Assistance",
@@ -5819,6 +5819,13 @@
     }
   ],
   "activityLogs": [
+    {
+      "id": "act-1795406097624-ojax",
+      "userEmail": "admin",
+      "action": "Updated Car",
+      "details": "Updated 2025 Mahindra Scorpio-N",
+      "timestamp": "2026-11-23T03:54:57.624Z"
+    },
     {
       "id": "act-1795405632571-tdap",
       "userEmail": "admin",
