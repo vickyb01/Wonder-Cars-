@@ -1103,7 +1103,7 @@ export function ComparePage() {
 
                 <div className="grid grid-cols-2 gap-2.5">
                   <a
-                    href={`tel:${(contactCar.sellerPhone || '+919820451090').replace(/\s+/g, '')}`}
+                    href={`tel:${(contactCar.sellerPhone || '+91 83840 68347').replace(/\s+/g, '')}`}
                     className="inline-flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-white text-xs font-semibold transition-colors"
                   >
                     <Phone className="w-3.5 h-3.5" />
@@ -1111,7 +1111,7 @@ export function ComparePage() {
                   </a>
                   <a
                     href={buildWhatsAppUrl(
-                      contactCar.sellerWhatsapp || contactCar.sellerPhone || '919820451090',
+                      contactCar.sellerWhatsapp || contactCar.sellerPhone || '918384068347',
                       `Hello ${contactCar.sellerName}, I am interested in ${contactCar.year} ${contactCar.brand} ${contactCar.model} (${contactCar.listingCode}).`
                     )}
                     target="_blank"

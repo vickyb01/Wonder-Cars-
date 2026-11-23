@@ -66,7 +66,7 @@ export function ShowroomEnquirySidebar({
   } | null>(null);
 
   const whatsappHref = buildWhatsAppUrl(
-    car.sellerWhatsapp || '919820451090',
+    car.sellerWhatsapp || '918384068347',
     `Hello ${car.sellerName}, I am interested in the ${car.year} ${car.brand} ${car.model} (${car.variant}, Listing ${car.listingCode}) priced at ${formatINR(car.priceInr)}.`
   );
 

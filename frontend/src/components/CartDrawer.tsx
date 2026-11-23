@@ -23,7 +23,7 @@ interface CartDrawerProps {
   showroomPhone?: string;
 }
 
-export function CartDrawer({ showroomPhone = '+919810023456' }: CartDrawerProps) {
+export function CartDrawer({ showroomPhone = '+91 83840 68347' }: CartDrawerProps) {
   const { cartItems, cartCount, isCartOpen, closeCart, removeFromCart, clearCart } = useCart();
   const drawerRef = useRef<HTMLDivElement>(null);
 

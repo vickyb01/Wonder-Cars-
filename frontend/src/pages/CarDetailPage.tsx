@@ -190,7 +190,7 @@ export function CarDetailPage() {
       : 'text-emerald-700 dark:text-emerald-400';
 
   const whatsappQuickHref = buildWhatsAppUrl(
-    car.sellerWhatsapp || '919820451090',
+    car.sellerWhatsapp || '918384068347',
     `Hello ${car.sellerName}, I am enquiring about ${carTitle} (Listing ${car.listingCode}).`
   );
 

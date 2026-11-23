@@ -42,7 +42,7 @@ export const SMTP_PASS = process.env.SMTP_PASS || '';
 export const SMTP_FROM = process.env.SMTP_FROM || 'Wonder Cars Bookings <bookings@wondercars.in>';
 
 // WhatsApp Business Cloud API Configuration
-export const SHOWROOM_WHATSAPP_NUMBER = process.env.SHOWROOM_WHATSAPP_NUMBER || '9272150600';
+export const SHOWROOM_WHATSAPP_NUMBER = process.env.SHOWROOM_WHATSAPP_NUMBER || '8384068347';
 export const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || process.env.META_WHATSAPP_TOKEN || '';
 export const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
 export const WHATSAPP_BUSINESS_ACCOUNT_ID = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '';

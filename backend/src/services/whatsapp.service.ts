@@ -34,7 +34,7 @@ export interface OutgoingWhatsappRecord {
 
 /**
  * Normalizes Indian phone numbers into WhatsApp Meta Cloud API format:
- * Exactly country code 91 followed by the 10-digit subscriber number (e.g. 919272150600).
+ * Exactly country code 91 followed by the 10-digit subscriber number (e.g. 918384068347).
  * Strips all spaces, dashes, parentheses, and leading plus or zeros.
  */
 export function cleanIndianPhoneNumber(phone: string): string {
@@ -127,7 +127,7 @@ export async function sendAutomaticCustomerWhatsappDocument(
     `Vehicle: ${carTitle}`,
     `Price: ${priceText} · Warranty: ${warrantyText}`,
     enquiry.preferredDate ? `Slot: ${enquiry.preferredDate} (${enquiry.preferredTime || '11:00 AM'})` : '',
-    `Showroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Delhi-92`,
+    `Showroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.`,
     `Concierge: Naman Jain (+91 83840 68347)`,
   ]
     .filter(Boolean)
