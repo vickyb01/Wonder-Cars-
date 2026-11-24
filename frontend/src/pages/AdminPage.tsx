@@ -141,6 +141,8 @@ import {
   fetchEmailConfig,
   sendTestEmail,
   type OutgoingEmailLog,
+  rehydrateBackendCars,
+  subscribeToInventoryUpdates,
 } from '../utils/api';
 import { EMPTY_LOCATION_SETTINGS, buildDirectionsUrl, formatFullAddress } from '../utils/location';
 import { buildWhatsAppUrl, formatINR, formatINRCompact, formatKm } from '../utils/format';
@@ -545,6 +547,78 @@ export function AdminPage() {
       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to delete car.' });
     }
   }
+
+  // Cross-tab synchronization listener for fleet inventory
+  useEffect(() => {
+    const unsubscribe = subscribeToInventoryUpdates((data) => {
+      if (data?.type === 'upsert' && data.car) {
+        const updatedCar = data.car;
+        setCars((prev) => {
+          const exists = prev.some((c) => c.id === updatedCar.id);
+          if (exists) return prev.map((c) => (c.id === updatedCar.id ? updatedCar : c));
+          return [updatedCar, ...prev];
+        });
+      } else if (data?.type === 'delete' && data.carId) {
+        setCars((prev) => prev.filter((c) => c.id !== data.carId));
+      } else {
+        fetchCars({ includeDrafts: 'true' })
+          .then((list) => setCars(list))
+          .catch(() => {});
+      }
+    });
+    return unsubscribe;
+  }, []);
+
+  const [isSyncingServer, setIsSyncingServer] = useState(false);
+
+  const handleSyncToServer = async () => {
+    setIsSyncingServer(true);
+    try {
+      const res = await rehydrateBackendCars();
+      if (res.ok) {
+        setSaveFeedback({ type: 'success', text: `Synchronized ${res.count ?? cars.length} vehicles to live server!` });
+      } else {
+        setSaveFeedback({ type: 'error', text: 'Server sync failed or server is cold-starting. Cars remain saved locally.' });
+      }
+    } catch {
+      setSaveFeedback({ type: 'error', text: 'Unable to reach live server. Local inventory is protected.' });
+    } finally {
+      setIsSyncingServer(false);
+    }
+  };
+
+  const handleExportDbJson = () => {
+    try {
+      const fullDb = {
+        cars,
+        enquiries,
+        sellRequests,
+        locationSettings: locationForm,
+        adminUsers,
+        categories,
+        brands,
+        homepageSettings,
+        aboutSettings,
+        testimonials,
+        websiteSettings,
+        notifications,
+        activityLogs,
+        visitorCount: overview?.visitorCount || 14280,
+      };
+      const blob = new Blob([JSON.stringify(fullDb, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `db.json`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      setSaveFeedback({ type: 'success', text: 'Database exported as db.json! You can commit this to GitHub anytime.' });
+    } catch {
+      setSaveFeedback({ type: 'error', text: 'Failed to export database.' });
+    }
+  };
 
   // Enquiry Update
   async function handleUpdateEnquiryStatus(enqId: string, status: EnquiryStatus) {
@@ -1360,19 +1434,42 @@ export function AdminPage() {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">Car Fleet Management</h1>
-                  <p className="text-xs text-slate-500 mt-1">Add, edit, duplicate, set pricing, photos, and live availability of inventory.</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Add, edit, duplicate, set pricing, photos, and live availability. All listings auto-sync across tabs &amp; survive server sleep.
+                  </p>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    setEditingCar(null);
-                    setCarModalOpen(true);
-                  }}
-                  className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors cursor-pointer"
-                >
-                  <Plus className="w-4 h-4" />
-                  <span>Add New Car</span>
-                </button>
+                <div className="flex flex-wrap items-center gap-2">
+                  <button
+                    type="button"
+                    onClick={handleSyncToServer}
+                    disabled={isSyncingServer}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-emerald-50 text-emerald-700 border border-emerald-200 font-semibold text-xs hover:bg-emerald-100 transition-colors cursor-pointer disabled:opacity-50"
+                    title="Push all local custom vehicles to live backend immediately"
+                  >
+                    <RefreshCw className={`w-3.5 h-3.5 ${isSyncingServer ? 'animate-spin' : ''}`} />
+                    <span>{isSyncingServer ? 'Syncing...' : 'Sync Server'}</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={handleExportDbJson}
+                    className="inline-flex items-center gap-1.5 px-3 py-2 rounded-lg bg-slate-100 text-slate-700 border border-slate-200 font-semibold text-xs hover:bg-slate-200 transition-colors cursor-pointer"
+                    title="Download updated db.json to commit into GitHub repository"
+                  >
+                    <Download className="w-3.5 h-3.5" />
+                    <span>Export db.json</span>
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setEditingCar(null);
+                      setCarModalOpen(true);
+                    }}
+                    className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm transition-colors cursor-pointer"
+                  >
+                    <Plus className="w-4 h-4" />
+                    <span>Add New Car</span>
+                  </button>
+                </div>
               </div>
 
               {/* Filters Bar */}

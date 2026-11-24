@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import type { Car as CarType, HomepageSettings } from '../types/car';
-import { fetchCars, fetchHomepageSettings } from '../utils/api';
+import { fetchCars, fetchHomepageSettings, subscribeToInventoryUpdates } from '../utils/api';
 import { CarCard } from '../components/CarCard';
 import { SeoHead } from '../components/SeoHead';
 import { VehicleImage } from '../components/VehicleImage';
@@ -187,8 +187,21 @@ export function HomePage() {
       }
     }
     load();
+
+    const unsubscribe = subscribeToInventoryUpdates(() => {
+      fetchCars({ status: 'Available', sort: 'newest' })
+        .then((all) => {
+          if (!active) return;
+          setAllCars(all);
+          setFeaturedCars(all.filter((c) => c.featured).slice(0, 6));
+          setLatestCars(all);
+        })
+        .catch(() => {});
+    });
+
     return () => {
       active = false;
+      unsubscribe();
     };
   }, []);
 

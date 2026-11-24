@@ -20,9 +20,149 @@ import type {
   TestimonialItem,
   WebsiteSettings,
 } from '../types/car';
+import { normalizeCarRecord } from './carDefaults';
 
 const ADMIN_TOKEN_KEY = 'strada_admin_token';
 const WISHLIST_KEY = 'strada_wishlist_ids';
+export const CUSTOM_CARS_KEY = 'wonder_cars_custom_inventory';
+export const FULL_CATALOG_CACHE_KEY = 'wonder_cars_full_catalog_cache';
+const SYNC_CHANNEL_NAME = 'wonder_cars_inventory_sync';
+
+let syncChannel: BroadcastChannel | null = null;
+try {
+  if (typeof window !== 'undefined' && 'BroadcastChannel' in window) {
+    syncChannel = new BroadcastChannel(SYNC_CHANNEL_NAME);
+  }
+} catch {}
+
+export function broadcastInventoryUpdate(data: { type: string; car?: Car; carId?: string }): void {
+  try {
+    syncChannel?.postMessage(data);
+  } catch {}
+  if (typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent('wonder_cars_inventory_sync', { detail: data }));
+  }
+}
+
+export function subscribeToInventoryUpdates(callback: (data: { type: string; car?: Car; carId?: string }) => void): () => void {
+  if (typeof window === 'undefined') return () => {};
+  const handleMessage = (e: MessageEvent) => {
+    callback(e.data);
+  };
+  const handleCustomEvent = (e: Event) => {
+    callback((e as CustomEvent).detail);
+  };
+  const handleStorage = (e: StorageEvent) => {
+    if (e.key === CUSTOM_CARS_KEY || e.key === FULL_CATALOG_CACHE_KEY) {
+      callback({ type: 'storage_change' });
+    }
+  };
+
+  syncChannel?.addEventListener('message', handleMessage);
+  window.addEventListener('wonder_cars_inventory_sync', handleCustomEvent);
+  window.addEventListener('storage', handleStorage);
+
+  return () => {
+    syncChannel?.removeEventListener('message', handleMessage);
+    window.removeEventListener('wonder_cars_inventory_sync', handleCustomEvent);
+    window.removeEventListener('storage', handleStorage);
+  };
+}
+
+export function getLocalCustomCars(): Car[] {
+  try {
+    const raw = localStorage.getItem(CUSTOM_CARS_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.map(normalizeCarImages) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function saveLocalCustomCar(car: Car): void {
+  try {
+    const current = getLocalCustomCars();
+    const index = current.findIndex((c) => c.id === car.id || (car.slug && c.slug === car.slug));
+    let next: Car[];
+    if (index >= 0) {
+      next = [...current];
+      next[index] = car;
+    } else {
+      next = [car, ...current];
+    }
+    localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(next));
+    updateGlobalCatalogCache([car]);
+    broadcastInventoryUpdate({ type: 'upsert', car });
+  } catch (e) {
+    console.error('Failed to save car to local storage:', e);
+  }
+}
+
+export function removeLocalCustomCar(carId: string): void {
+  try {
+    const current = getLocalCustomCars();
+    const next = current.filter((c) => c.id !== carId);
+    localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(next));
+
+    const cached = getGlobalCatalogCache().filter((c) => c.id !== carId);
+    localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(cached));
+
+    broadcastInventoryUpdate({ type: 'delete', carId });
+  } catch (e) {
+    console.error('Failed to remove car from local storage:', e);
+  }
+}
+
+export function getGlobalCatalogCache(): Car[] {
+  try {
+    const raw = localStorage.getItem(FULL_CATALOG_CACHE_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    return Array.isArray(parsed) ? parsed.map(normalizeCarImages) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function updateGlobalCatalogCache(incoming: Car[]): void {
+  try {
+    const current = getGlobalCatalogCache();
+    const map = new Map<string, Car>();
+    incoming.forEach((c) => {
+      if (c && c.id) map.set(c.id, c);
+    });
+    current.forEach((c) => {
+      if (c && c.id && !map.has(c.id)) map.set(c.id, c);
+    });
+    localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(Array.from(map.values())));
+  } catch {}
+}
+
+let isSyncing = false;
+export async function rehydrateBackendCars(): Promise<{ ok: boolean; count?: number }> {
+  if (isSyncing) return { ok: true, count: 0 };
+  const customCars = getLocalCustomCars();
+  if (!customCars.length) return { ok: true, count: 0 };
+
+  isSyncing = true;
+  try {
+    const res = await apiFetch('/api/cars/sync', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify({ cars: customCars }),
+    });
+    const data = await handleJsonResponse<{ ok: boolean; addedCount?: number; updatedCount?: number }>(res);
+    return { ok: true, count: (data.addedCount || 0) + (data.updatedCount || 0) };
+  } catch {
+    return { ok: false };
+  } finally {
+    isSyncing = false;
+  }
+}
 
 export function getAdminToken(): string | null {
   return localStorage.getItem(ADMIN_TOKEN_KEY);
@@ -101,16 +241,38 @@ async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<R
   const isApiRequest = typeof input === 'string' && input.startsWith('/api');
   const targetUrl = isApiRequest ? `${API_BASE}${input}` : input;
 
+  const performFetch = async (url: RequestInfo | URL): Promise<Response> => {
+    try {
+      const res = await fetch(url, init);
+      // If local dev server proxy returned 502 Bad Gateway (local backend offline), seamlessly fallback to Live Render backend
+      if (!res.ok && res.status === 502 && !API_BASE && isApiRequest) {
+        return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+      }
+      return res;
+    } catch (err) {
+      if (!API_BASE && isApiRequest) {
+        return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+      }
+      throw err;
+    }
+  };
+
   try {
-    const res = await fetch(targetUrl, init);
-    // If local dev server proxy returned 502 Bad Gateway (local backend offline), seamlessly fallback to Live Render backend
-    if (!res.ok && res.status === 502 && !API_BASE && isApiRequest) {
-      return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+    const res = await performFetch(targetUrl);
+    // Cold start retry: if Render returns 502/503/504 while waking up, wait 2s and retry once
+    if (!res.ok && [502, 503, 504].includes(res.status) && isApiRequest) {
+      await new Promise((r) => setTimeout(r, 2000));
+      return await performFetch(targetUrl);
     }
     return res;
   } catch (err) {
-    if (!API_BASE && isApiRequest) {
-      return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+    if (isApiRequest && typeof input === 'string') {
+      const fallbackUrl = `${LIVE_BACKEND_URL}${input}`;
+      if (targetUrl !== fallbackUrl) {
+        try {
+          return await performFetch(fallbackUrl);
+        } catch {}
+      }
     }
     throw err;
   }
@@ -130,19 +292,122 @@ function authHeaders(): HeadersInit {
   return token ? { Authorization: `Bearer ${token}` } : {};
 }
 
+export function applyLocalFilters(cars: Car[], filters: CarFilters = {}): Car[] {
+  let results = [...cars];
+  if (filters.includeDrafts !== 'true') {
+    results = results.filter((c) => c.status !== 'Draft');
+  }
+  const search = String(filters.search || '').trim().toLowerCase();
+  if (search) {
+    results = results.filter((car) =>
+      [car.brand, car.model, car.variant, car.location, car.fuelType, car.color, car.listingCode, String(car.year)]
+        .join(' ')
+        .toLowerCase()
+        .includes(search)
+    );
+  }
+  if (filters.brand && filters.brand !== 'All') {
+    results = results.filter((c) => c.brand.toLowerCase() === filters.brand?.toLowerCase());
+  }
+  if (filters.model && filters.model !== 'All') {
+    results = results.filter((c) => c.model.toLowerCase().includes(filters.model!.toLowerCase()));
+  }
+  if (filters.minPrice) {
+    results = results.filter((c) => c.priceInr >= Number(filters.minPrice));
+  }
+  if (filters.maxPrice) {
+    results = results.filter((c) => c.priceInr <= Number(filters.maxPrice));
+  }
+  if (filters.year && filters.year !== 'All') {
+    results = results.filter((c) => c.year === Number(filters.year));
+  }
+  if (filters.fuelType && filters.fuelType !== 'All') {
+    results = results.filter((c) => c.fuelType.toLowerCase() === filters.fuelType?.toLowerCase());
+  }
+  if (filters.transmission && filters.transmission !== 'All') {
+    results = results.filter((c) => c.transmission.toLowerCase() === filters.transmission?.toLowerCase());
+  }
+  if (filters.maxKm) {
+    results = results.filter((c) => c.kilometres <= Number(filters.maxKm));
+  }
+  if (filters.status && filters.status !== 'All') {
+    results = results.filter((c) => c.status.toLowerCase() === filters.status?.toLowerCase());
+  }
+  if (filters.featured === 'true') {
+    results = results.filter((c) => c.featured);
+  }
+  if (filters.sort === 'price_asc') {
+    results.sort((a, b) => a.priceInr - b.priceInr);
+  } else if (filters.sort === 'price_desc') {
+    results.sort((a, b) => b.priceInr - a.priceInr);
+  } else if (filters.sort === 'km_asc') {
+    results.sort((a, b) => a.kilometres - b.kilometres);
+  } else if (filters.sort === 'year_desc') {
+    results.sort((a, b) => b.year - a.year);
+  } else {
+    results.sort((a, b) => new Date(b.createdAt || 0).getTime() - new Date(a.createdAt || 0).getTime());
+  }
+  return results;
+}
+
 export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
-  const params = new URLSearchParams();
-  Object.entries(filters).forEach(([key, value]) => {
-    if (value !== undefined && value !== '' && value !== 'All') {
-      params.set(key, String(value));
+  const customCars = getLocalCustomCars();
+  const cached = getGlobalCatalogCache();
+
+  let fetchedCars: Car[] | null = null;
+  try {
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value !== undefined && value !== '' && value !== 'All') {
+        params.set(key, String(value));
+      }
+    });
+    const query = params.toString();
+    const res = await apiFetch(`/api/cars${query ? `?${query}` : ''}`, {
+      headers: filters.includeDrafts === 'true' ? authHeaders() : undefined,
+    });
+    const data = await handleJsonResponse<Car[]>(res);
+    if (Array.isArray(data)) {
+      fetchedCars = data.map(normalizeCarImages);
     }
-  });
-  const query = params.toString();
-  const res = await apiFetch(`/api/cars${query ? `?${query}` : ''}`, {
-    headers: filters.includeDrafts === 'true' ? authHeaders() : undefined,
-  });
-  const data = await handleJsonResponse<Car[]>(res);
-  return Array.isArray(data) ? data.map(normalizeCarImages) : [];
+  } catch (err) {
+    console.warn('Backend fetchCars failed (Render cold start or offline), loading cached fleet:', err);
+  }
+
+  let combined: Car[] = fetchedCars !== null ? [...fetchedCars] : [...cached];
+
+  // Merge any custom cars that may have disappeared from backend due to Render container reboot
+  const missingFromBackend: Car[] = [];
+  if (customCars.length > 0) {
+    const existingIds = new Set(combined.map((c) => c.id));
+    customCars.forEach((c) => {
+      if (!existingIds.has(c.id)) {
+        if (filters.includeDrafts === 'true' || c.status !== 'Draft') {
+          combined.unshift(c);
+          missingFromBackend.push(c);
+        }
+      } else {
+        const idx = combined.findIndex((item) => item.id === c.id);
+        if (idx >= 0) {
+          combined[idx] = c;
+        }
+      }
+    });
+  }
+
+  // If backend was reachable and missing custom cars, rehydrate it silently
+  if (fetchedCars !== null && missingFromBackend.length > 0) {
+    rehydrateBackendCars().catch(() => {});
+  }
+
+  // Keep full catalog cached in localStorage
+  updateGlobalCatalogCache(combined);
+
+  if (fetchedCars === null) {
+    return applyLocalFilters(combined, filters);
+  }
+
+  return combined;
 }
 
 export async function fetchCarDetail(id: string): Promise<{
@@ -150,17 +415,58 @@ export async function fetchCarDetail(id: string): Promise<{
   similar: Car[];
   sellerOtherCars: Car[];
 }> {
-  const res = await apiFetch(`/api/cars/${encodeURIComponent(id)}`);
-  const data = await handleJsonResponse<{
-    car: Car;
-    similar: Car[];
-    sellerOtherCars: Car[];
-  }>(res);
-  return {
-    car: normalizeCarImages(data.car),
-    similar: (data.similar || []).map(normalizeCarImages),
-    sellerOtherCars: (data.sellerOtherCars || []).map(normalizeCarImages),
-  };
+  const cleanId = String(id || '').trim();
+  const customCars = getLocalCustomCars();
+  const cached = getGlobalCatalogCache();
+  const allKnown = [...customCars, ...cached];
+
+  const localMatch = allKnown.find(
+    (c) =>
+      c.id === cleanId ||
+      c.slug === cleanId ||
+      (c.listingCode && c.listingCode.toLowerCase() === cleanId.toLowerCase())
+  );
+
+  try {
+    const res = await apiFetch(`/api/cars/${encodeURIComponent(cleanId)}`, {
+      headers: authHeaders(),
+    });
+    const data = await handleJsonResponse<{
+      car: Car;
+      similar: Car[];
+      sellerOtherCars: Car[];
+    }>(res);
+
+    const normalizedCar = normalizeCarImages(data.car);
+    const result = {
+      car: normalizedCar,
+      similar: (data.similar || []).map(normalizeCarImages),
+      sellerOtherCars: (data.sellerOtherCars || []).map(normalizeCarImages),
+    };
+
+    saveLocalCustomCar(normalizedCar);
+    return result;
+  } catch (err) {
+    // If backend returns 404 (Render wiped it) or times out / 502/504
+    if (localMatch) {
+      console.warn(`Serving car ${cleanId} from persistent client inventory:`, err);
+      rehydrateBackendCars().catch(() => {});
+
+      const similar = allKnown
+        .filter((c) => c.id !== localMatch.id && (c.bodyType === localMatch.bodyType || c.brand === localMatch.brand))
+        .slice(0, 4);
+      const sellerOtherCars = allKnown
+        .filter((c) => c.id !== localMatch.id && c.brand === localMatch.brand)
+        .slice(0, 4);
+
+      return {
+        car: localMatch,
+        similar: similar.length ? similar : allKnown.filter((c) => c.id !== localMatch.id).slice(0, 4),
+        sellerOtherCars: sellerOtherCars.length ? sellerOtherCars : allKnown.filter((c) => c.id !== localMatch.id).slice(0, 4),
+      };
+    }
+    throw err;
+  }
 }
 
 export async function submitEnquiry(payload: {
@@ -266,37 +572,92 @@ export async function fetchAdminOverview(): Promise<AdminOverview> {
 }
 
 export async function createCar(payload: Partial<Car>): Promise<Car> {
-  const res = await apiFetch('/api/admin/cars', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(),
-    },
-    body: JSON.stringify(payload),
-  });
-  const data = await handleJsonResponse<Car>(res);
-  return normalizeCarImages(data);
+  const localId = payload.id || `car-${Date.now()}`;
+  const now = new Date().toISOString();
+  const brand = String(payload.brand || 'Luxury').trim();
+  const model = String(payload.model || 'Model').trim();
+  const year = Number(payload.year) || 2023;
+
+  const localCar = normalizeCarImages(
+    normalizeCarRecord({
+      ...payload,
+      id: localId,
+      listingCode: payload.listingCode || `WC-${String(Date.now()).slice(-4)}`,
+      slug: payload.slug || `${String(model).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${localId.slice(-4)}`,
+      brand,
+      model,
+      year,
+      priceInr: Number(payload.priceInr) || 0,
+      status: (payload.status as CarStatus) || 'Available',
+      featured: Boolean(payload.featured),
+      createdAt: now,
+    })
+  );
+
+  // Immediately persist in local custom cars and update cache
+  saveLocalCustomCar(localCar);
+
+  try {
+    const res = await apiFetch('/api/admin/cars', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await handleJsonResponse<Car>(res);
+    const serverCar = normalizeCarImages(data);
+    saveLocalCustomCar(serverCar);
+    return serverCar;
+  } catch (err) {
+    console.warn('Backend car creation failed; saved to local fleet:', err);
+    return localCar;
+  }
 }
 
 export async function updateCar(id: string, payload: Partial<Car>): Promise<Car> {
-  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
-    method: 'PUT',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(),
-    },
-    body: JSON.stringify(payload),
-  });
-  const data = await handleJsonResponse<Car>(res);
-  return normalizeCarImages(data);
+  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
+  const existing = allKnown.find((c) => c.id === id);
+  const updatedLocal = normalizeCarImages(
+    normalizeCarRecord({
+      ...(existing || {}),
+      ...payload,
+      id,
+    })
+  );
+  saveLocalCustomCar(updatedLocal);
+
+  try {
+    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify(payload),
+    });
+    const data = await handleJsonResponse<Car>(res);
+    const normalized = normalizeCarImages(data);
+    saveLocalCustomCar(normalized);
+    return normalized;
+  } catch (err) {
+    console.warn('Backend car update failed; updated in local fleet:', err);
+    return updatedLocal;
+  }
 }
 
 export async function deleteCar(id: string): Promise<void> {
-  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
-    method: 'DELETE',
-    headers: authHeaders(),
-  });
-  await handleJsonResponse<{ ok: boolean }>(res);
+  removeLocalCustomCar(id);
+  try {
+    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+      method: 'DELETE',
+      headers: authHeaders(),
+    });
+    await handleJsonResponse<{ ok: boolean }>(res);
+  } catch (err) {
+    console.warn('Backend delete failed; removed from local fleet:', err);
+  }
 }
 
 export async function uploadCarImages(files: File[]): Promise<string[]> {
@@ -421,35 +782,91 @@ export async function geocodeLocationServer(address: string): Promise<{
 
 // Cars Enhancements
 export async function duplicateCar(id: string): Promise<Car> {
-  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
-    method: 'POST',
-    headers: authHeaders(),
-  });
-  return handleJsonResponse<Car>(res);
+  try {
+    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
+      method: 'POST',
+      headers: authHeaders(),
+    });
+    const data = await handleJsonResponse<Car>(res);
+    const normalized = normalizeCarImages(data);
+    saveLocalCustomCar(normalized);
+    return normalized;
+  } catch (err) {
+    console.warn('Backend duplicate failed; duplicating locally:', err);
+    const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
+    const source = allKnown.find((c) => c.id === id);
+    const newId = `car-${Date.now()}`;
+    const duplicated = normalizeCarImages(
+      normalizeCarRecord({
+        ...(source || {}),
+        id: newId,
+        listingCode: `WC-${String(Date.now()).slice(-4)}`,
+        slug: `${source ? source.model.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'car'}-copy-${newId.slice(-4)}`,
+        model: source ? `${source.model} (Copy)` : 'Copy',
+        status: 'Draft',
+        featured: false,
+        createdAt: new Date().toISOString(),
+      })
+    );
+    saveLocalCustomCar(duplicated);
+    return duplicated;
+  }
 }
 
 export async function patchCarStatus(id: string, status: CarStatus): Promise<Car> {
-  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(),
-    },
-    body: JSON.stringify({ status }),
-  });
-  return handleJsonResponse<Car>(res);
+  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
+  const existing = allKnown.find((c) => c.id === id);
+  if (existing) {
+    const updated = { ...existing, status };
+    saveLocalCustomCar(updated);
+  }
+  try {
+    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify({ status }),
+    });
+    const data = await handleJsonResponse<Car>(res);
+    const normalized = normalizeCarImages(data);
+    saveLocalCustomCar(normalized);
+    return normalized;
+  } catch (err) {
+    if (existing) {
+      return { ...existing, status };
+    }
+    throw err;
+  }
 }
 
 export async function patchCarFeatured(id: string, featured: boolean): Promise<Car> {
-  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-      ...authHeaders(),
-    },
-    body: JSON.stringify({ featured }),
-  });
-  return handleJsonResponse<Car>(res);
+  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
+  const existing = allKnown.find((c) => c.id === id);
+  if (existing) {
+    const updated = { ...existing, featured };
+    saveLocalCustomCar(updated);
+  }
+  try {
+    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        ...authHeaders(),
+      },
+      body: JSON.stringify({ featured }),
+    });
+    const data = await handleJsonResponse<Car>(res);
+    const normalized = normalizeCarImages(data);
+    saveLocalCustomCar(normalized);
+    return normalized;
+  } catch (err) {
+    if (existing) {
+      return { ...existing, featured };
+    }
+    throw err;
+  }
 }
 
 // CRM Enquiries & Export

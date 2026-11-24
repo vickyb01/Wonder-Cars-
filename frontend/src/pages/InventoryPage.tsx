@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Heart, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import type { Car, CarFilters } from '../types/car';
-import { fetchCars } from '../utils/api';
+import { fetchCars, subscribeToInventoryUpdates } from '../utils/api';
 import { useWishlist } from '../context/WishlistContext';
 import { CarCard } from '../components/CarCard';
 import { EmiFilterPanel } from '../components/EmiFilterPanel';
@@ -97,6 +97,13 @@ export function InventoryPage() {
 
   useEffect(() => {
     loadFiltered();
+  }, [loadFiltered]);
+
+  useEffect(() => {
+    const unsubscribe = subscribeToInventoryUpdates(() => {
+      loadFiltered();
+    });
+    return unsubscribe;
   }, [loadFiltered]);
 
   const displayedCars = useMemo(() => {

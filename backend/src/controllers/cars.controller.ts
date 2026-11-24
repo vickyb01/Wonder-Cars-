@@ -132,9 +132,16 @@ export function getCars(req: Request, res: Response): void {
 
 export function getCarByIdOrSlug(req: Request, res: Response): void {
   const db = readDb();
-  const idOrSlug = req.params.id;
-  const car = db.cars.find((c) => c.id === idOrSlug || c.slug === idOrSlug);
-  if (!car || (car.status === 'Draft' && !isAdminRequest(req))) {
+  const idOrSlug = String(req.params.id || '').trim();
+  const car = db.cars.find(
+    (c) => c.id === idOrSlug || c.slug === idOrSlug || c.listingCode?.toLowerCase() === idOrSlug.toLowerCase()
+  );
+  if (!car) {
+    res.status(404).json({ error: 'Vehicle not found' });
+    return;
+  }
+  // Allow viewing if not Draft, or if Admin, or if preview requested directly with listing identifier
+  if (car.status === 'Draft' && !isAdminRequest(req) && req.query.preview !== 'true') {
     res.status(404).json({ error: 'Vehicle not found' });
     return;
   }
@@ -302,6 +309,49 @@ export function patchCarFeatured(req: Request, res: Response): void {
   writeDb(db);
   logActivity('admin', 'Toggled Car Featured', `${car.brand} ${car.model} featured: ${car.featured}`);
   res.json(car);
+}
+
+export function batchSyncCars(req: Request, res: Response): void {
+  const bodyCars = Array.isArray(req.body) ? req.body : req.body?.cars;
+  if (!Array.isArray(bodyCars) || bodyCars.length === 0) {
+    res.status(400).json({ error: 'No cars provided for batch sync.' });
+    return;
+  }
+
+  const db = readDb();
+  let addedCount = 0;
+  let updatedCount = 0;
+
+  for (const rawCar of bodyCars) {
+    if (!rawCar || !rawCar.id || !rawCar.brand || !rawCar.model) continue;
+    const existingIndex = db.cars.findIndex(
+      (c) => c.id === rawCar.id || (rawCar.slug && c.slug === rawCar.slug)
+    );
+    const normalized = normalizeCarRecord(rawCar);
+
+    if (existingIndex >= 0) {
+      db.cars[existingIndex] = {
+        ...db.cars[existingIndex],
+        ...normalized,
+      };
+      updatedCount++;
+    } else {
+      db.cars.unshift(normalized);
+      addedCount++;
+    }
+  }
+
+  if (addedCount > 0 || updatedCount > 0) {
+    writeDb(db);
+    logActivity('sync', 'Batch Inventory Sync', `Synchronized ${addedCount} new, ${updatedCount} updated cars.`);
+  }
+
+  res.json({
+    ok: true,
+    addedCount,
+    updatedCount,
+    totalCars: db.cars.length,
+  });
 }
 
 export function getCarBrochurePdf(req: Request, res: Response): void {

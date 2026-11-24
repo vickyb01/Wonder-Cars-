@@ -12,7 +12,7 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import type { Car } from '../types/car';
-import { fetchCarDetail, getWishlistIds, toggleWishlistId } from '../utils/api';
+import { fetchCarDetail, getWishlistIds, toggleWishlistId, subscribeToInventoryUpdates } from '../utils/api';
 import {
   buildWhatsAppUrl,
   calculateVehicleAge,
@@ -68,23 +68,41 @@ export function CarDetailPage() {
     setLoading(true);
     setError('');
 
-    fetchCarDetail(id)
-      .then((res) => {
-        if (!active) return;
-        setCar(res.car);
-        setSimilar(res.similar);
-        setSellerOtherCars(res.sellerOtherCars);
-      })
-      .catch((err) => {
-        if (!active) return;
-        setError(err instanceof Error ? err.message : 'Unable to load vehicle details.');
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
+    const loadCar = () => {
+      fetchCarDetail(id)
+        .then((res) => {
+          if (!active) return;
+          setCar(res.car);
+          setSimilar(res.similar);
+          setSellerOtherCars(res.sellerOtherCars);
+          setError('');
+        })
+        .catch((err) => {
+          if (!active) return;
+          setError(err instanceof Error ? err.message : 'Unable to load vehicle details.');
+        })
+        .finally(() => {
+          if (active) setLoading(false);
+        });
+    };
+
+    loadCar();
+
+    const unsubscribe = subscribeToInventoryUpdates((data) => {
+      if (
+        data?.car &&
+        (data.car.id === id || data.car.slug === id || data.car.listingCode?.toLowerCase() === id.toLowerCase())
+      ) {
+        setCar(data.car);
+        setError('');
+      } else {
+        loadCar();
+      }
+    });
 
     return () => {
       active = false;
+      unsubscribe();
     };
   }, [id]);
 
