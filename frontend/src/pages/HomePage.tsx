@@ -435,7 +435,7 @@ export function HomePage() {
             className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
           >
             <div>
-              <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
+              <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs text-center">
                 {homepageSettings?.searchLabel || 'Search Model or City'}
               </label>
               <input
@@ -448,7 +448,7 @@ export function HomePage() {
               />
             </div>
             <div>
-              <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
+              <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs text-center">
                 {homepageSettings?.brandLabel || 'Marque / Brand'}
               </label>
               <select
@@ -469,7 +469,7 @@ export function HomePage() {
             </div>
 
             <div>
-              <label htmlFor="hero-budget" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
+              <label htmlFor="hero-budget" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs text-center">
                 {homepageSettings?.budgetLabel || 'Max Budget (INR)'}
               </label>
               <select
@@ -490,7 +490,7 @@ export function HomePage() {
             </div>
 
             <div>
-              <label htmlFor="hero-fuel" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
+              <label htmlFor="hero-fuel" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs text-center">
                 {homepageSettings?.fuelLabel || 'Powertrain'}
               </label>
               <select
