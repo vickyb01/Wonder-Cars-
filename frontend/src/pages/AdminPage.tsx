@@ -137,6 +137,10 @@ import {
   updateWebsiteSettings,
   uploadCarImages,
   verifyAdminSession,
+  fetchEmailLogs,
+  fetchEmailConfig,
+  sendTestEmail,
+  type OutgoingEmailLog,
 } from '../utils/api';
 import { EMPTY_LOCATION_SETTINGS, buildDirectionsUrl, formatFullAddress } from '../utils/location';
 import { buildWhatsAppUrl, formatINR, formatINRCompact, formatKm } from '../utils/format';
@@ -227,6 +231,12 @@ export function AdminPage() {
   const [selectedEnquiry, setSelectedEnquiry] = useState<Enquiry | null>(null);
   const [enquiryNotesDraft, setEnquiryNotesDraft] = useState('');
   const [enquiryFollowUpDraft, setEnquiryFollowUpDraft] = useState('');
+
+  // Email Monitoring & Test State
+  const [emailLogs, setEmailLogs] = useState<OutgoingEmailLog[]>([]);
+  const [emailConfig, setEmailConfig] = useState<{ configured: boolean; smtpHost: string; smtpPort: number; smtpUser: string; ownerEmails: string[] } | null>(null);
+  const [testingEmail, setTestingEmail] = useState(false);
+  const [testEmailResult, setTestEmailResult] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
   // Forms saving states & feedbacks
   const [saveFeedback, setSaveFeedback] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
@@ -321,6 +331,8 @@ export function AdminPage() {
         logList,
         notifList,
         mediaList,
+        emailLogsRes,
+        emailCfgRes,
       ] = await Promise.all([
         fetchAdminOverview().catch(() => null),
         fetchCars({ includeDrafts: 'true', sort: 'newest' }).catch(() => []),
@@ -337,6 +349,8 @@ export function AdminPage() {
         fetchActivityLogs().catch(() => []),
         fetchNotifications().catch(() => []),
         fetchMediaLibrary().catch(() => []),
+        fetchEmailLogs().catch(() => []),
+        fetchEmailConfig().catch(() => null),
       ]);
 
       if (ov) setOverview(ov);
@@ -354,12 +368,46 @@ export function AdminPage() {
       setActivityLogs(logList);
       setNotifications(notifList);
       setMediaFiles(mediaList);
+      if (Array.isArray(emailLogsRes)) setEmailLogs(emailLogsRes);
+      if (emailCfgRes) setEmailConfig(emailCfgRes);
     } catch (err) {
       console.error('Failed to load dashboard data:', err);
     } finally {
       setLoadingData(false);
     }
   }, []);
+
+  // Real-time telemetry auto-polling: checks for new leads, emails, and notifications every 8s
+  useEffect(() => {
+    if (!currentUser) return;
+    const interval = setInterval(() => {
+      fetchAdminEnquiries()
+        .then((enqList) => {
+          if (Array.isArray(enqList)) setEnquiries(enqList);
+        })
+        .catch(() => null);
+
+      fetchNotifications()
+        .then((notifList) => {
+          if (Array.isArray(notifList)) setNotifications(notifList);
+        })
+        .catch(() => null);
+
+      fetchAdminOverview()
+        .then((ov) => {
+          if (ov) setOverview(ov);
+        })
+        .catch(() => null);
+
+      fetchEmailLogs()
+        .then((logs) => {
+          if (Array.isArray(logs)) setEmailLogs(logs);
+        })
+        .catch(() => null);
+    }, 8000);
+
+    return () => clearInterval(interval);
+  }, [currentUser]);
 
   // Check auth on load
   useEffect(() => {
@@ -522,6 +570,25 @@ export function AdminPage() {
       setSaveFeedback({ type: 'success', text: 'Enquiry notes & follow-up saved.' });
     } catch (err: unknown) {
       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to save notes.' });
+    }
+  }
+
+  async function handleTestEmail() {
+    setTestingEmail(true);
+    setTestEmailResult(null);
+    try {
+      const res = await sendTestEmail('vickybhelave25@navgurukul.org');
+      if (res.success) {
+        setTestEmailResult({ type: 'success', text: res.message });
+      } else {
+        setTestEmailResult({ type: 'error', text: res.message });
+      }
+      fetchEmailLogs().then(setEmailLogs).catch(() => null);
+      fetchEmailConfig().then(setEmailConfig).catch(() => null);
+    } catch (err: unknown) {
+      setTestEmailResult({ type: 'error', text: err instanceof Error ? err.message : 'Failed to send test email.' });
+    } finally {
+      setTestingEmail(false);
     }
   }
 
@@ -1798,6 +1865,143 @@ export function AdminPage() {
                   ) : (
                     <p className="text-xs text-slate-400">Select any enquiry card from the left to view and add internal follow-up notes.</p>
                   )}
+                </div>
+              </div>
+
+              {/* Showroom Owner Email Notification & SMTP Dispatch Monitor */}
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Mail className="w-5 h-5 text-blue-600" />
+                      <h2 className="font-bold text-base text-[#0B1528]">
+                        Showroom Email Notification Log & SMTP Monitor
+                      </h2>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-1">
+                      Direct notification destination: <strong className="text-slate-800">vickybhelave25@navgurukul.org</strong>
+                    </p>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {emailConfig?.configured ? (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200">
+                        <CheckCircle2 className="w-3.5 h-3.5" />
+                        SMTP Active ({emailConfig.smtpUser})
+                      </span>
+                    ) : (
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-amber-50 text-amber-700 border border-amber-200">
+                        <AlertCircle className="w-3.5 h-3.5" />
+                        SMTP Pending in .env
+                      </span>
+                    )}
+
+                    <button
+                      type="button"
+                      onClick={handleTestEmail}
+                      disabled={testingEmail}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-blue-600 hover:bg-blue-700 disabled:opacity-50 text-white font-semibold text-xs transition-colors cursor-pointer"
+                    >
+                      {testingEmail ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Mail className="w-3.5 h-3.5" />
+                      )}
+                      <span>Send Test Email</span>
+                    </button>
+                  </div>
+                </div>
+
+                {testEmailResult && (
+                  <div
+                    className={`p-3 rounded-xl text-xs font-medium flex items-center justify-between gap-2 ${
+                      testEmailResult.type === 'success'
+                        ? 'bg-emerald-50 text-emerald-800 border border-emerald-200'
+                        : 'bg-amber-50 text-amber-800 border border-amber-200'
+                    }`}
+                  >
+                    <span>{testEmailResult.text}</span>
+                    <button
+                      type="button"
+                      onClick={() => setTestEmailResult(null)}
+                      className="text-slate-400 hover:text-slate-600 font-bold"
+                    >
+                      ×
+                    </button>
+                  </div>
+                )}
+
+                <div className="overflow-x-auto">
+                  <table className="w-full text-left text-xs">
+                    <thead className="bg-slate-50 text-slate-600 uppercase font-semibold text-[11px] border-y border-slate-200">
+                      <tr>
+                        <th className="py-2.5 px-3">Time</th>
+                        <th className="py-2.5 px-3">Recipient</th>
+                        <th className="py-2.5 px-3">Customer / Lead</th>
+                        <th className="py-2.5 px-3">Subject</th>
+                        <th className="py-2.5 px-3">Delivery Status</th>
+                        <th className="py-2.5 px-3">Attachment</th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-slate-100">
+                      {emailLogs.length === 0 ? (
+                        <tr>
+                          <td colSpan={6} className="py-6 text-center text-slate-400">
+                            No outgoing emails recorded yet. Submit a test drive request from the website to trigger a booking email.
+                          </td>
+                        </tr>
+                      ) : (
+                        emailLogs.slice(0, 10).map((log) => (
+                          <tr key={log.id} className="hover:bg-slate-50/70">
+                            <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap">
+                              {new Date(log.timestamp).toLocaleString('en-IN', {
+                                day: '2-digit',
+                                month: 'short',
+                                hour: '2-digit',
+                                minute: '2-digit',
+                              })}
+                            </td>
+                            <td className="py-2.5 px-3 font-mono text-[11px] text-slate-700">
+                              {log.recipient || log.recipients?.[0] || 'vickybhelave25@navgurukul.org'}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              <span className="font-semibold text-slate-900">{log.customerName || 'Customer'}</span>
+                              {log.customerPhone && (
+                                <span className="block text-[11px] text-slate-500">+91 {log.customerPhone.slice(-10)}</span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 font-medium text-slate-800">
+                              {log.subject}
+                            </td>
+                            <td className="py-2.5 px-3">
+                              {log.status === 'sent' ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-emerald-100 text-emerald-800">
+                                  <CheckCircle2 className="w-3 h-3 text-emerald-600" /> Sent via SMTP
+                                </span>
+                              ) : log.status === 'recorded_locally' ? (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-100 text-amber-800" title="Saved in local database. Configure SMTP_USER and SMTP_PASS in .env to deliver directly to inbox.">
+                                  <Clock className="w-3 h-3 text-amber-600" /> Saved in CRM (SMTP Pending)
+                                </span>
+                              ) : (
+                                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold bg-rose-100 text-rose-800">
+                                  {log.status}
+                                </span>
+                              )}
+                            </td>
+                            <td className="py-2.5 px-3 text-slate-500 whitespace-nowrap">
+                              {log.attachedFiles && log.attachedFiles.length > 0 ? (
+                                <span className="inline-flex items-center gap-1 text-[11px] text-blue-600 font-semibold">
+                                  📎 {log.attachedFiles.length} file(s)
+                                </span>
+                              ) : (
+                                <span className="text-slate-400">—</span>
+                              )}
+                            </td>
+                          </tr>
+                        ))
+                      )}
+                    </tbody>
+                  </table>
                 </div>
               </div>
             </div>

@@ -450,10 +450,10 @@ export function ShowroomEnquirySidebar({
                   <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-white">
-                      Showroom Owner Notified
+                      Showroom Owner Notified & Lead Recorded
                     </p>
                     <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                      Email sent to <strong className="text-slate-900 dark:text-white">vickybhelave25@navgurukl.org</strong> with subject <em>"New Car Booking Received"</em> and the PDF attached.
+                      Booking details saved in Admin CRM. Email alert directed to <strong className="text-slate-900 dark:text-white">vickybhelave25@navgurukul.org</strong> with subject <em>"New Car Booking Received"</em> and the PDF attached.
                     </p>
                   </div>
                 </div>

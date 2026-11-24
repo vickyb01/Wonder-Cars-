@@ -1,5 +1,26 @@
 [
   {
+    "id": "email-owner-1795517474651",
+    "enquiryId": "enq-1795517474462",
+    "recipients": [
+      "vickybhelave25@navgurukl.org",
+      "vickybhelave25@navgurukul.org"
+    ],
+    "recipient": "vickybhelave25@navgurukl.org",
+    "subject": "New Car Booking Received",
+    "customerName": "Avnt netam",
+    "customerPhone": "8007316645",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "bookingTime": "Tuesday, 24 November 2026 at 4:21:14 pm",
+    "attachedFiles": [
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.html",
+      "WonderCars-MarutiSuzuki-Baleno-Brochure.pdf"
+    ],
+    "timestamp": "2026-11-24T10:51:14.651Z",
+    "status": "recorded_locally",
+    "method": "local_record"
+  },
+  {
     "id": "email-cust-1795461930755",
     "enquiryId": "enq-1795461930567",
     "recipient": "bhelavevicky66@gmail.com",

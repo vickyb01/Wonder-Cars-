@@ -4,6 +4,11 @@ import type { Request, Response } from 'express';
 import { ADMIN_EMAIL, ADMIN_PASSWORD, BACKEND_ROOT, UPLOADS_DIR } from '../config/index.ts';
 import { hashPassword, verifyPassword, createSignedToken } from '../services/auth.service.ts';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
+import {
+  getOutgoingEmailLogs,
+  getSmtpConfigStatus,
+  testSmtpConnection,
+} from '../services/email.service.ts';
 import type { AuthenticatedRequest } from '../middleware/auth.middleware.ts';
 import type { AdminOverview, AdminUser } from '../models/types.ts';
 
@@ -405,5 +410,21 @@ export function deleteMedia(req: Request, res: Response): void {
     return;
   }
   res.status(404).json({ error: 'File not found.' });
+}
+
+export function getEmailLogs(_req: Request, res: Response): void {
+  const logs = getOutgoingEmailLogs();
+  res.json(logs);
+}
+
+export function getEmailConfig(_req: Request, res: Response): void {
+  const status = getSmtpConfigStatus();
+  res.json(status);
+}
+
+export async function testEmailDelivery(req: Request, res: Response): Promise<void> {
+  const targetEmail = req.body?.targetEmail ? String(req.body.targetEmail).trim() : undefined;
+  const result = await testSmtpConnection(targetEmail);
+  res.json(result);
 }
 

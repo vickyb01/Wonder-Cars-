@@ -18,6 +18,9 @@ import {
   getActivityLogs,
   getMedia,
   deleteMedia,
+  getEmailLogs,
+  getEmailConfig,
+  testEmailDelivery,
 } from '../controllers/admin.controller.ts';
 import { requireAdmin } from '../middleware/auth.middleware.ts';
 import { upload } from '../middleware/upload.middleware.ts';
@@ -55,6 +58,11 @@ router.get('/admin/activity-logs', requireAdmin, getActivityLogs);
 // Media library
 router.get('/admin/media', requireAdmin, getMedia);
 router.delete('/admin/media/:filename', requireAdmin, deleteMedia);
+
+// Email Logs & SMTP Monitoring
+router.get('/admin/email-logs', requireAdmin, getEmailLogs);
+router.get('/admin/email/config', requireAdmin, getEmailConfig);
+router.post('/admin/email/test', requireAdmin, testEmailDelivery);
 
 export default router;
 

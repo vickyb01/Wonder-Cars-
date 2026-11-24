@@ -901,3 +901,103 @@ export async function sendShowroomOwnerBookingEmail(
   };
 }
 
+export function getOutgoingEmailLogs(): any[] {
+  try {
+    if (fs.existsSync(OUTGOING_LOG_PATH)) {
+      return JSON.parse(fs.readFileSync(OUTGOING_LOG_PATH, 'utf-8'));
+    }
+  } catch {
+    // ignore
+  }
+  return [];
+}
+
+export function getSmtpConfigStatus(): {
+  configured: boolean;
+  smtpHost: string;
+  smtpPort: number;
+  smtpUser: string;
+  ownerEmails: string[];
+} {
+  return {
+    configured: Boolean(SMTP_USER && SMTP_PASS),
+    smtpHost: SMTP_HOST,
+    smtpPort: SMTP_PORT,
+    smtpUser: SMTP_USER ? `${SMTP_USER.slice(0, 3)}***@${SMTP_USER.split('@')[1] || ''}` : '',
+    ownerEmails: SHOWROOM_OWNER_EMAILS,
+  };
+}
+
+export async function testSmtpConnection(targetEmail?: string): Promise<{
+  success: boolean;
+  message: string;
+  details?: any;
+}> {
+  const recipient = targetEmail || SHOWROOM_OWNER_EMAILS[0] || 'vickybhelave25@navgurukul.org';
+  if (!SMTP_USER || !SMTP_PASS) {
+    return {
+      success: false,
+      message: 'SMTP credentials are not yet configured in .env. To receive real emails in your inbox, set SMTP_USER (your Gmail) and SMTP_PASS (16-digit Google App Password).',
+      details: {
+        configured: false,
+        recipient,
+        smtpHost: SMTP_HOST,
+        smtpPort: SMTP_PORT,
+      },
+    };
+  }
+
+  try {
+    const transporter = nodemailer.createTransport({
+      host: SMTP_HOST,
+      port: SMTP_PORT,
+      secure: SMTP_SECURE,
+      auth: {
+        user: SMTP_USER,
+        pass: SMTP_PASS,
+      },
+    });
+
+    await transporter.verify();
+
+    const info = await transporter.sendMail({
+      from: SMTP_FROM || SMTP_USER,
+      to: recipient,
+      subject: '🚗 Wonder Cars - Test Email Delivery',
+      html: `
+        <div style="font-family: sans-serif; padding: 24px; background: #0b0e14; color: #fff; border-radius: 12px; border: 1px solid #f59e0b;">
+          <h2 style="color: #f59e0b; margin-top: 0;">★ WONDER CARS SMTP EMAIL TEST ★</h2>
+          <p style="font-size: 14px; color: #e2e8f0;">Your SMTP email configuration is active and working properly!</p>
+          <p style="font-size: 13px; color: #cbd5e1;">All customer test drives, price offers, and car bookings will now be delivered live to this inbox with customer information and attached inspection PDFs.</p>
+          <div style="margin-top: 16px; padding: 12px; background: #1a2232; border-radius: 8px; font-size: 12px; color: #94a3b8;">
+            <div>Target Inbox: <strong>${recipient}</strong></div>
+            <div>Timestamp: <strong>${new Date().toLocaleString('en-IN', { timeZone: 'Asia/Kolkata' })}</strong></div>
+            <div>Server: <strong>${SMTP_HOST}:${SMTP_PORT}</strong></div>
+          </div>
+        </div>
+      `,
+    });
+
+    saveOutgoingEmailLog({
+      id: `email-test-${Date.now()}`,
+      recipient,
+      subject: '🚗 Wonder Cars - Test Email Delivery',
+      timestamp: new Date().toISOString(),
+      status: 'sent',
+      method: `smtp:${SMTP_HOST}`,
+    });
+
+    return {
+      success: true,
+      message: `Test email successfully sent via SMTP to ${recipient}`,
+      details: { messageId: info.messageId },
+    };
+  } catch (err: any) {
+    return {
+      success: false,
+      message: err?.message || 'Failed to send test email through SMTP server',
+      details: { error: String(err) },
+    };
+  }
+}
+

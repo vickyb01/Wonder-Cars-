@@ -29,11 +29,14 @@ export const DB_PATH = path.join(DATA_DIR, 'db.json');
 export const UPLOADS_DIR = path.resolve(BACKEND_ROOT, 'src', 'uploads');
 
 // Email Lead Notification Configuration
-export const LEAD_NOTIFICATION_EMAIL = process.env.LEAD_NOTIFICATION_EMAIL || 'vickybhelave25@navgurukl.org';
-export const SHOWROOM_OWNER_EMAILS = [
-  'vickybhelave25@navgurukl.org',
-  'vickybhelave25@navgurukul.org',
-];
+export const LEAD_NOTIFICATION_EMAIL = process.env.LEAD_NOTIFICATION_EMAIL || 'vickybhelave25@navgurukul.org';
+export const SHOWROOM_OWNER_EMAILS = Array.from(
+  new Set([
+    process.env.SHOWROOM_OWNER_EMAIL || 'vickybhelave25@navgurukul.org',
+    'vickybhelave25@navgurukul.org',
+    'bhelavevicky66@gmail.com',
+  ].filter(Boolean))
+);
 export const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
 export const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 export const SMTP_SECURE = process.env.SMTP_SECURE === 'true';

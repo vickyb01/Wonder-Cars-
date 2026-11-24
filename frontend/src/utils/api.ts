@@ -751,3 +751,53 @@ export async function deleteMediaFile(filename: string): Promise<void> {
   await handleJsonResponse<{ ok: boolean }>(res);
 }
 
+// Outgoing Email CRM & Monitoring
+export interface OutgoingEmailLog {
+  id: string;
+  enquiryId?: string;
+  recipients?: string[];
+  recipient?: string;
+  subject: string;
+  customerName?: string;
+  customerPhone?: string;
+  carTitle?: string;
+  bookingTime?: string;
+  attachedFiles?: string[];
+  timestamp: string;
+  status: 'sent' | 'pending' | 'failed' | 'recorded_locally';
+  method: string;
+}
+
+export async function fetchEmailLogs(): Promise<OutgoingEmailLog[]> {
+  const res = await apiFetch('/api/admin/email-logs', {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse<OutgoingEmailLog[]>(res);
+}
+
+export async function fetchEmailConfig(): Promise<{
+  configured: boolean;
+  smtpHost: string;
+  smtpPort: number;
+  smtpUser: string;
+  ownerEmails: string[];
+}> {
+  const res = await apiFetch('/api/admin/email/config', {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse(res);
+}
+
+export async function sendTestEmail(targetEmail?: string): Promise<{
+  success: boolean;
+  message: string;
+  details?: any;
+}> {
+  const res = await apiFetch('/api/admin/email/test', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', ...authHeaders() },
+    body: JSON.stringify({ targetEmail }),
+  });
+  return handleJsonResponse(res);
+}
+
