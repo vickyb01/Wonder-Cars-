@@ -126,7 +126,7 @@ export const DEFAULT_HOMEPAGE_SETTINGS: HomepageSettings = {
   featuredCarIds: ['car-911-carrera-s-2022', 'car-audi-rs-etron-gt-2023', 'car-bmw-m4-comp-2023'],
   ctaExploreText: 'Explore Cars',
   ctaExploreLink: '/cars',
-  ctaCompareText: 'Compare Cars',
+  ctaCompareText: 'View Photos',
   whyChooseHeading: 'Why Discerning Collectors Choose Wonder Cars',
   whyChooseSubheading: 'Built on forensic technical diligence, upfront INR pricing, and lasting client relationships across Delhi-NCR.',
   searchLabel: 'Search Model or City',

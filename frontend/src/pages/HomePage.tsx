@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight } from 'lucide-react';
+import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import type { Car as CarType, HomepageSettings } from '../types/car';
 import { fetchCars, fetchHomepageSettings } from '../utils/api';
 import { CarCard } from '../components/CarCard';
@@ -392,10 +392,11 @@ export function HomePage() {
               </Link>
 
               <Link
-                to="/compare"
+                to="/about#gallery"
                 className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#18181B]/80 hover:bg-[#27272A] border border-white/20 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap shadow-md shadow-black/20"
               >
-                <span>{homepageSettings?.ctaCompareText || 'Compare Cars'}</span>
+                <Camera className="w-4 h-4 text-amber-400" />
+                <span>{homepageSettings?.ctaCompareText && homepageSettings.ctaCompareText !== 'Compare Cars' ? homepageSettings.ctaCompareText : 'View Photos'}</span>
               </Link>
             </motion.div>
 

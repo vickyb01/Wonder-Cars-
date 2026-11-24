@@ -115,16 +115,22 @@ export function AboutPage() {
   const location = useLocation();
 
   useEffect(() => {
-    if (location.hash === '#gallery') {
-      const timer = setTimeout(() => {
-        const el = document.getElementById('gallery');
+    if (location.hash === '#gallery' || location.hash === '#videos') {
+      const targetId = location.hash.slice(1);
+      const scrollToTarget = () => {
+        const el = document.getElementById(targetId);
         if (el) {
           const yOffset = -80;
           const y = el.getBoundingClientRect().top + window.pageYOffset + yOffset;
           window.scrollTo({ top: y, behavior: 'smooth' });
         }
-      }, 150);
-      return () => clearTimeout(timer);
+      };
+      const timer1 = setTimeout(scrollToTarget, 150);
+      const timer2 = setTimeout(scrollToTarget, 500);
+      return () => {
+        clearTimeout(timer1);
+        clearTimeout(timer2);
+      };
     }
   }, [location.hash, liveSettings]);
 
