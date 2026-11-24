@@ -39,25 +39,25 @@ interface CartContextValue {
   clearCart: () => void;
 }
 
-const STORAGE_KEY = 'wonder_cars_enquiry_cart';
+const STORAGE_KEY = 'wonder_cars_enquiry_cart_session';
 
 function loadStoredCart(): CartEnquiryItem[] {
   try {
-    const raw = localStorage.getItem(STORAGE_KEY);
+    const raw = sessionStorage.getItem(STORAGE_KEY);
     if (!raw) return [];
     const parsed = JSON.parse(raw);
     return Array.isArray(parsed) ? parsed : [];
   } catch (err) {
-    console.error('Failed to parse cart items from storage:', err);
+    console.error('Failed to parse cart items from session storage:', err);
     return [];
   }
 }
 
 function saveStoredCart(items: CartEnquiryItem[]) {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    sessionStorage.setItem(STORAGE_KEY, JSON.stringify(items));
   } catch (err) {
-    console.error('Failed to save cart items to storage:', err);
+    console.error('Failed to save cart items to session storage:', err);
   }
 }
 
@@ -68,19 +68,17 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   useEffect(() => {
-    const handleStorage = (e: StorageEvent) => {
-      if (e.key === STORAGE_KEY) {
-        setCartItems(loadStoredCart());
-      }
-    };
+    // Clean up legacy persistent localStorage from prior test submissions
+    try {
+      localStorage.removeItem('wonder_cars_enquiry_cart');
+    } catch {}
+
     const handleCustomUpdate = () => {
       setCartItems(loadStoredCart());
     };
 
-    window.addEventListener('storage', handleStorage);
     window.addEventListener('wonder_cart_updated', handleCustomUpdate);
     return () => {
-      window.removeEventListener('storage', handleStorage);
       window.removeEventListener('wonder_cart_updated', handleCustomUpdate);
     };
   }, []);

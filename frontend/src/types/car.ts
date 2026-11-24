@@ -270,7 +270,7 @@ export interface HomepageSettings {
   heroSubheadline: string;
   heroTagline: string;
   heroBadge: string;
-  heroSlides: Array<{ src: string; alt: string }>;
+  heroSlides: Array<{ src: string; mobileSrc?: string; alt: string }>;
   promotionalBannerText: string;
   promotionalBannerActive: boolean;
   featuredCarIds: string[];

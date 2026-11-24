@@ -5517,14 +5517,17 @@
     "heroSlides": [
       {
         "src": "/src/assets/images/hero_luxury_coupe_1794898128860.jpg",
+        "mobileSrc": "/assets/hero_luxury_coupe_mobile.webp",
         "alt": "Luxury satin charcoal grand tourer inside Wonder Cars showroom"
       },
       {
         "src": "/src/assets/images/car_porsche_911_1794898129646.jpg",
+        "mobileSrc": "/assets/car_porsche_911_mobile.jpg",
         "alt": "Porsche 911 Carrera S in architectural showroom lighting"
       },
       {
         "src": "/src/assets/images/car_audi_rs_etron_1794898131413.jpg",
+        "mobileSrc": "/assets/car_audi_rs_etron_mobile.jpg",
         "alt": "Audi RS e-tron GT inside Wonder Cars flagship gallery"
       }
     ],

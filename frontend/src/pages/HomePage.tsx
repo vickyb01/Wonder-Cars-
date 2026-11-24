@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowRight, Search, X, Sparkles, Car, ChevronRight, Camera } from 'lucide-react';
+import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import type { Car as CarType, HomepageSettings } from '../types/car';
 import { fetchCars, fetchHomepageSettings } from '../utils/api';
 import { CarCard } from '../components/CarCard';
@@ -15,15 +15,18 @@ import { formatINRCompact, formatKm } from '../utils/format';
 const HERO_SLIDES = [
   {
     src: '/src/assets/images/hero_luxury_coupe_1794898128860.jpg',
-    alt: 'Luxury satin charcoal grand tourer inside Strada Motors showroom',
+    mobileSrc: '/assets/hero_luxury_coupe_mobile.webp',
+    alt: 'Luxury satin charcoal grand tourer inside Wonder Cars showroom',
   },
   {
     src: '/src/assets/images/car_porsche_911_1794898129646.jpg',
+    mobileSrc: '/assets/car_porsche_911_mobile.jpg',
     alt: 'Porsche 911 Carrera S in architectural showroom lighting',
   },
   {
     src: '/src/assets/images/car_audi_rs_etron_1794898131413.jpg',
-    alt: 'Audi RS e-tron GT inside Strada Motors flagship gallery',
+    mobileSrc: '/assets/car_audi_rs_etron_mobile.jpg',
+    alt: 'Audi RS e-tron GT inside Wonder Cars flagship gallery',
   },
 ];
 
@@ -66,6 +69,7 @@ const WHY_CHOOSE_PILLARS = [
 export function HomePage() {
   const navigate = useNavigate();
   const heroRef = useRef<HTMLDivElement>(null);
+  const touchStartX = useRef<number | null>(null);
   const { scrollYProgress } = useScroll({
     target: heroRef,
     offset: ['start start', 'end start'],
@@ -273,33 +277,71 @@ export function HomePage() {
       />
 
       {/* 1. Full-Screen Hero Section (dark contrast scrim preserved over photography in both modes) */}
-      <section ref={heroRef} className="relative min-h-[92vh] pt-24 pb-4 sm:pb-5 flex flex-col justify-between overflow-hidden bg-slate-950">
+      <section
+        ref={heroRef}
+        onTouchStart={(e) => {
+          touchStartX.current = e.touches[0].clientX;
+        }}
+        onTouchEnd={(e) => {
+          if (touchStartX.current === null) return;
+          const diff = touchStartX.current - e.changedTouches[0].clientX;
+          if (diff > 50) setHeroSlideIndex((prev) => (prev + 1) % heroSlides.length);
+          if (diff < -50) setHeroSlideIndex((prev) => (prev - 1 + heroSlides.length) % heroSlides.length);
+          touchStartX.current = null;
+        }}
+        className="relative min-h-screen md:min-h-[92vh] pt-20 sm:pt-24 pb-6 sm:pb-5 flex flex-col justify-between overflow-hidden bg-slate-950"
+      >
         <motion.div style={{ y: heroImageY }} className="absolute inset-0 z-0 will-change-transform">
           {heroSlides.map((slide, idx) => {
             const isActive = idx === heroSlideIndex;
+            const mobileImage = slide.mobileSrc || (
+              idx === 0
+                ? '/assets/hero_luxury_coupe_mobile.webp'
+                : idx === 1
+                ? '/assets/car_porsche_911_mobile.jpg'
+                : '/assets/car_audi_rs_etron_mobile.jpg'
+            );
             return (
               <div
                 key={slide.src || idx}
                 aria-hidden={!isActive}
-                className={`absolute inset-0 transition-all duration-[1200ms] ease-out ${
-                  isActive ? 'opacity-100 scale-105' : 'opacity-0 scale-110'
+                className={`absolute inset-0 transition-all duration-[1000ms] ease-out ${
+                  isActive ? 'opacity-100 scale-100 md:scale-105' : 'opacity-0 scale-100 md:scale-110 pointer-events-none'
                 }`}
               >
-                <VehicleImage
-                  src={slide.src}
-                  alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
-                  loading="eager"
-                  className="w-full h-full object-cover object-center"
-                />
+                {/* Mobile View: High-resolution vertical 9:16 portrait hero background provided by user */}
+                <div className="md:hidden absolute inset-0">
+                  <VehicleImage
+                    src={mobileImage}
+                    alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
+                    loading="eager"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
+
+                {/* Desktop View: Wide landscape photography filling desktop viewport */}
+                <div className="hidden md:block absolute inset-0">
+                  <VehicleImage
+                    src={slide.src}
+                    alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
+                    loading="eager"
+                    className="w-full h-full object-cover object-center"
+                  />
+                </div>
               </div>
             );
           })}
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-950/75 to-slate-950/30 dark:from-[#09090B] dark:via-[#09090B]/75 dark:to-[#09090B]/25" />
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50 dark:from-[#09090B] dark:via-transparent dark:to-[#09090B]/50" />
+
+          {/* Desktop scrim: dark on left for text, clear on right for car */}
+          <div className="hidden md:block absolute inset-0 bg-gradient-to-r from-slate-950/92 via-slate-950/75 to-slate-950/30 dark:from-[#09090B] dark:via-[#09090B]/75 dark:to-[#09090B]/25" />
+          <div className="hidden md:block absolute inset-0 bg-gradient-to-t from-slate-950/90 via-transparent to-slate-950/50 dark:from-[#09090B] dark:via-transparent dark:to-[#09090B]/50" />
+
+          {/* Mobile scrim: soft top vignette so text is crystal clear while the image background is clearly seen behind it */}
+          <div className="md:hidden absolute inset-0 bg-gradient-to-b from-slate-950/80 via-transparent via-35% to-slate-950/85 pointer-events-none" />
         </motion.div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 my-auto pt-8 pb-10">
-          <div className="max-w-xl space-y-5">
+          <div className="max-w-3xl mx-auto space-y-5 text-center">
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -313,7 +355,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-2 max-w-lg"
+              className="space-y-2 max-w-2xl mx-auto"
             >
               <p className="text-base sm:text-lg font-semibold text-amber-400 dark:text-amber-300 tracking-normal">
                 {homepageSettings?.heroSubheadline
@@ -333,7 +375,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap items-center gap-3 pt-2"
+              className="flex flex-wrap items-center justify-center gap-3 pt-2"
             >
               <Link
                 to={homepageSettings?.ctaExploreLink || '/cars'}
@@ -351,6 +393,9 @@ export function HomePage() {
                 <span>View Photos</span>
               </Link>
             </motion.div>
+
+            {/* Mobile open visual stage: ensures middle area lets the full background car shine through cleanly */}
+            <div className="md:hidden w-full h-36 xs:h-44 sm:h-52 pointer-events-none" aria-hidden="true" />
           </div>
         </div>
 
@@ -361,7 +406,7 @@ export function HomePage() {
           transition={{ duration: 0.55, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 space-y-2.5 translate-y-2 sm:translate-y-4"
         >
-          <div className="flex items-center justify-end gap-2 pr-1" role="tablist" aria-label="Hero showcase slides">
+          <div className="flex items-center justify-center md:justify-end gap-2 pr-1 mb-1.5" role="tablist" aria-label="Hero showcase slides">
             {heroSlides.map((slide, idx) => {
               const active = idx === heroSlideIndex;
               return (
