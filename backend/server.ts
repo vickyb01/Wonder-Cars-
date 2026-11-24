@@ -55,6 +55,11 @@ if (frontendUploads) {
   app.use('/uploads', express.static(frontendUploads));
 }
 
+// Health check endpoints for Render and cloud monitoring probes
+app.get(['/healthz', '/api/health', '/ping'], (_req, res) => {
+  res.status(200).json({ status: 'ok', service: 'wonder-cars-backend', timestamp: new Date().toISOString() });
+});
+
 // Mount all API routes under /api
 app.use('/api', apiRouter);
 

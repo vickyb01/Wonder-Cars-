@@ -4,10 +4,9 @@ services:
     env: node
     plan: free
     region: oregon
-    buildCommand: cd backend && npm install
-    startCommand: cd backend && npm start
+    buildCommand: if [ -d "backend" ]; then cd backend && npm install; else npm install; fi
+    startCommand: if [ -d "backend" ]; then cd backend && npm start; else npm start; fi
+    healthCheckPath: /healthz
     envVars:
       - key: NODE_ENV
         value: production
-      - key: PORT
-        value: 5000

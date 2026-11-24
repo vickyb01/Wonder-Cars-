@@ -7,11 +7,12 @@
     "dev": "npm --prefix backend run dev",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run dev",
-    "build": "npm --prefix backend install",
+    "build": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('backend')){cp.execSync('npm --prefix backend install',{stdio:'inherit'})}else{cp.execSync('npm install',{stdio:'inherit'})}\"",
     "build:backend": "npm --prefix backend install",
     "build:frontend": "npm --prefix frontend install && npm --prefix frontend run build",
     "build:all": "npm --prefix backend install && npm --prefix frontend install && npm --prefix frontend run build",
-    "start": "npm --prefix backend start"
+    "postinstall": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('backend/package.json')){cp.execSync('npm --prefix backend install',{stdio:'inherit'})}\"",
+    "start": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('backend/server.ts')){cp.execSync('npm --prefix backend start',{stdio:'inherit'})}else{cp.execSync('npm start',{stdio:'inherit'})}\""
   },
   "dependencies": {
     "tsx": "^4.19.2"
