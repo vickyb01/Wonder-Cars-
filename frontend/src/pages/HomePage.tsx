@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
-import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
+import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight } from 'lucide-react';
 import type { Car as CarType, HomepageSettings } from '../types/car';
 import { fetchCars, fetchHomepageSettings } from '../utils/api';
 import { CarCard } from '../components/CarCard';
@@ -194,20 +194,16 @@ export function HomePage() {
 
   function handleHeroSearch(e?: React.FormEvent) {
     if (e) e.preventDefault();
-
-    // If user selected hero dropdown options, pre-fill modal filter
-    if (selectedBrand !== 'All') {
-      setSelectedTag(selectedBrand);
-      setModalSearchQuery(selectedBrand);
-    } else if (fuelType !== 'All') {
-      setSelectedTag(fuelType);
-      setModalSearchQuery(fuelType);
-    } else {
-      setSelectedTag('All');
-      setModalSearchQuery('');
+    if (!searchQuery.trim() && selectedBrand === 'All' && !maxPrice && fuelType === 'All') {
+      setIsSearchOpen(true);
+      return;
     }
-
-    setIsSearchOpen(true);
+    const params = new URLSearchParams();
+    if (searchQuery.trim()) params.set('search', searchQuery.trim());
+    if (selectedBrand !== 'All') params.set('brand', toBrandSlug(selectedBrand));
+    if (maxPrice) params.set('maxPrice', maxPrice);
+    if (fuelType !== 'All') params.set('fuelType', fuelType);
+    navigate(`/cars?${params.toString()}`);
   }
 
   const heroSlides =
@@ -247,12 +243,22 @@ export function HomePage() {
       : ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
 
   // Check if any hero search filter is active
-  const isFiltered = selectedBrand !== 'All' || Boolean(maxPrice) || fuelType !== 'All';
+  const isFiltered = Boolean(searchQuery.trim()) || selectedBrand !== 'All' || Boolean(maxPrice) || fuelType !== 'All';
 
-  // Real-time matching cars based on the 3 hero search controls
+  // Real-time matching cars based on the hero search controls
   const heroFilteredCars = useMemo<CarType[]>(() => {
     if (!isFiltered) return allCars;
     return allCars.filter((car) => {
+      // 0. Search Query match
+      if (searchQuery.trim()) {
+        const q = searchQuery.toLowerCase().trim();
+        const matchesQuery =
+          car.brand.toLowerCase().includes(q) ||
+          car.model.toLowerCase().includes(q) ||
+          (car.variant || '').toLowerCase().includes(q) ||
+          (car.location || '').toLowerCase().includes(q);
+        if (!matchesQuery) return false;
+      }
       // 1. Marque / Brand match
       if (selectedBrand !== 'All' && !matchesBrandFilter(car.brand, selectedBrand)) {
         return false;
@@ -267,7 +273,7 @@ export function HomePage() {
       }
       return true;
     });
-  }, [allCars, isFiltered, selectedBrand, maxPrice, fuelType]);
+  }, [allCars, isFiltered, searchQuery, selectedBrand, maxPrice, fuelType]);
 
   return (
     <div className="bg-white dark:bg-[#09090B] text-slate-900 dark:text-[#FAFAFA] transition-colors duration-200">
@@ -341,7 +347,7 @@ export function HomePage() {
         </motion.div>
 
         <div className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 my-auto pt-8 pb-10">
-          <div className="max-w-3xl mx-auto space-y-5 text-center">
+          <div className="max-w-xl space-y-5 text-left mx-auto md:mx-0">
             <motion.h1
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
@@ -355,7 +361,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
-              className="space-y-2 max-w-2xl mx-auto"
+              className="space-y-2 max-w-lg"
             >
               <p className="text-base sm:text-lg font-semibold text-amber-400 dark:text-amber-300 tracking-normal">
                 {homepageSettings?.heroSubheadline
@@ -375,7 +381,7 @@ export function HomePage() {
               initial={{ opacity: 0, y: 16 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.55, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
-              className="flex flex-wrap items-center justify-center gap-3 pt-2"
+              className="flex flex-row items-center justify-start gap-3 pt-2"
             >
               <Link
                 to={homepageSettings?.ctaExploreLink || '/cars'}
@@ -386,11 +392,10 @@ export function HomePage() {
               </Link>
 
               <Link
-                to="/about#gallery"
-                className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-lg bg-white/10 hover:bg-white/20 backdrop-blur-md border border-white/20 hover:border-amber-400/60 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap shadow-md shadow-black/20 group cursor-pointer"
+                to="/compare"
+                className="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-lg bg-[#18181B]/80 hover:bg-[#27272A] border border-white/20 text-white font-semibold text-sm transition-all duration-150 active:scale-[0.98] whitespace-nowrap shadow-md shadow-black/20"
               >
-                <Camera className="w-4 h-4 text-amber-400 group-hover:scale-110 transition-transform" />
-                <span>View Photos</span>
+                <span>{homepageSettings?.ctaCompareText || 'Compare Cars'}</span>
               </Link>
             </motion.div>
 
@@ -406,7 +411,7 @@ export function HomePage() {
           transition={{ duration: 0.55, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
           className="relative z-10 max-w-7xl mx-auto w-full px-5 sm:px-8 space-y-2.5 translate-y-2 sm:translate-y-4"
         >
-          <div className="flex items-center justify-center md:justify-end gap-2 pr-1 mb-1.5" role="tablist" aria-label="Hero showcase slides">
+          <div className="flex items-center justify-end gap-2 pr-1 mb-1.5" role="tablist" aria-label="Hero showcase slides">
             {heroSlides.map((slide, idx) => {
               const active = idx === heroSlideIndex;
               return (
@@ -427,8 +432,21 @@ export function HomePage() {
 
           <form
             onSubmit={handleHeroSearch}
-            className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
+            className="bg-black/30 dark:bg-black/35 backdrop-blur-2xl border border-white/20 dark:border-white/15 rounded-2xl p-4 sm:p-5 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-3.5 items-end shadow-[0_8px_32px_0_rgba(0,0,0,0.45)] ring-1 ring-white/10"
           >
+            <div>
+              <label htmlFor="hero-search" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
+                {homepageSettings?.searchLabel || 'Search Model or City'}
+              </label>
+              <input
+                id="hero-search"
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder={homepageSettings?.searchPlaceholder || 'e.g. 911, G63, Mumbai'}
+                className="w-full h-11 px-3.5 rounded-xl bg-white/10 dark:bg-white/[0.08] hover:bg-white/15 dark:hover:bg-white/[0.12] focus:bg-white/20 dark:focus:bg-white/[0.15] backdrop-blur-md border border-white/20 dark:border-white/15 text-sm text-white placeholder:text-zinc-400 focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400/50 transition-all duration-200"
+              />
+            </div>
             <div>
               <label htmlFor="hero-brand" className="block text-xs font-semibold text-zinc-200 mb-1.5 drop-shadow-xs">
                 {homepageSettings?.brandLabel || 'Marque / Brand'}

@@ -326,36 +326,34 @@ export function AboutPage() {
               </p>
 
               {/* CTAs */}
-              <div className="pt-2 flex flex-col items-center gap-3 sm:gap-4">
+              <div className="pt-2 flex flex-wrap sm:flex-nowrap items-center justify-start gap-3 sm:gap-3.5">
                 <a
                   href="#why-choose"
-                  className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-700 hover:to-amber-700 text-white font-semibold text-sm shadow-md shadow-amber-500/25 hover:shadow-lg transition-all duration-200"
+                  className="inline-flex items-center justify-center gap-2 px-5 sm:px-6 py-3.5 rounded-xl bg-gradient-to-r from-amber-600 via-amber-500 to-amber-600 hover:from-amber-700 hover:to-amber-700 text-white font-semibold text-sm shadow-md shadow-amber-500/25 hover:shadow-lg transition-all duration-200 whitespace-nowrap shrink-0"
                 >
                   <span>Why Wonder Cars</span>
                   <ArrowRight className="w-4 h-4" />
                 </a>
 
-                <div className="flex items-center justify-center gap-2.5 sm:gap-4 flex-nowrap">
-                  <Link
-                    to="/cars"
-                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-6 py-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold text-sm border border-white/[0.12] backdrop-blur-sm transition-colors duration-200 whitespace-nowrap"
-                  >
-                    <Car className="w-4 h-4 text-amber-400" />
-                    <span>Browse Fleet</span>
-                  </Link>
+                <Link
+                  to="/cars"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-xl bg-white/[0.08] hover:bg-white/[0.14] text-white font-semibold text-sm border border-white/[0.12] backdrop-blur-sm transition-colors duration-200 whitespace-nowrap shrink-0"
+                >
+                  <Car className="w-4 h-4 text-amber-400" />
+                  <span>Browse Fleet</span>
+                </Link>
 
-                  <a
-                    href={`https://wa.me/${showroomWhatsapp}?text=${encodeURIComponent(
-                      'Hello Wonder Cars, I would like to learn more about your pre-owned inventory.'
-                    )}`}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 text-sm font-semibold backdrop-blur-sm transition-colors whitespace-nowrap"
-                  >
-                    <WhatsAppIcon className="w-4 h-4" />
-                    <span>WhatsApp Us</span>
-                  </a>
-                </div>
+                <a
+                  href={`https://wa.me/${showroomWhatsapp}?text=${encodeURIComponent(
+                    'Hello Wonder Cars, I would like to learn more about your pre-owned inventory.'
+                  )}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-3.5 rounded-xl bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 hover:bg-emerald-500/20 text-sm font-semibold backdrop-blur-sm transition-colors whitespace-nowrap shrink-0"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
+                  <span>WhatsApp Us</span>
+                </a>
               </div>
             </motion.div>
 

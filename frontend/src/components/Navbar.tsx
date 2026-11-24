@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
-import { Heart } from 'lucide-react';
+import { Heart, ShoppingCart } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
+import { useCart } from '../context/CartContext';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const location = useLocation();
   const { wishlistCount } = useWishlist();
+  const { cartCount, openCart } = useCart();
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -29,31 +31,33 @@ export function Navbar() {
         aria-hidden="true"
       />
 
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-16 md:h-[72px] flex items-center justify-between gap-2 sm:gap-4 lg:gap-8 relative z-10">
-        {/* Zone 1: Wonder Cars Brand Logo */}
-        <Link
-          to="/"
-          className="flex items-center shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg py-1 select-none"
-          aria-label="Wonder Cars Home"
-        >
-          {/* Light Theme Logo */}
-          <img
-            src="/assets/wonder-cars-logo.png"
-            alt="Wonder Cars"
-            className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
-            loading="eager"
-          />
-          {/* Dark Theme Logo */}
-          <img
-            src="/assets/wonder-cars-logo-dark.png"
-            alt="Wonder Cars"
-            className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
-            loading="eager"
-          />
-        </Link>
+      <div className="w-full px-4 sm:px-6 lg:px-8 xl:px-10 h-16 md:h-[72px] flex items-center justify-between relative z-10">
+        {/* Zone 1: Wonder Cars Brand Logo (Left Corner) */}
+        <div className="flex items-center min-w-0 md:flex-1 md:justify-start">
+          <Link
+            to="/"
+            className="flex items-center shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg py-1 select-none"
+            aria-label="Wonder Cars Home"
+          >
+            {/* Light Theme Logo */}
+            <img
+              src="/assets/wonder-cars-logo.png"
+              alt="Wonder Cars"
+              className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
+              loading="eager"
+            />
+            {/* Dark Theme Logo */}
+            <img
+              src="/assets/wonder-cars-logo-dark.png"
+              alt="Wonder Cars"
+              className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
+              loading="eager"
+            />
+          </Link>
+        </div>
 
-        {/* Mobile inline nav (single-row layout) */}
-        <nav className="lg:hidden flex items-center justify-center gap-2 xs:gap-3 flex-1 min-w-0" aria-label="Mobile navigation">
+        {/* Mobile inline nav (single-row layout, preserved for clean mobile responsiveness) */}
+        <nav className="md:hidden flex items-center justify-center gap-2 xs:gap-3 flex-1 min-w-0" aria-label="Mobile navigation">
           <NavLink
             to="/about"
             className={({ isActive }) =>
@@ -91,12 +95,26 @@ export function Navbar() {
           </NavLink>
         </nav>
 
-        {/* Zone 2: Rounded Transparent Blurred Floating Navigation Capsule */}
+        {/* Zone 2: Desktop & Tablet Central Navigation Capsule (Inventory, About, Like, Contact) */}
         <nav
-          className="hidden lg:flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-slate-100/60 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.1] shadow-xs select-none"
+          className="hidden md:flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-100/60 dark:bg-white/[0.04] backdrop-blur-xl border border-slate-200/80 dark:border-white/[0.1] shadow-xs select-none shrink-0"
           aria-label="Primary navigation"
         >
-          {/* 1. About */}
+          {/* 1. Inventory */}
+          <NavLink
+            to="/cars"
+            className={({ isActive }) =>
+              `relative px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 ${
+                isActive
+                  ? 'bg-white dark:bg-white/10 text-amber-600 dark:text-amber-400 shadow-xs border border-slate-200/60 dark:border-white/[0.08]'
+                  : 'text-slate-600 dark:text-zinc-300 hover:text-slate-900 dark:hover:text-white hover:bg-white/50 dark:hover:bg-white/[0.05]'
+              }`
+            }
+          >
+            Inventory
+          </NavLink>
+
+          {/* 2. About */}
           <NavLink
             to="/about"
             className={({ isActive }) =>
@@ -110,7 +128,7 @@ export function Navbar() {
             About
           </NavLink>
 
-          {/* 2. Like */}
+          {/* 3. Like (Wishlist) */}
           <Link
             to="/cars?saved=true"
             className={`relative px-3.5 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap shrink-0 transition-all duration-200 inline-flex items-center gap-1.5 ${
@@ -121,9 +139,14 @@ export function Navbar() {
           >
             <Heart className={`w-3.5 h-3.5 ${wishlistCount > 0 ? 'fill-rose-500 text-rose-500' : ''}`} aria-hidden="true" />
             <span>Like</span>
+            {wishlistCount > 0 && (
+              <span className="px-1.5 py-0.2 bg-rose-500 text-white text-[10px] font-bold rounded-full">
+                {wishlistCount}
+              </span>
+            )}
           </Link>
 
-          {/* 3. Contact */}
+          {/* 4. Contact */}
           <NavLink
             to="/contact"
             className={({ isActive }) =>
@@ -138,7 +161,25 @@ export function Navbar() {
           </NavLink>
         </nav>
 
-        <div className="shrink-0" aria-hidden="true" />
+        {/* Zone 3: Desktop & Tablet Cart CTA Button (Right Corner) */}
+        <div className="hidden md:flex items-center justify-end md:flex-1 shrink-0">
+          <button
+            type="button"
+            onClick={openCart}
+            aria-label={`Enquiry Cart: ${cartCount} items`}
+            className="relative inline-flex items-center gap-2 px-4 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white font-semibold text-xs sm:text-sm transition-all duration-150 whitespace-nowrap shrink-0 shadow-md shadow-amber-600/25 hover:shadow-lg hover:shadow-amber-600/35 active:scale-[0.98] cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
+          >
+            <div className="relative flex items-center justify-center">
+              <ShoppingCart className="w-4 h-4 sm:w-4.5 sm:h-4.5" aria-hidden="true" />
+              {cartCount > 0 && (
+                <span className="absolute -top-2.5 -right-3 min-w-[18px] h-[18px] px-1 bg-red-600 text-white text-[10px] font-bold rounded-full flex items-center justify-center border-2 border-amber-600 shadow-sm animate-pulse">
+                  {cartCount}
+                </span>
+              )}
+            </div>
+            <span>Cart</span>
+          </button>
+        </div>
       </div>
     </header>
   );
