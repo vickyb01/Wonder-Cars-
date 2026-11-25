@@ -44,6 +44,10 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 }
 
 // Serve uploaded files statically
+app.use('/uploads', (_req, res, next) => {
+  res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  next();
+});
 app.use('/uploads', express.static(UPLOADS_DIR));
 
 // Also check frontend public uploads directory as fallback if present
@@ -66,8 +70,9 @@ app.get('/uploads/:filename', async (req, res, next) => {
   }
   try {
     const media = await getMediaFromMongo(safeFilename);
-    if (media) {
+    if (media && media.buffer.length > 0) {
       res.setHeader('Content-Type', media.mimeType);
+      res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
       res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
       res.send(media.buffer);
       return;

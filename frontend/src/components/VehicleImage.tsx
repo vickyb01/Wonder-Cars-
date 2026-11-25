@@ -45,9 +45,10 @@ export function VehicleImage({ src, alt, className = '', loading = 'lazy' }: Veh
     }
 
     attemptsRef.current += 1;
+    const attempt = attemptsRef.current;
 
     // Attempt 1: Fallback between relative /uploads/... and direct Render backend URL
-    if (attemptsRef.current === 1 && currentSrc.includes('/uploads/')) {
+    if (attempt === 1 && currentSrc.includes('/uploads/')) {
       const match = currentSrc.match(/\/uploads\/[^?#]+/);
       if (match) {
         const relativePath = match[0];
@@ -64,7 +65,7 @@ export function VehicleImage({ src, alt, className = '', loading = 'lazy' }: Veh
     }
 
     // Attempt 1b: If /src/assets/ had a wrong origin, fallback to relative path
-    if (attemptsRef.current === 1 && currentSrc.includes('/src/assets/')) {
+    if (attempt === 1 && currentSrc.includes('/src/assets/')) {
       const match = currentSrc.match(/\/src\/assets\/[^?#]+/);
       if (match && currentSrc !== match[0]) {
         setCurrentSrc(match[0]);
@@ -72,14 +73,17 @@ export function VehicleImage({ src, alt, className = '', loading = 'lazy' }: Veh
       }
     }
 
-    // Attempt 2: Retry once after 2.5s in case Render free tier is waking from cold start
-    if (attemptsRef.current === 2 && currentSrc.includes('/uploads/')) {
+    // Progressive retries (3s, 8s, 16s) while Render wakes from cold start or finishes deploying
+    if (attempt >= 2 && attempt <= 4 && currentSrc.includes('/uploads/')) {
       const match = currentSrc.match(/\/uploads\/[^?#]+/);
       if (match) {
-        const retryUrl = `${LIVE_BACKEND_URL.replace(/\/$/, '')}${match[0]}?r=${Date.now()}`;
+        const relativePath = match[0];
+        const delayMs = attempt === 2 ? 3000 : attempt === 3 ? 8000 : 16000;
+        const targetBase = attempt % 2 === 0 ? '' : LIVE_BACKEND_URL.replace(/\/$/, '');
+        const retryUrl = `${targetBase}${relativePath}?r=${Date.now()}`;
         retryTimerRef.current = window.setTimeout(() => {
           setCurrentSrc(retryUrl);
-        }, 2500);
+        }, delayMs);
         return;
       }
     }

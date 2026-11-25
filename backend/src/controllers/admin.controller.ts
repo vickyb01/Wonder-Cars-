@@ -299,6 +299,7 @@ import {
   uploadSingleFileToCloudinary,
 } from '../services/cloudinary.service.ts';
 import {
+  connectMongo,
   deleteMediaFromMongo,
   getMongoPersistenceStatus,
   isMongoConnected,
@@ -335,12 +336,22 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
     if (!fs.existsSync(file.path)) {
       continue;
     }
-    if (isMongoConnected()) {
+    const persistence = getMongoPersistenceStatus();
+    if (persistence.configured) {
       try {
+        if (!isMongoConnected()) {
+          await connectMongo();
+        }
         const buffer = fs.readFileSync(file.path);
         await saveMediaInMongo(file.filename, file.mimetype || 'image/jpeg', buffer);
       } catch (err) {
-        console.warn(`[MongoDB] Failed to store media binary for ${file.filename}:`, err);
+        console.warn(`[MongoDB] Failed to store media binary for ${file.filename}, retrying once:`, err);
+        try {
+          const buffer = fs.readFileSync(file.path);
+          await saveMediaInMongo(file.filename, file.mimetype || 'image/jpeg', buffer);
+        } catch (retryErr) {
+          console.error(`[MongoDB] Retry failed for ${file.filename}:`, retryErr);
+        }
       }
     }
     urls.push(`/uploads/${file.filename}`);
