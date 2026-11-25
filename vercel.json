@@ -52,8 +52,8 @@
       "destination": "https://wonder-cars-1.onrender.com/uploads/:path*"
     },
     {
-      "source": "/api/:path*",
-      "destination": "https://wonder-cars-1.onrender.com/api/:path*"
+      "source": "/api/((?!mail-relay).*)",
+      "destination": "https://wonder-cars-1.onrender.com/api/$1"
     },
     {
       "source": "/about",
@@ -84,7 +84,7 @@
       "destination": "/admin.html"
     },
     {
-      "source": "/((?!sitemap\\.xml$|robots\\.txt$).+)",
+      "source": "/((?!api/|sitemap\\.xml$|robots\\.txt$).+)",
       "destination": "/spa-fallback.html"
     }
   ]

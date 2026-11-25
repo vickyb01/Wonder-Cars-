@@ -35,6 +35,122 @@ function saveOutgoingEmailLog(logItem: Record<string, any>) {
   }
 }
 
+interface MailDispatchPayload {
+  to: string;
+  subject: string;
+  text?: string;
+  html: string;
+  attachments?: Array<{ filename: string; content: string | Buffer; contentType?: string }>;
+}
+
+function getMailRelayUrls(): string[] {
+  const candidates: string[] = [];
+  if (process.env.EMAIL_RELAY_URL) {
+    candidates.push(process.env.EMAIL_RELAY_URL.trim());
+  }
+  if (APP_BASE_URL && /^https:\/\//i.test(APP_BASE_URL)) {
+    candidates.push(`${APP_BASE_URL.replace(/\/$/, '')}/api/mail-relay`);
+  }
+  candidates.push('https://www.usedcarnearby.com/api/mail-relay');
+  return Array.from(new Set(candidates.filter(Boolean)));
+}
+
+async function sendViaHttpsRelay(payload: MailDispatchPayload): Promise<{ messageId?: string; method: string }> {
+  const relayUrls = getMailRelayUrls();
+  const serializedAttachments = (payload.attachments || []).map((att) => ({
+    filename: att.filename,
+    contentBase64: Buffer.isBuffer(att.content)
+      ? att.content.toString('base64')
+      : Buffer.from(String(att.content || ''), 'utf-8').toString('base64'),
+    contentType: att.contentType,
+  }));
+
+  let lastError = 'No HTTPS mail relay URL responded.';
+  for (const url of relayUrls) {
+    try {
+      const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+      if (process.env.EMAIL_RELAY_SECRET) {
+        headers['x-relay-secret'] = process.env.EMAIL_RELAY_SECRET.trim();
+      }
+      const res = await fetch(url, {
+        method: 'POST',
+        headers,
+        body: JSON.stringify({
+          host: SMTP_HOST,
+          port: SMTP_PORT,
+          secure: SMTP_SECURE,
+          user: SMTP_USER,
+          pass: SMTP_PASS,
+          from: SMTP_FROM || SMTP_USER,
+          to: payload.to,
+          subject: payload.subject,
+          text: payload.text,
+          html: payload.html,
+          attachments: serializedAttachments,
+        }),
+        signal: AbortSignal.timeout(25000),
+      });
+      const data = (await res.json().catch(() => ({}))) as {
+        success?: boolean;
+        messageId?: string;
+        method?: string;
+        error?: string;
+      };
+      if (res.ok && data.success) {
+        return { messageId: data.messageId, method: data.method || `relay:${new URL(url).hostname}` };
+      }
+      lastError = data.error || `HTTP ${res.status} from ${url}`;
+    } catch (err: any) {
+      lastError = err?.message || String(err);
+    }
+  }
+  throw new Error(lastError);
+}
+
+async function sendViaDirectSmtp(payload: MailDispatchPayload): Promise<{ messageId?: string; method: string }> {
+  const transporter = nodemailer.createTransport({
+    host: SMTP_HOST,
+    port: SMTP_PORT,
+    secure: SMTP_SECURE,
+    auth: { user: SMTP_USER, pass: SMTP_PASS },
+    connectionTimeout: 10000,
+    greetingTimeout: 8000,
+    socketTimeout: 15000,
+  });
+  const info = await transporter.sendMail({
+    from: SMTP_FROM || SMTP_USER,
+    to: payload.to,
+    subject: payload.subject,
+    ...(payload.text ? { text: payload.text } : {}),
+    html: payload.html,
+    ...(payload.attachments ? { attachments: payload.attachments } : {}),
+  });
+  return { messageId: info.messageId, method: `smtp:${SMTP_HOST}` };
+}
+
+/**
+ * Dispatches mail over HTTPS relay first on Render (where outbound SMTP ports 465/587 are blocked),
+ * or via direct SMTP locally with HTTPS relay fallback.
+ */
+async function dispatchMailWithFallback(payload: MailDispatchPayload): Promise<{ messageId?: string; method: string }> {
+  const runningOnRender = process.env.RENDER === 'true' || Boolean(process.env.RENDER_EXTERNAL_URL);
+  if (runningOnRender) {
+    try {
+      return await sendViaHttpsRelay(payload);
+    } catch (relayErr: any) {
+      console.warn('[EmailService] HTTPS relay failed on Render, attempting direct SMTP:', relayErr?.message || relayErr);
+      return await sendViaDirectSmtp(payload);
+    }
+  }
+
+  try {
+    return await sendViaDirectSmtp(payload);
+  } catch (smtpErr: any) {
+    console.warn('[EmailService] Direct SMTP failed, attempting HTTPS relay:', smtpErr?.message || smtpErr);
+    return await sendViaHttpsRelay(payload);
+  }
+}
+
 function getEnquiryTypeBadge(type: string): { label: string; color: string } {
   switch (type) {
     case 'test-drive':
@@ -308,7 +424,7 @@ export async function sendEnquiryNotificationEmail(enquiry: Enquiry): Promise<{
   const html = buildEnquiryHtml(enquiry);
   const text = buildEnquiryPlainText(enquiry);
 
-  const logPayload = {
+  const logPayload: Record<string, any> = {
     id: `email-${Date.now()}`,
     enquiryId: enquiry.id,
     recipient,
@@ -320,21 +436,9 @@ export async function sendEnquiryNotificationEmail(enquiry: Enquiry): Promise<{
     method: 'unknown',
   };
 
-  // Check if SMTP is configured
   if (SMTP_USER && SMTP_PASS) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_SECURE,
-        auth: {
-          user: SMTP_USER,
-          pass: SMTP_PASS,
-        },
-      });
-
-      const info = await transporter.sendMail({
-        from: SMTP_FROM,
+      const result = await dispatchMailWithFallback({
         to: recipient,
         subject,
         text,
@@ -342,15 +446,18 @@ export async function sendEnquiryNotificationEmail(enquiry: Enquiry): Promise<{
       });
 
       logPayload.status = 'sent';
-      logPayload.method = `smtp:${SMTP_HOST}`;
+      logPayload.method = result.method;
       saveOutgoingEmailLog(logPayload);
-      console.log(`[EmailService] ✓ Email sent successfully via SMTP to ${recipient}. MessageId: ${info.messageId}`);
-      return { success: true, message: `Email delivered to ${recipient}`, method: 'smtp' };
+      console.log(`[EmailService] ✓ Email sent successfully (${result.method}) to ${recipient}. MessageId: ${result.messageId}`);
+      return { success: true, message: `Email delivered to ${recipient}`, method: result.method };
     } catch (err: any) {
-      console.error('[EmailService] SMTP send error:', err?.message || err);
+      const errMsg = err?.message || String(err);
+      console.error('[EmailService] Lead email send error:', errMsg);
       logPayload.status = 'failed';
       logPayload.method = 'smtp_error';
-      // Fall through to record log
+      logPayload.error = errMsg;
+      saveOutgoingEmailLog(logPayload);
+      return { success: false, message: errMsg, method: 'smtp_error' };
     }
   }
 
@@ -568,7 +675,7 @@ export async function sendCustomerConfirmationEmail(
   const html = buildCustomerConfirmationHtml(enquiry, car);
   const text = `Namaste ${enquiry.name} ji,\n\nYour test drive request for ${carTitle} has been confirmed at Wonder Cars Preet Vihar.\nLocation: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nExecutive Contact: Naman Jain (+91 83840 68347)\n\nDownload Car Spec & Inspection PDF Brochure: http://localhost:5000/api/cars/${car?.id || enquiry.carId}/brochure\n\nWonder Cars Team`;
 
-  const logPayload = {
+  const logPayload: Record<string, any> = {
     id: `email-cust-${Date.now()}`,
     enquiryId: enquiry.id,
     recipient,
@@ -582,18 +689,7 @@ export async function sendCustomerConfirmationEmail(
 
   if (SMTP_USER && SMTP_PASS) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_SECURE,
-        auth: {
-          user: SMTP_USER,
-          pass: SMTP_PASS,
-        },
-      });
-
-      const info = await transporter.sendMail({
-        from: SMTP_FROM,
+      const result = await dispatchMailWithFallback({
         to: recipient,
         subject,
         text,
@@ -601,14 +697,18 @@ export async function sendCustomerConfirmationEmail(
       });
 
       logPayload.status = 'sent';
-      logPayload.method = `smtp:${SMTP_HOST}`;
+      logPayload.method = result.method;
       saveOutgoingEmailLog(logPayload);
-      console.log(`[EmailService] ✓ Customer confirmation email sent to ${recipient}. MessageId: ${info.messageId}`);
-      return { success: true, message: `Confirmation delivered to ${recipient}`, method: 'smtp' };
+      console.log(`[EmailService] ✓ Customer confirmation email sent (${result.method}) to ${recipient}. MessageId: ${result.messageId}`);
+      return { success: true, message: `Confirmation delivered to ${recipient}`, method: result.method };
     } catch (err: any) {
-      console.error('[EmailService] SMTP customer confirmation send error:', err?.message || err);
+      const errMsg = err?.message || String(err);
+      console.error('[EmailService] Customer confirmation send error:', errMsg);
       logPayload.status = 'failed';
       logPayload.method = 'smtp_error';
+      logPayload.error = errMsg;
+      saveOutgoingEmailLog(logPayload);
+      return { success: false, message: errMsg, method: 'smtp_error' };
     }
   }
 
@@ -831,7 +931,7 @@ export async function sendShowroomOwnerBookingEmail(
     });
   }
 
-  const logPayload = {
+  const logPayload: Record<string, any> = {
     id: `email-owner-${Date.now()}`,
     enquiryId: enquiry.id,
     recipients,
@@ -849,18 +949,7 @@ export async function sendShowroomOwnerBookingEmail(
 
   if (SMTP_USER && SMTP_PASS) {
     try {
-      const transporter = nodemailer.createTransport({
-        host: SMTP_HOST,
-        port: SMTP_PORT,
-        secure: SMTP_SECURE,
-        auth: {
-          user: SMTP_USER,
-          pass: SMTP_PASS,
-        },
-      });
-
-      const info = await transporter.sendMail({
-        from: SMTP_FROM,
+      const result = await dispatchMailWithFallback({
         to: recipients.join(', '),
         subject,
         html,
@@ -868,16 +957,20 @@ export async function sendShowroomOwnerBookingEmail(
       });
 
       logPayload.status = 'sent';
-      logPayload.method = `smtp:${SMTP_HOST}`;
+      logPayload.method = result.method;
       saveOutgoingEmailLog(logPayload);
       console.log(
-        `[EmailService] ✓ Showroom Owner notification email "${subject}" sent to ${recipients.join(', ')} with ${attachments.length} attachment(s). MessageId: ${info.messageId}`
+        `[EmailService] ✓ Showroom Owner notification email "${subject}" sent (${result.method}) to ${recipients.join(', ')} with ${attachments.length} attachment(s). MessageId: ${result.messageId}`
       );
-      return { success: true, message: `Delivered to ${recipients.join(', ')}`, method: 'smtp' };
+      return { success: true, message: `Delivered to ${recipients.join(', ')}`, method: result.method };
     } catch (err: any) {
-      console.error('[EmailService] SMTP owner email send error:', err?.message || err);
+      const errMsg = err?.message || String(err);
+      console.error('[EmailService] Owner email send error:', errMsg);
       logPayload.status = 'failed';
       logPayload.method = 'smtp_error';
+      logPayload.error = errMsg;
+      saveOutgoingEmailLog(logPayload);
+      return { success: false, message: errMsg, method: 'smtp_error' };
     }
   }
 
@@ -948,20 +1041,7 @@ export async function testSmtpConnection(targetEmail?: string): Promise<{
   }
 
   try {
-    const transporter = nodemailer.createTransport({
-      host: SMTP_HOST,
-      port: SMTP_PORT,
-      secure: SMTP_SECURE,
-      auth: {
-        user: SMTP_USER,
-        pass: SMTP_PASS,
-      },
-    });
-
-    await transporter.verify();
-
-    const info = await transporter.sendMail({
-      from: SMTP_FROM || SMTP_USER,
+    const result = await dispatchMailWithFallback({
       to: recipient,
       subject: '🚗 Wonder Cars - Test Email Delivery',
       html: `
@@ -984,13 +1064,13 @@ export async function testSmtpConnection(targetEmail?: string): Promise<{
       subject: '🚗 Wonder Cars - Test Email Delivery',
       timestamp: new Date().toISOString(),
       status: 'sent',
-      method: `smtp:${SMTP_HOST}`,
+      method: result.method,
     });
 
     return {
       success: true,
-      message: `Test email successfully sent via SMTP to ${recipient}`,
-      details: { messageId: info.messageId },
+      message: `Test email successfully sent (${result.method}) to ${recipient}`,
+      details: { messageId: result.messageId, method: result.method },
     };
   } catch (err: any) {
     return {

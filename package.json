@@ -15,6 +15,7 @@
     "start": "node -e \"const fs=require('fs'),cp=require('child_process'); if(fs.existsSync('backend/server.ts')){cp.execSync('npm --prefix backend start',{stdio:'inherit'})}else{cp.execSync('npm start',{stdio:'inherit'})}\""
   },
   "dependencies": {
+    "nodemailer": "^10.6.1",
     "tsx": "^4.19.2"
   },
   "engines": {
