@@ -3,6 +3,17 @@ import path from 'path';
 import { DATA_DIR, DB_PATH } from '../config/index.ts';
 import { hashPassword } from './auth.service.ts';
 import { normalizeCarRecord } from '../utils/carDefaults.ts';
+import {
+  bulkUpsertCarsInMongo,
+  connectMongo,
+  deleteCarInMongo,
+  isMongoConnected,
+  loadAppStateFromMongo,
+  loadCarsFromMongo,
+  saveAppStateToMongo,
+  seedCarsToMongoIfEmpty,
+  upsertCarInMongo,
+} from './mongo.service.ts';
 import type {
   AboutSettings,
   ActivityLogItem,
@@ -625,17 +636,97 @@ export function ensureInitialized(): DatabaseState {
   }
 }
 
-export function readDb(): DatabaseState {
-  return ensureInitialized();
-}
+let memoryState: DatabaseState | null = null;
 
-export function writeDb(state: DatabaseState): void {
+function writeLocalDbFile(state: DatabaseState): void {
   if (!fs.existsSync(DATA_DIR)) {
     fs.mkdirSync(DATA_DIR, { recursive: true });
   }
   const tmpPath = `${DB_PATH}.tmp`;
   fs.writeFileSync(tmpPath, JSON.stringify(state, null, 2), 'utf-8');
   fs.renameSync(tmpPath, DB_PATH);
+}
+
+export function readDb(): DatabaseState {
+  if (memoryState) {
+    return memoryState;
+  }
+  memoryState = ensureInitialized();
+  return memoryState;
+}
+
+export function writeDb(state: DatabaseState): void {
+  memoryState = state;
+  writeLocalDbFile(state);
+  if (isMongoConnected()) {
+    const { cars: _cars, ...stateWithoutCars } = state;
+    saveAppStateToMongo(stateWithoutCars as unknown as Record<string, unknown>).catch((err) => {
+      console.error('Background MongoDB app_state sync error:', err);
+    });
+  }
+}
+
+export async function initPersistence(): Promise<void> {
+  const localState = ensureInitialized();
+  memoryState = localState;
+
+  const db = await connectMongo();
+  if (!db) return;
+
+  try {
+    // Load or seed app_state
+    const remoteState = await loadAppStateFromMongo();
+    if (remoteState) {
+      memoryState = {
+        ...localState,
+        ...(remoteState as Partial<DatabaseState>),
+        cars: localState.cars,
+      };
+    } else {
+      const { cars: _cars, ...stateWithoutCars } = localState;
+      await saveAppStateToMongo(stateWithoutCars as unknown as Record<string, unknown>);
+    }
+
+    // Load or seed cars collection
+    const remoteCars = await loadCarsFromMongo();
+    if (remoteCars && remoteCars.length > 0) {
+      memoryState.cars = remoteCars.map((c) => normalizeCarRecord(c));
+    } else if (localState.cars.length > 0) {
+      await seedCarsToMongoIfEmpty(localState.cars);
+    }
+
+    writeLocalDbFile(memoryState);
+  } catch (err) {
+    console.error('Failed to hydrate state from MongoDB:', err);
+  }
+}
+
+export async function persistCarCreate(car: Car, state: DatabaseState): Promise<void> {
+  if (isMongoConnected()) {
+    await upsertCarInMongo(car);
+  }
+  writeDb(state);
+}
+
+export async function persistCarUpdate(car: Car, state: DatabaseState): Promise<void> {
+  if (isMongoConnected()) {
+    await upsertCarInMongo(car);
+  }
+  writeDb(state);
+}
+
+export async function persistCarDelete(carId: string, state: DatabaseState): Promise<void> {
+  if (isMongoConnected()) {
+    await deleteCarInMongo(carId);
+  }
+  writeDb(state);
+}
+
+export async function persistCarsBatch(cars: Car[], state: DatabaseState): Promise<void> {
+  if (isMongoConnected() && cars.length > 0) {
+    await bulkUpsertCarsInMongo(cars);
+  }
+  writeDb(state);
 }
 
 export function logActivity(userEmail: string, action: string, details: string): void {

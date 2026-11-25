@@ -24,11 +24,10 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
 
   return (
     <motion.article
-      initial={{ opacity: 0, y: 18 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ once: true, margin: '-40px' }}
-      transition={{ duration: 0.4, delay: Math.min(index * 0.06, 0.3), ease: [0.16, 1, 0.3, 1] }}
-      className="group bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md dark:shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-white/[0.16]"
+      initial={false}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, ease: [0.16, 1, 0.3, 1] }}
+      className="group h-full bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.08] rounded-xl overflow-hidden flex flex-col shadow-sm hover:shadow-md dark:shadow-none transition-all duration-200 hover:-translate-y-0.5 hover:border-blue-300 dark:hover:border-white/[0.16]"
     >
       <div className="relative aspect-[4/3] overflow-hidden bg-slate-100 dark:bg-[#18181B] block">
         <Link to={`/cars/${car.id}`} className="block w-full h-full">

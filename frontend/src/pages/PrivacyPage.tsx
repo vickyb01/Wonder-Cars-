@@ -3,7 +3,11 @@ import { SeoHead } from '../components/SeoHead';
 export function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090B] pt-28 pb-20 transition-colors duration-200">
-      <SeoHead title="Privacy Policy" description="Privacy Policy for Strada Motors Private Limited." />
+      <SeoHead
+        title="Privacy Policy"
+        description="Privacy Policy for Wonder Cars."
+        canonicalPath="/privacy"
+      />
 
       <article className="max-w-3xl mx-auto px-5 sm:px-8 space-y-8 text-slate-700 dark:text-zinc-300">
         <header className="space-y-2 pb-6 border-b border-slate-200 dark:border-white/[0.08]">

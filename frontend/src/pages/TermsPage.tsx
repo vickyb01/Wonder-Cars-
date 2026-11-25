@@ -5,7 +5,8 @@ export function TermsPage() {
     <div className="min-h-screen bg-white dark:bg-[#09090B] pt-28 pb-20 transition-colors duration-200">
       <SeoHead
         title="Terms & Conditions"
-        description="Terms and Conditions governing vehicle listings and transactions at Strada Motors."
+        description="Terms and Conditions governing vehicle listings and transactions at Wonder Cars."
+        canonicalPath="/terms"
       />
 
       <article className="max-w-3xl mx-auto px-5 sm:px-8 space-y-8 text-slate-700 dark:text-zinc-300">

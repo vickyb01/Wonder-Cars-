@@ -467,6 +467,7 @@ export function InventoryPage() {
             : 'Browse Certified Pre-Owned Inventory'
         }
         description="Explore verified luxury and performance pre-owned cars with transparent INR pricing at Wonder Cars, Preet Vihar, Delhi."
+        canonicalPath="/cars"
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8">
@@ -603,7 +604,7 @@ export function InventoryPage() {
                 </button>
               </div>
             ) : loading ? (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {[0, 1, 2, 3, 4, 5].map((i) => (
                   <div key={i} className="h-96 rounded-xl bg-slate-100 dark:bg-[#121215] border border-slate-200 dark:border-white/[0.06] animate-pulse" />
                 ))}
@@ -644,7 +645,7 @@ export function InventoryPage() {
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedCars.map((car, idx) => (
                   <CarCard key={car.id} car={car} index={idx} emiConfig={emiConfig} />
                 ))}

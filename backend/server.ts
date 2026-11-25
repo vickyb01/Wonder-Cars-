@@ -4,6 +4,8 @@ import { fileURLToPath } from 'url';
 import express from 'express';
 import { PORT, UPLOADS_DIR } from './src/config/index.ts';
 import apiRouter from './src/routes/index.ts';
+import { initPersistence } from './src/services/store.service.ts';
+import { getMediaFromMongo, getMongoPersistenceStatus } from './src/services/mongo.service.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -55,9 +57,38 @@ if (frontendUploads) {
   app.use('/uploads', express.static(frontendUploads));
 }
 
+// Serve uploaded images stored in MongoDB if not found on ephemeral disk
+app.get('/uploads/:filename', async (req, res, next) => {
+  const safeFilename = path.basename(String(req.params.filename || ''));
+  if (!safeFilename) {
+    next();
+    return;
+  }
+  try {
+    const media = await getMediaFromMongo(safeFilename);
+    if (media) {
+      res.setHeader('Content-Type', media.mimeType);
+      res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+      res.send(media.buffer);
+      return;
+    }
+  } catch {
+    // Fall through
+  }
+  next();
+});
+
 // Health check endpoints for Render and cloud monitoring probes
 app.get(['/healthz', '/api/health', '/ping'], (_req, res) => {
-  res.status(200).json({ status: 'ok', service: 'wonder-cars-backend', timestamp: new Date().toISOString() });
+  const persistence = getMongoPersistenceStatus();
+  res.status(200).json({
+    status: 'ok',
+    service: 'wonder-cars-backend',
+    persistence: persistence.mode,
+    mongoConfigured: persistence.configured,
+    mongoConnected: persistence.connected,
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Mount all API routes under /api
@@ -122,10 +153,18 @@ if (resolvedFrontendDist) {
   });
 }
 
-// Start listening
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`🚗 Wonder Cars Backend Server running on http://0.0.0.0:${PORT}`);
-  console.log(`📡 API available at http://0.0.0.0:${PORT}/api`);
-});
+// Initialize persistence (MongoDB Atlas if configured, or local JSON) before listening
+initPersistence()
+  .catch((err) => {
+    console.error('Persistence initialization warning:', err);
+  })
+  .finally(() => {
+    app.listen(PORT, '0.0.0.0', () => {
+      const persistence = getMongoPersistenceStatus();
+      console.log(`🚗 Wonder Cars Backend Server running on http://0.0.0.0:${PORT}`);
+      console.log(`📡 API available at http://0.0.0.0:${PORT}/api`);
+      console.log(`💾 Persistence mode: ${persistence.mode}${persistence.databaseName ? ` (${persistence.databaseName})` : ''}`);
+    });
+  });
 
 export default app;

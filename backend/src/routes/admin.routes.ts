@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, type NextFunction, type Request, type Response } from 'express';
 import {
   login,
   forgotPassword,
@@ -12,6 +12,7 @@ import {
   getOverview,
   uploadMedia,
   getCloudinaryStatus,
+  getStorageStatus,
   getNotifications,
   markNotificationRead,
   markAllNotificationsRead,
@@ -46,8 +47,20 @@ router.delete('/admin/users/:id', requireAdmin, deleteUser);
 router.get('/admin/overview', requireAdmin, getOverview);
 
 // File uploads & Storage
-router.post('/admin/upload', requireAdmin, upload.array('images', 70), uploadMedia);
+const handleUploadMiddleware = (req: Request, res: Response, next: NextFunction) => {
+  upload.array('images', 70)(req, res, (err: unknown) => {
+    if (err) {
+      const message = err instanceof Error ? err.message : 'File upload failed.';
+      res.status(400).json({ error: message });
+      return;
+    }
+    next();
+  });
+};
+
+router.post('/admin/upload', requireAdmin, handleUploadMiddleware, uploadMedia);
 router.get('/admin/cloudinary/status', requireAdmin, getCloudinaryStatus);
+router.get('/admin/storage/status', requireAdmin, getStorageStatus);
 
 // Notifications & Activity
 router.get('/admin/notifications', requireAdmin, getNotifications);

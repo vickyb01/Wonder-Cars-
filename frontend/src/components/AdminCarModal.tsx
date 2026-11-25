@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import {
   AlertCircle,
   ArrowLeft,
@@ -189,9 +189,22 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [documents, setDocuments] = useState<DocumentItem[]>([]);
 
   const [uploading, setUploading] = useState(false);
+  const [uploadSuccessMsg, setUploadSuccessMsg] = useState('');
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState('');
   const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
+  const isSubmittingRef = useRef(false);
+  const clientRequestIdRef = useRef('');
+
+  const createUniquePhotoId = (idx: number) =>
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? `photo-${crypto.randomUUID()}`
+      : `photo-${Date.now()}-${Math.random().toString(36).slice(2, 8)}-${idx}`;
+
+  const createRequestId = () =>
+    typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function'
+      ? crypto.randomUUID()
+      : `req-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
 
   const clearFieldError = (fieldName: string) => {
     setFieldErrors((prev) => {
@@ -241,7 +254,10 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
     if (!open) return;
     setActiveTab('basic');
     setError('');
+    setUploadSuccessMsg('');
     setFieldErrors({});
+    isSubmittingRef.current = false;
+    clientRequestIdRef.current = createRequestId();
 
     if (car) {
       const currentBrand = (car.brand || '').trim();
@@ -416,24 +432,28 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
     const fileList = e.target.files;
     if (!fileList || fileList.length === 0) return;
+    if (uploading) return;
     if (gallery.length + fileList.length > 70) {
       setError('Maximum 70 photographs allowed per vehicle listing.');
+      e.target.value = '';
       return;
     }
     setError('');
+    setUploadSuccessMsg('');
     setUploading(true);
     try {
       const uploadedUrls = await uploadCarImages(Array.from(fileList));
       setGallery((prev) => [
         ...prev,
         ...uploadedUrls.map((url, idx) => ({
-          id: `photo-${Date.now()}-${idx}`,
+          id: createUniquePhotoId(idx),
           url,
           category: uploadCategory,
           angleLabel: uploadAngleLabel.trim() || `${uploadCategory} Photo`,
           order: prev.length + idx,
         })),
       ]);
+      setUploadSuccessMsg(`${uploadedUrls.length} ${uploadedUrls.length === 1 ? 'photo' : 'photos'} uploaded successfully.`);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Failed to upload images.');
     } finally {
@@ -445,14 +465,19 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   function handleAddImageUrl() {
     const trimmed = customImageUrl.trim();
     if (!trimmed) return;
+    if (!/^(\/|https?:\/\/)/i.test(trimmed)) {
+      setError('Please enter a valid image URL starting with https://, http://, or /.');
+      return;
+    }
     if (gallery.length >= 70) {
       setError('Maximum 70 photographs allowed per vehicle.');
       return;
     }
+    setError('');
     setGallery((prev) => [
       ...prev,
       {
-        id: `photo-${Date.now()}`,
+        id: createUniquePhotoId(prev.length),
         url: trimmed,
         category: uploadCategory,
         angleLabel: uploadAngleLabel.trim() || `${uploadCategory} View`,
@@ -460,6 +485,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       },
     ]);
     setCustomImageUrl('');
+    setUploadSuccessMsg('Image URL added to gallery.');
   }
 
   function movePhoto(fromIndex: number, toIndex: number) {
@@ -496,6 +522,11 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (isSubmittingRef.current || saving) return;
+    if (uploading) {
+      setError('Please wait for image upload to finish before saving the vehicle.');
+      return;
+    }
     setError('');
     const isDraft = status === 'Draft';
     const errors: Record<string, string> = {};
@@ -534,6 +565,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
     }
 
     setFieldErrors({});
+    isSubmittingRef.current = true;
     setSaving(true);
 
     const updatedDocs = [...documents];
@@ -625,12 +657,16 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
     };
 
     try {
-      const saved = car ? await updateCar(car.id, payload) : await createCar(payload);
+      const saved = car
+        ? await updateCar(car.id, payload)
+        : await createCar({ ...payload, clientRequestId: clientRequestIdRef.current });
+      clientRequestIdRef.current = createRequestId();
       onSaved(saved);
       onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to save car listing.');
     } finally {
+      isSubmittingRef.current = false;
       setSaving(false);
     }
   }
@@ -1442,6 +1478,13 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             </div>
           )}
 
+          {uploadSuccessMsg && !error && (
+            <div className="flex items-center gap-2.5 p-3 sm:p-3.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-700 dark:text-emerald-400 text-xs font-semibold">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{uploadSuccessMsg}</span>
+            </div>
+          )}
+
           {error && (
             <div className="flex items-center gap-2.5 p-3 sm:p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 dark:text-rose-400 text-xs font-semibold">
               <AlertCircle className="w-4 h-4 shrink-0" />
@@ -1453,16 +1496,25 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
             <button
               type="button"
               onClick={onClose}
-              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] text-sm font-medium text-slate-700 dark:text-zinc-200 cursor-pointer text-center"
+              disabled={saving}
+              className="w-full sm:w-auto px-5 py-2.5 rounded-lg bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.1] disabled:opacity-50 text-sm font-medium text-slate-700 dark:text-zinc-200 cursor-pointer text-center"
             >
               Cancel
             </button>
             <button
               type="submit"
-              disabled={saving}
-              className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-60 text-sm font-semibold text-white cursor-pointer text-center"
+              disabled={saving || uploading}
+              className="w-full sm:w-auto px-6 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 disabled:opacity-60 disabled:cursor-not-allowed text-sm font-semibold text-white cursor-pointer text-center"
             >
-              {saving ? 'Saving...' : status === 'Draft' ? 'Save Draft Listing' : car ? 'Update Listing' : 'Publish Vehicle'}
+              {uploading
+                ? 'Uploading Photos...'
+                : saving
+                ? 'Saving...'
+                : status === 'Draft'
+                ? 'Save Draft Listing'
+                : car
+                ? 'Update Listing'
+                : 'Publish Vehicle'}
             </button>
           </div>
         </form>

@@ -275,6 +275,8 @@ export function AboutPage() {
       <SeoHead
         title="About Us"
         description="Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars. Founded by Naman Jain on trust, forensic quality audits, and clear title transparency."
+        canonicalPath="/about"
+        ogImage="https://www.usedcarnearby.com/assets/about-hero-bg.jpg"
       />
 
       {/* ─────────────────────────────────────────────────────────────

@@ -3,6 +3,16 @@ import path from 'path';
 
 export interface SitemapCarRecord {
   id: string;
+  slug?: string;
+  brand?: string;
+  model?: string;
+  variant?: string;
+  year?: number;
+  kilometres?: number;
+  fuelType?: string;
+  transmission?: string;
+  priceInr?: number;
+  images?: string[];
   status?: string;
   createdAt?: string;
   updatedAt?: string;
@@ -14,7 +24,7 @@ interface StaticRouteEntry {
   priority: string;
 }
 
-export const DEFAULT_SITE_URL = 'https://usedcarnearby.com';
+export const DEFAULT_SITE_URL = 'https://www.usedcarnearby.com';
 export const DEFAULT_API_URL = 'https://wonder-cars-1.onrender.com';
 
 // Publicly indexable canonical SPA routes; excludes /admin, redirect routes (/compare, /sell, /gallery), and wildcard catch-alls.
@@ -49,7 +59,11 @@ export function toIsoDate(value?: string): string {
 }
 
 function normalizeBaseUrl(rawUrl: string): string {
-  return rawUrl.trim().replace(/\/+$/, '');
+  const cleaned = rawUrl.trim().replace(/\/+$/, '');
+  if (/^https?:\/\/usedcarnearby\.com$/i.test(cleaned)) {
+    return DEFAULT_SITE_URL;
+  }
+  return cleaned;
 }
 
 function filterPublicCars(records: unknown[]): SitemapCarRecord[] {
@@ -66,6 +80,16 @@ function filterPublicCars(records: unknown[]): SitemapCarRecord[] {
     seenIds.add(id);
     cars.push({
       id,
+      slug: typeof car.slug === 'string' ? car.slug.trim() : undefined,
+      brand: typeof car.brand === 'string' ? car.brand.trim() : undefined,
+      model: typeof car.model === 'string' ? car.model.trim() : undefined,
+      variant: typeof car.variant === 'string' ? car.variant.trim() : undefined,
+      year: typeof car.year === 'number' ? car.year : undefined,
+      kilometres: typeof car.kilometres === 'number' ? car.kilometres : undefined,
+      fuelType: typeof car.fuelType === 'string' ? car.fuelType.trim() : undefined,
+      transmission: typeof car.transmission === 'string' ? car.transmission.trim() : undefined,
+      priceInr: typeof car.priceInr === 'number' ? car.priceInr : undefined,
+      images: Array.isArray(car.images) ? car.images.filter((x): x is string => typeof x === 'string') : undefined,
       status: car.status,
       createdAt: car.createdAt,
       updatedAt: car.updatedAt,

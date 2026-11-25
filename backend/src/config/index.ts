@@ -62,5 +62,9 @@ export const GA_KEY_FILE = (process.env.GA_KEY_FILE || process.env.GOOGLE_APPLIC
 export const GA_SERVICE_ACCOUNT_JSON = (process.env.GA_SERVICE_ACCOUNT_JSON || '').trim();
 export const GA_MEASUREMENT_ID = (process.env.GA_MEASUREMENT_ID || process.env.VITE_GA_MEASUREMENT_ID || '').trim();
 
+// MongoDB Atlas Persistent Database Configuration
+export const MONGODB_URI = (process.env.MONGODB_URI || process.env.MONGO_URI || '').trim();
+export const MONGODB_DB_NAME = (process.env.MONGODB_DB_NAME || 'wonder_cars').trim();
+
 
 

@@ -151,7 +151,7 @@ export function CarDetailPage() {
   if (error || !car) {
     return (
       <div className="min-h-screen bg-white dark:bg-[#09090B] pt-32 pb-20 max-w-2xl mx-auto px-5 text-center space-y-5">
-        <SeoHead title="Vehicle Not Found" />
+        <SeoHead title="Vehicle Not Found" robots="noindex, nofollow" noCanonical />
         <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white">Vehicle Unavailable</h1>
         <p className="text-slate-600 dark:text-zinc-400 text-sm">
           {error || 'This listing may have been removed or is currently in draft.'}
@@ -224,7 +224,9 @@ export function CarDetailPage() {
     <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-16 md:pt-[72px] pb-28 lg:pb-20 transition-colors duration-200">
       <SeoHead
         title={carTitle}
-        description={`${carTitle} · ${formatKm(car.kilometres)} · ${car.fuelType} · ${car.transmission} · ${formatINR(car.priceInr)}`}
+        description={`${carTitle} · ${formatKm(car.kilometres)} · ${car.fuelType} · ${car.transmission} · ${formatINR(car.priceInr)} at Wonder Cars, Preet Vihar, Delhi.`}
+        canonicalPath={`/cars/${car.id}`}
+        ogImage={car.images?.[0]}
       />
 
       {/* Full-Screen Car Photo Gallery Showcase */}

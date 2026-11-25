@@ -23,9 +23,9 @@ router.get('/cars/:id/pdf', getCarBrochurePdf);
 router.get('/cars', getCars);
 router.get('/cars/:id', getCarByIdOrSlug);
 
-// Inventory sync / rehydration endpoints (handles container restarts on Render)
-router.post('/cars/sync', batchSyncCars);
-router.post('/admin/cars/batch-sync', batchSyncCars);
+// Inventory sync / rehydration endpoints (admin-protected)
+router.post('/cars/sync', requireAdmin, batchSyncCars);
+router.post('/admin/cars/batch-sync', requireAdmin, batchSyncCars);
 
 // Admin car management
 router.post('/admin/cars', requireAdmin, createCar);

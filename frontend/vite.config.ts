@@ -7,14 +7,24 @@ import { defineConfig, loadEnv, type Plugin } from 'vite';
 import {
   DEFAULT_API_URL,
   DEFAULT_SITE_URL,
-  generateSitemapXml,
+  buildSitemapXml,
+  loadPublicCars,
 } from './scripts/sitemapGenerator.ts';
+import { generateStaticRouteHtmlShells } from './scripts/htmlSeoPlugin.ts';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+function normalizeSiteUrl(rawUrl: string): string {
+  const cleaned = rawUrl.trim().replace(/\/+$/, '');
+  if (/^https?:\/\/usedcarnearby\.com$/i.test(cleaned)) {
+    return DEFAULT_SITE_URL;
+  }
+  return cleaned || DEFAULT_SITE_URL;
+}
+
 function createSitemapPlugin(env: Record<string, string>): Plugin {
-  const siteUrl = env.VITE_SITE_URL || env.SITE_URL || DEFAULT_SITE_URL;
+  const siteUrl = normalizeSiteUrl(env.VITE_SITE_URL || env.SITE_URL || DEFAULT_SITE_URL);
   const apiBaseUrl = env.VITE_API_URL || env.VITE_API_BASE_URL || DEFAULT_API_URL;
   const backendDbPath = path.resolve(__dirname, '../backend/data/db.json');
   let isBuildCommand = false;
@@ -32,7 +42,8 @@ function createSitemapPlugin(env: Record<string, string>): Plugin {
           return;
         }
         try {
-          const xml = await generateSitemapXml({ siteUrl, apiBaseUrl, backendDbPath });
+          const cars = await loadPublicCars(apiBaseUrl, backendDbPath);
+          const xml = buildSitemapXml(siteUrl, cars);
           res.statusCode = 200;
           res.setHeader('Content-Type', 'application/xml; charset=utf-8');
           res.setHeader('Cache-Control', 'no-cache');
@@ -46,8 +57,10 @@ function createSitemapPlugin(env: Record<string, string>): Plugin {
       if (error || !isBuildCommand) return;
       const distDir = path.resolve(__dirname, 'dist');
       if (!fs.existsSync(distDir)) return;
-      const xml = await generateSitemapXml({ siteUrl, apiBaseUrl, backendDbPath });
+      const cars = await loadPublicCars(apiBaseUrl, backendDbPath);
+      const xml = buildSitemapXml(siteUrl, cars);
       fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml, 'utf8');
+      generateStaticRouteHtmlShells(distDir, siteUrl, cars);
     },
   };
 }

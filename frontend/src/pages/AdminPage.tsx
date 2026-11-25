@@ -604,7 +604,7 @@ export function AdminPage() {
         websiteSettings,
         notifications,
         activityLogs,
-        visitorCount: overview?.visitorCount || 14280,
+        visitorCount: overview?.totalVisitors || 14280,
       };
       const blob = new Blob([JSON.stringify(fullDb, null, 2)], { type: 'application/json' });
       const url = URL.createObjectURL(blob);
@@ -788,7 +788,12 @@ export function AdminPage() {
   if (!currentUser) {
     return (
       <div className="min-h-screen bg-[#0A192F] flex flex-col justify-center items-center p-4 sm:p-6 text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
-        <SeoHead title="Admin Login — Wonder Cars" description="Secure authentication gateway for Wonder Cars showroom administration." />
+        <SeoHead
+          title="Admin Login — Wonder Cars"
+          description="Secure authentication gateway for Wonder Cars showroom administration."
+          robots="noindex, nofollow"
+          noCanonical
+        />
 
         <div className="w-full max-w-md">
           {/* Logo Card Header */}
@@ -998,7 +1003,12 @@ export function AdminPage() {
   // Authenticated State: Premium Modern White and Navy-Blue Layout
   return (
     <div className="h-screen bg-[#F8FAFC] text-slate-800 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
-      <SeoHead title="Admin Dashboard — Wonder Cars" description="Wonder Cars professional showroom management dashboard." />
+      <SeoHead
+        title="Admin Dashboard — Wonder Cars"
+        description="Wonder Cars professional showroom management dashboard."
+        robots="noindex, nofollow"
+        noCanonical
+      />
 
       {/* TOP HEADER BAR (Clean White with Navy Accents) */}
       <header className="h-16 shrink-0 bg-white border-b border-slate-200 sticky top-0 z-40 px-4 sm:px-6 flex items-center justify-between shadow-xs">
@@ -1474,38 +1484,59 @@ export function AdminPage() {
               </div>
 
               {/* Filters Bar */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs grid grid-cols-1 sm:grid-cols-3 gap-3">
-                <div className="relative">
-                  <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
-                  <input
-                    type="text"
-                    value={carSearch}
-                    onChange={(e) => setCarSearch(e.target.value)}
-                    placeholder="Search model, variant, code..."
-                    className={`${inputCls} pl-10`}
-                  />
+              <div className="bg-white rounded-2xl border border-slate-200/90 p-4 shadow-xs space-y-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <div className="relative">
+                    <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-3" />
+                    <input
+                      type="text"
+                      value={carSearch}
+                      onChange={(e) => setCarSearch(e.target.value)}
+                      placeholder="Search model, variant, code..."
+                      className={`${inputCls} pl-10`}
+                    />
+                  </div>
+                  <select
+                    value={carBrandFilter}
+                    onChange={(e) => setCarBrandFilter(e.target.value)}
+                    className={inputCls}
+                  >
+                    <option value="All">All Brands ({cars.length})</option>
+                    {Array.from(new Set(cars.map((c) => c.brand))).map((b) => (
+                      <option key={b} value={b}>{b}</option>
+                    ))}
+                  </select>
+                  <select
+                    value={carStatusFilter}
+                    onChange={(e) => setCarStatusFilter(e.target.value as 'All' | CarStatus)}
+                    className={inputCls}
+                  >
+                    <option value="All">All Statuses ({cars.length})</option>
+                    <option value="Available">Available</option>
+                    <option value="Sold">Sold</option>
+                    <option value="Reserved">Reserved</option>
+                    <option value="Draft">Draft</option>
+                  </select>
                 </div>
-                <select
-                  value={carBrandFilter}
-                  onChange={(e) => setCarBrandFilter(e.target.value)}
-                  className={inputCls}
-                >
-                  <option value="All">All Brands ({cars.length})</option>
-                  {Array.from(new Set(cars.map((c) => c.brand))).map((b) => (
-                    <option key={b} value={b}>{b}</option>
-                  ))}
-                </select>
-                <select
-                  value={carStatusFilter}
-                  onChange={(e) => setCarStatusFilter(e.target.value as 'All' | CarStatus)}
-                  className={inputCls}
-                >
-                  <option value="All">All Statuses</option>
-                  <option value="Available">Available</option>
-                  <option value="Sold">Sold</option>
-                  <option value="Reserved">Reserved</option>
-                  <option value="Draft">Draft</option>
-                </select>
+                <div className="flex flex-wrap items-center justify-between gap-2 text-xs text-slate-500 pt-1">
+                  <span>
+                    Showing <strong className="text-slate-800">{filteredCars.length}</strong> of{' '}
+                    <strong className="text-slate-800">{cars.length}</strong> total vehicles in inventory
+                  </span>
+                  {(carSearch || carBrandFilter !== 'All' || carStatusFilter !== 'All') && (
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setCarSearch('');
+                        setCarBrandFilter('All');
+                        setCarStatusFilter('All');
+                      }}
+                      className="text-blue-600 hover:underline font-semibold cursor-pointer"
+                    >
+                      Reset Filters (Show All {cars.length})
+                    </button>
+                  )}
+                </div>
               </div>
 
               {/* Cars Table */}
@@ -5189,8 +5220,17 @@ export function AdminPage() {
             if (exists) return prev.map((c) => (c.id === savedCar.id ? savedCar : c));
             return [savedCar, ...prev];
           });
+          if (!editingCar) {
+            setCarSearch('');
+            setCarBrandFilter('All');
+            setCarStatusFilter('All');
+          }
           setCarModalOpen(false);
-          setSaveFeedback({ type: 'success', text: `Car "${savedCar.model}" saved successfully.` });
+          setSaveFeedback({ type: 'success', text: `Car "${savedCar.year} ${savedCar.brand} ${savedCar.model}" saved permanently.` });
+          // Refresh complete authoritative list from backend
+          fetchCars({ includeDrafts: 'true', sort: 'newest' })
+            .then((freshList) => setCars(freshList))
+            .catch(() => {});
         }}
       />
 

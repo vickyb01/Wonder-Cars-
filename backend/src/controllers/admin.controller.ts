@@ -298,11 +298,18 @@ import {
   testCloudinaryConnection,
   uploadSingleFileToCloudinary,
 } from '../services/cloudinary.service.ts';
+import {
+  deleteMediaFromMongo,
+  getMongoPersistenceStatus,
+  isMongoConnected,
+  listMediaInMongo,
+  saveMediaInMongo,
+} from '../services/mongo.service.ts';
 
 export async function uploadMedia(req: Request, res: Response): Promise<void> {
   const files = req.files as Express.Multer.File[] | undefined;
   if (!files || files.length === 0) {
-    res.status(400).json({ error: 'No files were uploaded.' });
+    res.status(400).json({ error: 'No valid image files were uploaded.' });
     return;
   }
 
@@ -311,6 +318,9 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
   let cloudinaryError: string | undefined;
 
   for (const file of files) {
+    if (!file.size || file.size <= 0) {
+      continue;
+    }
     if (useCloudinary) {
       try {
         const cloudUrl = await uploadSingleFileToCloudinary(file.path, file.originalname);
@@ -321,7 +331,18 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
         console.warn(`[Cloudinary] Upload failed for ${file.filename}, falling back to local:`, cloudinaryError);
       }
     }
-    // Fallback: local disk URL
+    // Fallback: local disk URL (verify file exists on disk) + persist binary in MongoDB so images survive Render restarts
+    if (!fs.existsSync(file.path)) {
+      continue;
+    }
+    if (isMongoConnected()) {
+      try {
+        const buffer = fs.readFileSync(file.path);
+        await saveMediaInMongo(file.filename, file.mimetype || 'image/jpeg', buffer);
+      } catch (err) {
+        console.warn(`[MongoDB] Failed to store media binary for ${file.filename}:`, err);
+      }
+    }
     urls.push(`/uploads/${file.filename}`);
     try {
       const pubDir = path.resolve(BACKEND_ROOT, '../frontend/public/uploads');
@@ -334,6 +355,11 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
     }
   }
 
+  if (urls.length === 0) {
+    res.status(500).json({ error: cloudinaryError || 'Failed to persist uploaded images.' });
+    return;
+  }
+
   res.json({
     urls,
     storage: useCloudinary && !cloudinaryError ? 'cloudinary' : 'local',
@@ -344,6 +370,14 @@ export async function uploadMedia(req: Request, res: Response): Promise<void> {
 export async function getCloudinaryStatus(_req: Request, res: Response): Promise<void> {
   const status = await testCloudinaryConnection();
   res.json(status);
+}
+
+export async function getStorageStatus(_req: Request, res: Response): Promise<void> {
+  const [cloudinary, database] = await Promise.all([
+    testCloudinaryConnection(),
+    Promise.resolve(getMongoPersistenceStatus()),
+  ]);
+  res.json({ database, cloudinary });
 }
 
 export function getNotifications(_req: Request, res: Response): void {
@@ -373,10 +407,10 @@ export function getActivityLogs(_req: Request, res: Response): void {
   res.json(db.activityLogs || []);
 }
 
-export function getMedia(_req: Request, res: Response): void {
+export async function getMedia(_req: Request, res: Response): Promise<void> {
   const files = fs.existsSync(UPLOADS_DIR) ? fs.readdirSync(UPLOADS_DIR) : [];
-  const media = files
-    .filter((f) => /\.(jpg|jpeg|png|webp|gif|svg)$/i.test(f))
+  const diskMedia = files
+    .filter((f) => /\.(jpg|jpeg|png|webp|avif|gif|svg)$/i.test(f))
     .map((filename) => {
       const filePath = path.join(UPLOADS_DIR, filename);
       const stats = fs.statSync(filePath);
@@ -386,12 +420,22 @@ export function getMedia(_req: Request, res: Response): void {
         size: stats.size,
         createdAt: stats.birthtime.toISOString(),
       };
+    });
+
+  const mongoMedia = await listMediaInMongo().catch(() => []);
+  const seen = new Set<string>();
+  const combined = [...mongoMedia, ...diskMedia]
+    .filter((item) => {
+      if (seen.has(item.filename)) return false;
+      seen.add(item.filename);
+      return true;
     })
     .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-  res.json(media);
+
+  res.json(combined);
 }
 
-export function deleteMedia(req: Request, res: Response): void {
+export async function deleteMedia(req: Request, res: Response): Promise<void> {
   const safeFilename = path.basename(req.params.filename);
   const targetPath = path.join(UPLOADS_DIR, safeFilename);
   const pubTargetPath = path.resolve(BACKEND_ROOT, '../frontend/public/uploads', safeFilename);
@@ -402,6 +446,9 @@ export function deleteMedia(req: Request, res: Response): void {
   }
   if (fs.existsSync(pubTargetPath)) {
     fs.unlinkSync(pubTargetPath);
+    deleted = true;
+  }
+  if (await deleteMediaFromMongo(safeFilename).catch(() => false)) {
     deleted = true;
   }
   if (deleted) {

@@ -351,7 +351,6 @@ export function applyLocalFilters(cars: Car[], filters: CarFilters = {}): Car[] 
 }
 
 export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
-  const customCars = getLocalCustomCars();
   const cached = getGlobalCatalogCache();
 
   let fetchedCars: Car[] | null = null;
@@ -374,40 +373,43 @@ export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
     console.warn('Backend fetchCars failed (Render cold start or offline), loading cached fleet:', err);
   }
 
-  let combined: Car[] = fetchedCars !== null ? [...fetchedCars] : [...cached];
-
-  // Merge any custom cars that may have disappeared from backend due to Render container reboot
-  const missingFromBackend: Car[] = [];
-  if (customCars.length > 0) {
-    const existingIds = new Set(combined.map((c) => c.id));
-    customCars.forEach((c) => {
-      if (!existingIds.has(c.id)) {
-        if (filters.includeDrafts === 'true' || c.status !== 'Draft') {
-          combined.unshift(c);
-          missingFromBackend.push(c);
-        }
-      } else {
-        const idx = combined.findIndex((item) => item.id === c.id);
-        if (idx >= 0) {
-          combined[idx] = c;
-        }
+  if (fetchedCars !== null) {
+    // Deduplicate by ID preserving server order and keep offline cache synchronized with authoritative server state
+    const dedupedMap = new Map<string, Car>();
+    fetchedCars.forEach((c) => {
+      if (c && c.id && !dedupedMap.has(c.id)) {
+        dedupedMap.set(c.id, c);
       }
     });
+    const authoritative = Array.from(dedupedMap.values());
+
+    // Replace cache cleanly on unfiltered reads so deleted cars never reappear from stale browser cache
+    const hasFilterQuery = Boolean(
+      filters.search ||
+      (filters.brand && filters.brand !== 'All') ||
+      (filters.model && filters.model !== 'All') ||
+      filters.minPrice ||
+      filters.maxPrice ||
+      filters.minEmi ||
+      filters.maxEmi ||
+      (filters.year && filters.year !== 'All') ||
+      (filters.fuelType && filters.fuelType !== 'All') ||
+      (filters.transmission && filters.transmission !== 'All') ||
+      filters.maxKm ||
+      (filters.status && filters.status !== 'All') ||
+      filters.featured === 'true'
+    );
+    if (!hasFilterQuery) {
+      try {
+        localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(authoritative));
+      } catch {}
+    } else {
+      updateGlobalCatalogCache(authoritative);
+    }
+    return authoritative;
   }
 
-  // If backend was reachable and missing custom cars, rehydrate it silently
-  if (fetchedCars !== null && missingFromBackend.length > 0) {
-    rehydrateBackendCars().catch(() => {});
-  }
-
-  // Keep full catalog cached in localStorage
-  updateGlobalCatalogCache(combined);
-
-  if (fetchedCars === null) {
-    return applyLocalFilters(combined, filters);
-  }
-
-  return combined;
+  return applyLocalFilters(cached, filters);
 }
 
 export async function fetchCarDetail(id: string): Promise<{
@@ -571,96 +573,78 @@ export async function fetchAdminOverview(): Promise<AdminOverview> {
   return handleJsonResponse<AdminOverview>(res);
 }
 
-export async function createCar(payload: Partial<Car>): Promise<Car> {
-  const localId = payload.id || `car-${Date.now()}`;
-  const now = new Date().toISOString();
-  const brand = String(payload.brand || 'Luxury').trim();
-  const model = String(payload.model || 'Model').trim();
-  const year = Number(payload.year) || 2023;
-
-  const localCar = normalizeCarImages(
-    normalizeCarRecord({
-      ...payload,
-      id: localId,
-      listingCode: payload.listingCode || `WC-${String(Date.now()).slice(-4)}`,
-      slug: payload.slug || `${String(model).toLowerCase().replace(/[^a-z0-9]+/g, '-')}-${localId.slice(-4)}`,
-      brand,
-      model,
-      year,
-      priceInr: Number(payload.priceInr) || 0,
-      status: (payload.status as CarStatus) || 'Available',
-      featured: Boolean(payload.featured),
-      createdAt: now,
-    })
-  );
-
-  // Immediately persist in local custom cars and update cache
-  saveLocalCustomCar(localCar);
-
-  try {
-    const res = await apiFetch('/api/admin/cars', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders(),
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await handleJsonResponse<Car>(res);
-    const serverCar = normalizeCarImages(data);
-    saveLocalCustomCar(serverCar);
-    return serverCar;
-  } catch (err) {
-    console.warn('Backend car creation failed; saved to local fleet:', err);
-    return localCar;
-  }
+export async function createCar(payload: Partial<Car> & { clientRequestId?: string }): Promise<Car> {
+  const res = await apiFetch('/api/admin/cars', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await handleJsonResponse<Car>(res);
+  const serverCar = normalizeCarImages(data);
+  updateGlobalCatalogCache([serverCar]);
+  broadcastInventoryUpdate({ type: 'upsert', car: serverCar });
+  return serverCar;
 }
 
 export async function updateCar(id: string, payload: Partial<Car>): Promise<Car> {
-  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
-  const existing = allKnown.find((c) => c.id === id);
-  const updatedLocal = normalizeCarImages(
-    normalizeCarRecord({
-      ...(existing || {}),
-      ...payload,
-      id,
-    })
-  );
-  saveLocalCustomCar(updatedLocal);
-
-  try {
-    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders(),
-      },
-      body: JSON.stringify(payload),
-    });
-    const data = await handleJsonResponse<Car>(res);
-    const normalized = normalizeCarImages(data);
-    saveLocalCustomCar(normalized);
-    return normalized;
-  } catch (err) {
-    console.warn('Backend car update failed; updated in local fleet:', err);
-    return updatedLocal;
-  }
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: JSON.stringify(payload),
+  });
+  const data = await handleJsonResponse<Car>(res);
+  const normalized = normalizeCarImages(data);
+  updateGlobalCatalogCache([normalized]);
+  broadcastInventoryUpdate({ type: 'upsert', car: normalized });
+  return normalized;
 }
 
 export async function deleteCar(id: string): Promise<void> {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
+    method: 'DELETE',
+    headers: authHeaders(),
+  });
+  await handleJsonResponse<{ ok: boolean }>(res);
   removeLocalCustomCar(id);
-  try {
-    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}`, {
-      method: 'DELETE',
-      headers: authHeaders(),
-    });
-    await handleJsonResponse<{ ok: boolean }>(res);
-  } catch (err) {
-    console.warn('Backend delete failed; removed from local fleet:', err);
-  }
 }
 
+const ALLOWED_IMAGE_MIME_TYPES = new Set([
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/webp',
+  'image/avif',
+]);
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
+
 export async function uploadCarImages(files: File[]): Promise<string[]> {
+  if (!files || files.length === 0) {
+    throw new Error('Please select at least one image file to upload.');
+  }
+  if (files.length > 70) {
+    throw new Error('Maximum 70 images can be uploaded at once.');
+  }
+
+  for (const file of files) {
+    const extValid = /\.(jpe?g|png|webp|avif)$/i.test(file.name);
+    const mimeValid = file.type ? ALLOWED_IMAGE_MIME_TYPES.has(file.type.toLowerCase()) : extValid;
+    if (!mimeValid && !extValid) {
+      throw new Error(`Unsupported file "${file.name}". Please upload JPG, PNG, WebP, or AVIF images.`);
+    }
+    if (file.size <= 0) {
+      throw new Error(`Image "${file.name}" appears to be empty.`);
+    }
+    if (file.size > MAX_IMAGE_SIZE_BYTES) {
+      throw new Error(`Image "${file.name}" exceeds the 10 MB size limit.`);
+    }
+  }
+
   const formData = new FormData();
   files.forEach((file) => formData.append('images', file));
   const res = await apiFetch('/api/admin/upload', {
@@ -669,7 +653,11 @@ export async function uploadCarImages(files: File[]): Promise<string[]> {
     body: formData,
   });
   const data = await handleJsonResponse<{ urls: string[]; storage?: string; warning?: string }>(res);
-  return (data.urls || []).map((u) => normalizeMediaUrl(u));
+  const urls = (data.urls || []).filter((u) => typeof u === 'string' && u.trim().length > 0);
+  if (urls.length === 0) {
+    throw new Error('Image upload returned no valid URLs. Please try again.');
+  }
+  return urls.map((u) => normalizeMediaUrl(u));
 }
 
 export async function fetchCloudinaryStatus(): Promise<{

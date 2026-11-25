@@ -1,7 +1,14 @@
 import fs from 'fs';
 import path from 'path';
 import type { Request, Response } from 'express';
-import { readDb, writeDb, logActivity } from '../services/store.service.ts';
+import {
+  readDb,
+  logActivity,
+  persistCarCreate,
+  persistCarDelete,
+  persistCarsBatch,
+  persistCarUpdate,
+} from '../services/store.service.ts';
 import { isAdminRequest } from '../middleware/auth.middleware.ts';
 import { normalizeCarRecord } from '../utils/carDefaults.ts';
 import { matchesBrandFilter } from '../utils/brands.ts';
@@ -172,13 +179,50 @@ export function getCarByIdOrSlug(req: Request, res: Response): void {
   res.json({ car, similar, sellerOtherCars });
 }
 
-export function createCar(req: Request, res: Response): void {
+const recentCreateRequests = new Map<string, string>();
+
+function sanitizeGallery(rawGallery: unknown, fallbackImages: unknown): {
+  gallery: Array<{ id: string; url: string; category: string; angleLabel: string; order: number }>;
+  images: string[];
+} {
+  const galleryList = Array.isArray(rawGallery) ? rawGallery.slice(0, 70) : [];
+  const cleanedGallery = galleryList
+    .filter((item): item is { id?: string; url: string; category?: string; angleLabel?: string; order?: number } =>
+      Boolean(item && typeof item === 'object' && typeof (item as { url?: unknown }).url === 'string' && (item as { url: string }).url.trim().length > 0)
+    )
+    .map((item, idx) => ({
+      id: typeof item.id === 'string' && item.id.trim() ? item.id.trim() : `photo-${Date.now()}-${idx}`,
+      url: item.url.trim(),
+      category: item.category || 'Exterior',
+      angleLabel: item.angleLabel || `Photo ${idx + 1}`,
+      order: idx,
+    }));
+
+  if (cleanedGallery.length > 0) {
+    return {
+      gallery: cleanedGallery,
+      images: cleanedGallery.map((g) => g.url),
+    };
+  }
+
+  const cleanedImages = Array.isArray(fallbackImages)
+    ? fallbackImages.filter((u): u is string => typeof u === 'string' && u.trim().length > 0).map((u) => u.trim()).slice(0, 70)
+    : [];
+
+  return {
+    gallery: [],
+    images: cleanedImages,
+  };
+}
+
+export async function createCar(req: Request, res: Response): Promise<void> {
   const body = req.body || {};
   const brand = String(body.brand || '').trim();
   const model = String(body.model || '').trim();
   const year = Number(body.year || 0);
   const priceInr = Number(body.priceInr || 0);
   const isDraft = body.status === 'Draft';
+  const clientRequestId = typeof body.clientRequestId === 'string' ? body.clientRequestId.trim() : '';
 
   if (!brand || !model) {
     res.status(400).json({ error: 'Brand and Model are required.' });
@@ -190,10 +234,29 @@ export function createCar(req: Request, res: Response): void {
   }
 
   const db = readDb();
-  const id = `car-${Date.now()}`;
-  const createdAt = new Date().toISOString();
 
-  const rawGallery = Array.isArray(body.gallery) ? body.gallery.slice(0, 35) : [];
+  // Idempotency guard: if this exact submission requestId was already processed, return existing car instead of duplicating
+  if (clientRequestId) {
+    const existingCarId = recentCreateRequests.get(clientRequestId);
+    if (existingCarId) {
+      const existing = db.cars.find((c) => c.id === existingCarId);
+      if (existing) {
+        res.status(200).json(existing);
+        return;
+      }
+    }
+  }
+
+  let id = typeof body.id === 'string' && body.id.trim().startsWith('car-')
+    ? body.id.trim()
+    : `car-${Date.now()}`;
+  while (db.cars.some((c) => c.id === id)) {
+    id = `car-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  }
+
+  const createdAt = new Date().toISOString();
+  const { gallery, images } = sanitizeGallery(body.gallery, body.images);
+
   const newCar = normalizeCarRecord({
     ...body,
     id,
@@ -203,18 +266,34 @@ export function createCar(req: Request, res: Response): void {
     model,
     year: year || 2023,
     priceInr: Math.max(0, priceInr),
-    gallery: rawGallery,
-    images: rawGallery.length > 0 ? rawGallery.map((g: { url: string }) => g.url) : body.images || [],
+    gallery: gallery as Car['gallery'],
+    images,
     createdAt,
   });
 
   db.cars.unshift(newCar);
-  writeDb(db);
+  try {
+    await persistCarCreate(newCar, db);
+  } catch (err) {
+    db.cars = db.cars.filter((c) => c.id !== newCar.id);
+    console.error('Failed to persist new car:', err);
+    res.status(500).json({ error: 'Database persistence failed while saving car. Please try again.' });
+    return;
+  }
+
+  if (clientRequestId) {
+    recentCreateRequests.set(clientRequestId, newCar.id);
+    if (recentCreateRequests.size > 200) {
+      const oldestKey = recentCreateRequests.keys().next().value;
+      if (oldestKey) recentCreateRequests.delete(oldestKey);
+    }
+  }
+
   logActivity('admin', 'Created Car', `Added ${newCar.year} ${newCar.brand} ${newCar.model} (${newCar.listingCode})`);
   res.status(201).json(newCar);
 }
 
-export function updateCar(req: Request, res: Response): void {
+export async function updateCar(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const index = db.cars.findIndex((c) => c.id === req.params.id);
   if (index === -1) {
@@ -224,7 +303,10 @@ export function updateCar(req: Request, res: Response): void {
 
   const existing = db.cars[index];
   const patch = req.body || {};
-  const gallery = Array.isArray(patch.gallery) ? patch.gallery.slice(0, 35) : existing.gallery;
+  const { gallery, images } =
+    patch.gallery !== undefined || patch.images !== undefined
+      ? sanitizeGallery(patch.gallery, patch.images ?? existing.images)
+      : { gallery: existing.gallery, images: existing.images };
   const priceChanged = patch.priceInr !== undefined && Number(patch.priceInr) !== existing.priceInr;
 
   const updated = normalizeCarRecord({
@@ -232,38 +314,56 @@ export function updateCar(req: Request, res: Response): void {
     ...patch,
     id: existing.id,
     createdAt: existing.createdAt,
-    gallery,
-    images: gallery.length > 0 ? gallery.map((g: { url: string }) => g.url) : existing.images,
+    gallery: gallery as Car['gallery'],
+    images: images.length > 0 ? images : gallery.length > 0 ? gallery.map((g) => g.url) : [],
     priceLastUpdated: priceChanged ? new Date().toISOString().slice(0, 10) : patch.priceLastUpdated || existing.priceLastUpdated,
   });
 
   db.cars[index] = updated;
-  writeDb(db);
+  try {
+    await persistCarUpdate(updated, db);
+  } catch (err) {
+    db.cars[index] = existing;
+    console.error('Failed to persist car update:', err);
+    res.status(500).json({ error: 'Database persistence failed while updating car.' });
+    return;
+  }
   logActivity('admin', 'Updated Car', `Updated ${updated.year} ${updated.brand} ${updated.model}`);
   res.json(updated);
 }
 
-export function deleteCar(req: Request, res: Response): void {
+export async function deleteCar(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const car = db.cars.find((c) => c.id === req.params.id);
   if (!car) {
     res.status(404).json({ error: 'Car listing not found.' });
     return;
   }
+  const previousCars = db.cars;
   db.cars = db.cars.filter((c) => c.id !== req.params.id);
-  writeDb(db);
+  try {
+    await persistCarDelete(car.id, db);
+  } catch (err) {
+    db.cars = previousCars;
+    console.error('Failed to delete car from database:', err);
+    res.status(500).json({ error: 'Database persistence failed while deleting car.' });
+    return;
+  }
   logActivity('admin', 'Deleted Car', `Deleted ${car.year} ${car.brand} ${car.model} (${car.listingCode})`);
   res.json({ ok: true });
 }
 
-export function duplicateCar(req: Request, res: Response): void {
+export async function duplicateCar(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const source = db.cars.find((c) => c.id === req.params.id);
   if (!source) {
     res.status(404).json({ error: 'Source car listing not found.' });
     return;
   }
-  const newId = `car-${Date.now()}`;
+  let newId = `car-${Date.now()}`;
+  while (db.cars.some((c) => c.id === newId)) {
+    newId = `car-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
+  }
   const duplicated: Car = normalizeCarRecord({
     ...source,
     id: newId,
@@ -275,12 +375,19 @@ export function duplicateCar(req: Request, res: Response): void {
     createdAt: new Date().toISOString(),
   });
   db.cars.unshift(duplicated);
-  writeDb(db);
+  try {
+    await persistCarCreate(duplicated, db);
+  } catch (err) {
+    db.cars = db.cars.filter((c) => c.id !== duplicated.id);
+    console.error('Failed to persist duplicated car:', err);
+    res.status(500).json({ error: 'Database persistence failed while duplicating car.' });
+    return;
+  }
   logActivity('admin', 'Duplicated Car', `Created draft copy of ${source.brand} ${source.model}`);
   res.status(201).json(duplicated);
 }
 
-export function patchCarStatus(req: Request, res: Response): void {
+export async function patchCarStatus(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const car = db.cars.find((c) => c.id === req.params.id);
   if (!car) {
@@ -289,8 +396,15 @@ export function patchCarStatus(req: Request, res: Response): void {
   }
   const status = req.body?.status;
   if (['Available', 'Sold', 'Reserved', 'Draft'].includes(status)) {
+    const prevStatus = car.status;
     car.status = status;
-    writeDb(db);
+    try {
+      await persistCarUpdate(car, db);
+    } catch (err) {
+      car.status = prevStatus;
+      res.status(500).json({ error: 'Database persistence failed while updating status.' });
+      return;
+    }
     logActivity('admin', 'Updated Car Status', `${car.brand} ${car.model} status set to ${status}`);
     res.json(car);
     return;
@@ -298,20 +412,27 @@ export function patchCarStatus(req: Request, res: Response): void {
   res.status(400).json({ error: 'Invalid car status.' });
 }
 
-export function patchCarFeatured(req: Request, res: Response): void {
+export async function patchCarFeatured(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const car = db.cars.find((c) => c.id === req.params.id);
   if (!car) {
     res.status(404).json({ error: 'Car listing not found.' });
     return;
   }
+  const prevFeatured = car.featured;
   car.featured = Boolean(req.body?.featured);
-  writeDb(db);
+  try {
+    await persistCarUpdate(car, db);
+  } catch (err) {
+    car.featured = prevFeatured;
+    res.status(500).json({ error: 'Database persistence failed while updating featured flag.' });
+    return;
+  }
   logActivity('admin', 'Toggled Car Featured', `${car.brand} ${car.model} featured: ${car.featured}`);
   res.json(car);
 }
 
-export function batchSyncCars(req: Request, res: Response): void {
+export async function batchSyncCars(req: Request, res: Response): Promise<void> {
   const bodyCars = Array.isArray(req.body) ? req.body : req.body?.cars;
   if (!Array.isArray(bodyCars) || bodyCars.length === 0) {
     res.status(400).json({ error: 'No cars provided for batch sync.' });
@@ -321,6 +442,7 @@ export function batchSyncCars(req: Request, res: Response): void {
   const db = readDb();
   let addedCount = 0;
   let updatedCount = 0;
+  const touchedCars: Car[] = [];
 
   for (const rawCar of bodyCars) {
     if (!rawCar || !rawCar.id || !rawCar.brand || !rawCar.model) continue;
@@ -334,15 +456,17 @@ export function batchSyncCars(req: Request, res: Response): void {
         ...db.cars[existingIndex],
         ...normalized,
       };
+      touchedCars.push(db.cars[existingIndex]);
       updatedCount++;
     } else {
       db.cars.unshift(normalized);
+      touchedCars.push(normalized);
       addedCount++;
     }
   }
 
   if (addedCount > 0 || updatedCount > 0) {
-    writeDb(db);
+    await persistCarsBatch(touchedCars, db);
     logActivity('sync', 'Batch Inventory Sync', `Synchronized ${addedCount} new, ${updatedCount} updated cars.`);
   }
 
