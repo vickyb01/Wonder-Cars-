@@ -78,8 +78,6 @@ export function HomePage() {
   const heroImageY = useTransform(scrollYProgress, [0, 1], ['0%', '14%']);
 
   const [allCars, setAllCars] = useState<CarType[]>([]);
-  const [featuredCars, setFeaturedCars] = useState<CarType[]>([]);
-  const [latestCars, setLatestCars] = useState<CarType[]>([]);
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -167,11 +165,19 @@ export function HomePage() {
     return () => window.clearTimeout(timer);
   }, [heroSlideIndex]);
 
-  const pickTopSixFeatured = (list: CarType[]) =>
-    list
+  // Top 6 Featured cars for "Hand-Picked Collector Automobiles"
+  const featuredCars = useMemo(() => {
+    return allCars
       .filter((c) => c.featured)
       .sort((a, b) => (a.featuredOrder ?? 999) - (b.featuredOrder ?? 999))
       .slice(0, 6);
+  }, [allCars]);
+
+  // All remaining cars (never duplicate cars already shown in Top 6 Featured)
+  const latestCars = useMemo(() => {
+    const featuredIds = new Set(featuredCars.map((c) => c.id));
+    return allCars.filter((c) => !featuredIds.has(c.id));
+  }, [allCars, featuredCars]);
 
   useEffect(() => {
     let active = true;
@@ -183,8 +189,6 @@ export function HomePage() {
         ]);
         if (!active) return;
         setAllCars(all);
-        setFeaturedCars(pickTopSixFeatured(all));
-        setLatestCars(all);
         if (homeSet) setHomepageSettings(homeSet);
       } catch {
         // Keep empty gracefully
@@ -197,15 +201,11 @@ export function HomePage() {
     const unsubscribe = subscribeToInventoryUpdates((evt) => {
       if (evt?.type === 'delete' && evt.carId) {
         setAllCars((prev) => prev.filter((c) => c.id !== evt.carId));
-        setFeaturedCars((prev) => prev.filter((c) => c.id !== evt.carId));
-        setLatestCars((prev) => prev.filter((c) => c.id !== evt.carId));
       }
       fetchCars({ status: 'Available', sort: 'newest' })
         .then((all) => {
           if (!active) return;
           setAllCars(all);
-          setFeaturedCars(pickTopSixFeatured(all));
-          setLatestCars(all);
         })
         .catch(() => {});
     });
@@ -678,32 +678,34 @@ export function HomePage() {
       {/* 4. Interactive Car Brand Selection Section */}
       <BrandSelectionSection cars={allCars} />
 
-      {/* 5. Latest Arrivals */}
-      <section className="bg-slate-50 dark:bg-[#0D0D10] border-b border-slate-200 dark:border-white/[0.06] py-20">
-        <div className="max-w-7xl mx-auto px-5 sm:px-8">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
-            <div>
-              <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-2">Freshly Inspected</p>
-              <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
-                Latest Arrivals
-              </h2>
+      {/* 5. Latest Arrivals (All non-Top-6 cars, 3 per row, unlimited) */}
+      {(loading || latestCars.length > 0) && (
+        <section className="bg-slate-50 dark:bg-[#0D0D10] border-b border-slate-200 dark:border-white/[0.06] py-20">
+          <div className="max-w-7xl mx-auto px-5 sm:px-8">
+            <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-10">
+              <div>
+                <p className="text-xs font-semibold uppercase tracking-wider text-blue-700 dark:text-blue-400 mb-2">Freshly Inspected</p>
+                <h2 className="font-display text-2xl sm:text-3xl font-bold text-slate-900 dark:text-white tracking-tight">
+                  Latest Arrivals
+                </h2>
+              </div>
+              <Link
+                to="/cars?sort=newest"
+                className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-zinc-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
+              >
+                <span>See Latest Listings</span>
+                <ArrowRight className="w-4 h-4" />
+              </Link>
             </div>
-            <Link
-              to="/cars?sort=newest"
-              className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-700 dark:text-zinc-300 hover:text-blue-700 dark:hover:text-blue-400 transition-colors whitespace-nowrap"
-            >
-              <span>See Latest Listings</span>
-              <ArrowRight className="w-4 h-4" />
-            </Link>
-          </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {latestCars.map((car, index) => (
-              <CarCard key={car.id} car={car} index={index} />
-            ))}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {latestCars.map((car, index) => (
+                <CarCard key={car.id} car={car} index={index} />
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* 5. The Wonder Cars Standard */}
       <section className="max-w-7xl mx-auto px-5 sm:px-8 py-20">
