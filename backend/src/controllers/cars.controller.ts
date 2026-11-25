@@ -234,8 +234,11 @@ export async function createCar(req: Request, res: Response): Promise<void> {
   }
 
   const db = readDb();
+  const { gallery, images } = sanitizeGallery(body.gallery, body.images);
+  const firstImgFile = (images[0] || '').split('/').pop()?.toLowerCase() || '';
+  const bodyKm = Number(body.kilometres || 0);
 
-  // Idempotency guard: if this exact submission requestId was already processed, return existing car instead of duplicating
+  // Idempotency guard: check in-memory requestId map AND recent duplicate submissions in DB
   if (clientRequestId) {
     const existingCarId = recentCreateRequests.get(clientRequestId);
     if (existingCarId) {
@@ -247,6 +250,25 @@ export async function createCar(req: Request, res: Response): Promise<void> {
     }
   }
 
+  const fiveMinsAgo = Date.now() - 5 * 60 * 1000;
+  const recentDuplicate = db.cars.find((c) => {
+    const createdMs = Date.parse(c.createdAt || '');
+    if (!Number.isFinite(createdMs) || createdMs < fiveMinsAgo) return false;
+    const sameCore =
+      c.brand.trim().toLowerCase() === brand.toLowerCase() &&
+      c.model.trim().toLowerCase() === model.toLowerCase() &&
+      Number(c.year) === (year || 2023) &&
+      Number(c.priceInr) === Math.max(0, priceInr) &&
+      Number(c.kilometres || 0) === bodyKm;
+    if (!sameCore) return false;
+    const cFirstFile = (c.images?.[0] || '').split('/').pop()?.toLowerCase() || '';
+    return cFirstFile === firstImgFile;
+  });
+  if (recentDuplicate) {
+    res.status(200).json(recentDuplicate);
+    return;
+  }
+
   let id = typeof body.id === 'string' && body.id.trim().startsWith('car-')
     ? body.id.trim()
     : `car-${Date.now()}`;
@@ -255,7 +277,6 @@ export async function createCar(req: Request, res: Response): Promise<void> {
   }
 
   const createdAt = new Date().toISOString();
-  const { gallery, images } = sanitizeGallery(body.gallery, body.images);
 
   const newCar = normalizeCarRecord({
     ...body,
