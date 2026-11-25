@@ -16,6 +16,7 @@ import { DEFAULT_EMI_CONFIG, estimateCarEmiWithConfig } from '../utils/emi.ts';
 import { slugifyCar } from '../utils/slugify.ts';
 import type { Car } from '../models/types.ts';
 import { DATA_DIR, APP_BASE_URL } from '../config/index.ts';
+import { generateCarBookingPdfBuffer } from '../services/pdf.service.ts';
 
 export function getCars(req: Request, res: Response): void {
   const db = readDb();
@@ -521,7 +522,7 @@ export async function batchSyncCars(req: Request, res: Response): Promise<void> 
   });
 }
 
-export function getCarBrochurePdf(req: Request, res: Response): void {
+export async function getCarBrochurePdf(req: Request, res: Response): Promise<void> {
   const db = readDb();
   const id = String(req.params.id || '').trim();
   const car = db.cars.find(
@@ -543,9 +544,39 @@ export function getCarBrochurePdf(req: Request, res: Response): void {
     return;
   }
 
-  const html = generateCarBrochureHtml(car);
-  res.setHeader('Content-Type', 'text/html; charset=utf-8');
-  res.send(html);
+  if (req.query.format === 'html') {
+    const html = generateCarBrochureHtml(car);
+    res.setHeader('Content-Type', 'text/html; charset=utf-8');
+    res.send(html);
+    return;
+  }
+
+  try {
+    const cleanBrand = (car.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
+    const cleanModel = (car.model || 'Model').replace(/[^a-zA-Z0-9_-]/g, '');
+    const fileName = `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`;
+    const isDownload = req.query.download === '1' || req.query.download === 'true';
+
+    const pdfBuffer = await generateCarBookingPdfBuffer(car, {
+      bookingId: typeof req.query.bookingId === 'string' ? req.query.bookingId : undefined,
+      customerName: typeof req.query.name === 'string' ? req.query.name : undefined,
+      customerPhone: typeof req.query.phone === 'string' ? req.query.phone : undefined,
+      customerEmail: typeof req.query.email === 'string' ? req.query.email : undefined,
+      requestType: typeof req.query.type === 'string' ? req.query.type : undefined,
+      preferredDate: typeof req.query.date === 'string' ? req.query.date : undefined,
+      preferredTime: typeof req.query.time === 'string' ? req.query.time : undefined,
+      city: typeof req.query.city === 'string' ? req.query.city : undefined,
+    });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `${isDownload ? 'attachment' : 'inline'}; filename="${fileName}"`);
+    res.setHeader('Access-Control-Expose-Headers', 'Content-Disposition');
+    res.setHeader('Cache-Control', 'no-store');
+    res.send(pdfBuffer);
+  } catch (err) {
+    console.error('[Brochure] PDF generation failed:', err);
+    res.status(500).json({ error: 'Unable to generate PDF brochure.' });
+  }
 }
 
 export function saveCarBrochureFile(

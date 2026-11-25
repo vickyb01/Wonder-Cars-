@@ -7,6 +7,7 @@ import {
 } from '../services/email.service.ts';
 import { sendAutomaticCustomerWhatsappDocument } from '../services/whatsapp.service.ts';
 import { saveCarBrochureFile, generateCarBrochureHtml } from './cars.controller.ts';
+import { generateCarBookingPdfBuffer } from '../services/pdf.service.ts';
 
 // Track recent submissions to prevent duplicate PDF & email dispatches
 const recentSubmissions = new Map<string, number>();
@@ -115,9 +116,10 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
     );
   }
 
-  // 3. Run existing PDF/brochure generation logic (reuses existing design & layout)
+  // 3. Generate real binary PDF brochure & HTML copy (for WhatsApp + Owner Email attachment)
   let brochureHtml = '';
   let brochureUrl = '';
+  let brochurePdfBuffer: Buffer | undefined;
   if (car) {
     try {
       const saved = saveCarBrochureFile(car);
@@ -126,6 +128,22 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
     } catch (err) {
       console.error('[EnquiryController] Error generating brochure file:', err);
       brochureHtml = generateCarBrochureHtml(car);
+    }
+    try {
+      brochurePdfBuffer = await generateCarBookingPdfBuffer(car, {
+        bookingId: newEnquiry.id,
+        customerName: newEnquiry.name,
+        customerPhone: newEnquiry.phone,
+        customerEmail: newEnquiry.email !== 'Not Provided' ? newEnquiry.email : undefined,
+        requestType: newEnquiry.type,
+        preferredDate: newEnquiry.preferredDate,
+        preferredTime: newEnquiry.preferredTime,
+        city: newEnquiry.city,
+        offerPriceInr: newEnquiry.offerPriceInr,
+        message: newEnquiry.message,
+      });
+    } catch (err) {
+      console.error('[EnquiryController] Error generating binary PDF brochure:', err);
     }
   }
 
@@ -144,7 +162,7 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
 
   // 5 & 6. Dispatch completely separate Owner Notification Email & Customer Confirmation Email
   const [ownerResult, customerResult] = await Promise.allSettled([
-    sendShowroomOwnerBookingEmail(newEnquiry, car, brochureHtml),
+    sendShowroomOwnerBookingEmail(newEnquiry, car, brochurePdfBuffer),
     email && email !== 'Not Provided'
       ? sendCustomerConfirmationEmail(newEnquiry, car)
       : Promise.resolve({ success: false, message: 'No customer email provided' }),

@@ -18,7 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import type { Car, EnquiryType, WhatsappDeliveryResult } from '../../types/car';
-import { submitEnquiry } from '../../utils/api';
+import { downloadBookingPdf, submitEnquiry } from '../../utils/api';
 import { useCart } from '../../context/CartContext';
 import { trackClickCall, trackClickWhatsApp, trackGenerateLead } from '../../utils/analytics';
 import {
@@ -57,12 +57,14 @@ export function ShowroomEnquirySidebar({
   const [formError, setFormError] = useState('');
   const [submittedMode, setSubmittedMode] = useState<string | null>(null);
   const [submittedData, setSubmittedData] = useState<{
+    bookingId?: string;
     name: string;
     phone: string;
     email: string;
     mode: 'test-drive' | 'inspection' | 'offer';
     preferredDate?: string;
     preferredTime?: string;
+    city?: string;
     whatsappDelivery?: WhatsappDeliveryResult;
   } | null>(null);
 
@@ -139,15 +141,29 @@ export function ShowroomEnquirySidebar({
       trackGenerateLead(enquiryType, `${car.year} ${car.brand} ${car.model}`, car.id, car.priceInr);
 
       setSubmittedData({
+        bookingId: createdEnquiry.id,
         name: name.trim(),
         phone: phone.trim(),
         email: email.trim(),
         mode: activeFormMode,
         preferredDate: activeFormMode !== 'offer' ? preferredDate || undefined : undefined,
         preferredTime: activeFormMode !== 'offer' ? preferredTime || undefined : undefined,
+        city: locationChoice.trim() || car.location,
         whatsappDelivery: createdEnquiry.whatsappDelivery,
       });
       setSubmittedMode(activeFormMode);
+
+      // Immediately download booking PDF onto customer's mobile or laptop
+      downloadBookingPdf(car, {
+        bookingId: createdEnquiry.id,
+        name: name.trim(),
+        phone: phone.trim(),
+        email: email.trim(),
+        date: activeFormMode !== 'offer' ? preferredDate || undefined : undefined,
+        time: activeFormMode !== 'offer' ? preferredTime || undefined : undefined,
+        type: enquiryType,
+        city: locationChoice.trim() || car.location,
+      }).catch(() => {});
       setName('');
       setPhone('');
       setEmail('');
@@ -489,15 +505,25 @@ export function ShowroomEnquirySidebar({
               </a>
 
               <div className="flex items-center justify-between gap-2 pt-1 text-xs">
-                <a
-                  href={`/api/cars/${car.id}/brochure`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline font-semibold"
+                <button
+                  type="button"
+                  onClick={() =>
+                    downloadBookingPdf(car, {
+                      bookingId: submittedData?.bookingId,
+                      name: submittedData?.name,
+                      phone: submittedData?.phone,
+                      email: submittedData?.email,
+                      date: submittedData?.preferredDate,
+                      time: submittedData?.preferredTime,
+                      type: submittedData?.mode,
+                      city: submittedData?.city,
+                    })
+                  }
+                  className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
                 >
-                  <FileText className="w-3.5 h-3.5" />
-                  <span>📄 View / Download Local Copy</span>
-                </a>
+                  <Download className="w-3.5 h-3.5" />
+                  <span>Download Booking PDF</span>
+                </button>
 
                 <button
                   type="button"

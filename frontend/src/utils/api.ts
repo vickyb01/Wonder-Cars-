@@ -482,6 +482,80 @@ export async function submitEnquiry(payload: {
   return handleJsonResponse<Enquiry>(res);
 }
 
+export function buildBookingPdfUrl(
+  carId: string,
+  params?: {
+    bookingId?: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+    date?: string;
+    time?: string;
+    type?: string;
+    city?: string;
+    download?: boolean;
+  }
+): string {
+  const query = new URLSearchParams({ format: 'pdf' });
+  if (params?.download !== false) query.set('download', '1');
+  if (params?.bookingId) query.set('bookingId', params.bookingId);
+  if (params?.name) query.set('name', params.name);
+  if (params?.phone) query.set('phone', params.phone);
+  if (params?.email) query.set('email', params.email);
+  if (params?.date) query.set('date', params.date);
+  if (params?.time) query.set('time', params.time);
+  if (params?.type) query.set('type', params.type);
+  if (params?.city) query.set('city', params.city);
+  const path = `/api/cars/${encodeURIComponent(carId)}/brochure?${query.toString()}`;
+  return API_BASE ? `${API_BASE}${path}` : path;
+}
+
+/**
+ * Downloads the generated real PDF brochure immediately on desktop and mobile devices.
+ */
+export async function downloadBookingPdf(
+  car: Pick<Car, 'id' | 'brand' | 'model'>,
+  params?: {
+    bookingId?: string;
+    name?: string;
+    phone?: string;
+    email?: string;
+    date?: string;
+    time?: string;
+    type?: string;
+    city?: string;
+  }
+): Promise<void> {
+  const cleanBrand = (car.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
+  const cleanModel = (car.model || 'Brochure').replace(/[^a-zA-Z0-9_-]/g, '');
+  const filename = `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`;
+  const pdfUrl = buildBookingPdfUrl(car.id, { ...params, download: true });
+
+  try {
+    const res = await fetch(pdfUrl, { method: 'GET' });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    const pdfBlob = blob.type === 'application/pdf' ? blob : new Blob([blob], { type: 'application/pdf' });
+    const objectUrl = URL.createObjectURL(pdfBlob);
+
+    const anchor = document.createElement('a');
+    anchor.href = objectUrl;
+    anchor.download = filename;
+    anchor.rel = 'noopener noreferrer';
+    anchor.style.display = 'none';
+    document.body.appendChild(anchor);
+    anchor.click();
+    anchor.remove();
+
+    window.setTimeout(() => {
+      URL.revokeObjectURL(objectUrl);
+    }, 60_000);
+  } catch {
+    // Fallback for strict mobile webviews or direct attachment navigation
+    window.open(pdfUrl, '_blank', 'noopener,noreferrer');
+  }
+}
+
 export async function submitSellRequest(payload: {
   brand: string;
   model: string;

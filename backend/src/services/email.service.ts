@@ -2,6 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import nodemailer from 'nodemailer';
 import type { Enquiry, Car } from '../models/types.ts';
+import { generateCarBookingPdfBuffer } from './pdf.service.ts';
 import {
   DATA_DIR,
   LEAD_NOTIFICATION_EMAIL,
@@ -1003,7 +1004,7 @@ export function buildOwnerNotificationHtml(
 export async function sendShowroomOwnerBookingEmail(
   enquiry: Enquiry,
   car?: Car,
-  brochureHtml?: string
+  brochurePdfBuffer?: Buffer
 ): Promise<{ success: boolean; message: string; method?: string }> {
   const ownerEmail = OWNER_NOTIFICATION_EMAIL;
   const subject = 'New Car Booking Request Received – Wonder Cars';
@@ -1018,15 +1019,31 @@ export async function sendShowroomOwnerBookingEmail(
   const cleanBrand = (car?.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
   const cleanModel = (car?.model || 'Booking').replace(/[^a-zA-Z0-9_-]/g, '');
   const attachments: any[] = [];
-  if (brochureHtml) {
-    attachments.push({
-      filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.html`,
-      content: brochureHtml,
-      contentType: 'text/html',
-    });
+
+  let resolvedPdfBuffer = brochurePdfBuffer;
+  if (!resolvedPdfBuffer && car) {
+    try {
+      resolvedPdfBuffer = await generateCarBookingPdfBuffer(car, {
+        bookingId: enquiry.id,
+        customerName: enquiry.name,
+        customerPhone: enquiry.phone,
+        customerEmail: enquiry.email !== 'Not Provided' ? enquiry.email : undefined,
+        requestType: enquiry.type,
+        preferredDate: enquiry.preferredDate,
+        preferredTime: enquiry.preferredTime,
+        city: enquiry.city,
+        offerPriceInr: enquiry.offerPriceInr,
+        message: enquiry.message,
+      });
+    } catch (pdfErr) {
+      console.error('[EmailService] Failed to build owner email PDF attachment:', pdfErr);
+    }
+  }
+
+  if (resolvedPdfBuffer && resolvedPdfBuffer.length > 0) {
     attachments.push({
       filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`,
-      content: Buffer.from(brochureHtml, 'utf-8'),
+      content: resolvedPdfBuffer,
       contentType: 'application/pdf',
     });
   }
