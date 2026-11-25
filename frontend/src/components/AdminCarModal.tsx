@@ -63,6 +63,91 @@ const PHOTO_CATEGORIES: PhotoCategory[] = [
   'Underbody & Storage',
 ];
 
+const FUEL_OPTIONS = ['Petrol', 'Diesel', 'Electric', 'Hybrid'];
+const TRANSMISSION_OPTIONS = ['Automatic', 'PDK', 'DCT', 'Manual'];
+const STATUS_OPTIONS = [
+  { value: 'Available', label: 'Available' },
+  { value: 'Reserved', label: 'Reserved' },
+  { value: 'Sold', label: 'Sold' },
+  { value: 'Draft', label: 'Draft (Hidden)' },
+];
+const WARRANTY_OPTIONS = ['6 Months', '1 Year', '2 Years', '3 Years', 'No Warranty'];
+const SELLER_TYPE_OPTIONS = ['Certified Gallery', 'Verified Partner Dealer', 'Private Consignment'];
+
+interface SelectWithOtherProps {
+  value: string;
+  options: ReadonlyArray<string | { value: string; label: string }>;
+  onChange: (value: string) => void;
+  placeholder: string;
+  selectClassName: string;
+  inputClassName?: string;
+}
+
+/**
+ * Dropdown with an automatic "Other (Type Manually)..." option that reveals a custom text input.
+ */
+function SelectWithOther({
+  value,
+  options,
+  onChange,
+  placeholder,
+  selectClassName,
+  inputClassName,
+}: SelectWithOtherProps) {
+  const normalizedOptions = options.map((opt) => (typeof opt === 'string' ? { value: opt, label: opt } : opt));
+  const isPreset = normalizedOptions.some((opt) => opt.value === value);
+  const [manualMode, setManualMode] = useState<boolean>(() => Boolean(value) && !isPreset);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  useEffect(() => {
+    if (!value) return;
+    setManualMode(!normalizedOptions.some((opt) => opt.value === value));
+  }, [value]);
+
+  const showCustomInput = manualMode || (Boolean(value) && !isPreset);
+
+  return (
+    <div className="space-y-1.5">
+      <select
+        value={showCustomInput ? '__other__' : value}
+        onChange={(e) => {
+          const next = e.target.value;
+          if (next === '__other__') {
+            setManualMode(true);
+            if (isPreset) onChange('');
+            setTimeout(() => inputRef.current?.focus(), 30);
+          } else {
+            setManualMode(false);
+            onChange(next);
+          }
+        }}
+        className={selectClassName}
+      >
+        {normalizedOptions.map((opt) => (
+          <option key={opt.value} value={opt.value}>
+            {opt.label}
+          </option>
+        ))}
+        <option value="__other__">✏️ Other (Type Manually)...</option>
+      </select>
+
+      {showCustomInput && (
+        <input
+          ref={inputRef}
+          type="text"
+          value={value}
+          onChange={(e) => onChange(e.target.value)}
+          placeholder={placeholder}
+          className={
+            inputClassName ||
+            'w-full h-9 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-blue-400/60 dark:border-blue-500/50 text-xs sm:text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500'
+          }
+        />
+      )}
+    </div>
+  );
+}
+
 const POPULAR_BRANDS = [
   'Maruti Suzuki',
   'Hyundai',
@@ -931,42 +1016,33 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Fuel Type</label>
-                  <select
+                  <SelectWithOther
                     value={fuelType}
-                    onChange={(e) => setFuelType(e.target.value as FuelType)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="Petrol">Petrol</option>
-                    <option value="Diesel">Diesel</option>
-                    <option value="Electric">Electric</option>
-                    <option value="Hybrid">Hybrid</option>
-                  </select>
+                    options={FUEL_OPTIONS}
+                    onChange={(val) => setFuelType(val as FuelType)}
+                    placeholder="Type fuel type (e.g. CNG, Petrol + CNG)"
+                    selectClassName="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Transmission</label>
-                  <select
+                  <SelectWithOther
                     value={transmission}
-                    onChange={(e) => setTransmission(e.target.value as TransmissionType)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="Automatic">Automatic</option>
-                    <option value="PDK">PDK</option>
-                    <option value="DCT">DCT</option>
-                    <option value="Manual">Manual</option>
-                  </select>
+                    options={TRANSMISSION_OPTIONS}
+                    onChange={(val) => setTransmission(val as TransmissionType)}
+                    placeholder="Type transmission (e.g. CVT, AMT, iMT)"
+                    selectClassName="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Status</label>
-                  <select
+                  <SelectWithOther
                     value={status}
-                    onChange={(e) => setStatus(e.target.value as CarStatus)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="Available">Available</option>
-                    <option value="Reserved">Reserved</option>
-                    <option value="Sold">Sold</option>
-                    <option value="Draft">Draft (Hidden)</option>
-                  </select>
+                    options={STATUS_OPTIONS}
+                    onChange={(val) => setStatus(val as CarStatus)}
+                    placeholder="Type custom status (e.g. Upcoming, In Transit)"
+                    selectClassName="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
                 </div>
                 <div className="flex items-end">
                   <label className="flex items-center gap-2 h-10 px-3 w-full rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] cursor-pointer">
@@ -1083,17 +1159,13 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
                     Warranty / Guarantee Period
                   </label>
-                  <select
+                  <SelectWithOther
                     value={warrantyPeriod}
-                    onChange={(e) => setWarrantyPeriod(e.target.value)}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="6 Months">6 Months</option>
-                    <option value="1 Year">1 Year</option>
-                    <option value="2 Years">2 Years</option>
-                    <option value="3 Years">3 Years</option>
-                    <option value="No Warranty">No Warranty</option>
-                  </select>
+                    options={WARRANTY_OPTIONS}
+                    onChange={(val) => setWarrantyPeriod(val)}
+                    placeholder="Type warranty (e.g. 5 Years, OEM Extended)"
+                    selectClassName="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">
@@ -1173,15 +1245,13 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Seller Type</label>
-                  <select
+                  <SelectWithOther
                     value={sellerType}
-                    onChange={(e) => setSellerType(e.target.value as Car['sellerType'])}
-                    className="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
-                  >
-                    <option value="Certified Gallery">Certified Gallery</option>
-                    <option value="Verified Partner Dealer">Verified Partner Dealer</option>
-                    <option value="Private Consignment">Private Consignment</option>
-                  </select>
+                    options={SELLER_TYPE_OPTIONS}
+                    onChange={(val) => setSellerType(val as Car['sellerType'])}
+                    placeholder="Type seller type (e.g. Direct Owner, Luxury Partner)"
+                    selectClassName="w-full h-10 px-3 rounded-lg bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.1] text-sm text-slate-900 dark:text-white focus:outline-none focus:border-blue-600 dark:focus:border-blue-500"
+                  />
                 </div>
                 <div>
                   <label className="block text-xs font-medium text-slate-600 dark:text-zinc-400 mb-1">Seller Phone</label>
@@ -1269,19 +1339,16 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
               {/* Upload Presets & Optional URL Toggle */}
               <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 rounded-xl bg-slate-50 dark:bg-[#09090B] border border-slate-200 dark:border-white/[0.08]">
                 <div className="flex flex-wrap items-center gap-3">
-                  <div className="flex items-center gap-2">
-                    <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">Category for new photos:</span>
-                    <select
+                  <div className="flex items-start gap-2">
+                    <span className="text-xs font-medium text-slate-600 dark:text-zinc-400 pt-1.5">Category for new photos:</span>
+                    <SelectWithOther
                       value={uploadCategory}
-                      onChange={(e) => setUploadCategory(e.target.value as PhotoCategory)}
-                      className="h-8 px-2.5 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs font-semibold text-slate-900 dark:text-white"
-                    >
-                      {PHOTO_CATEGORIES.map((cat) => (
-                        <option key={cat} value={cat}>
-                          {cat}
-                        </option>
-                      ))}
-                    </select>
+                      options={PHOTO_CATEGORIES}
+                      onChange={(val) => setUploadCategory(val as PhotoCategory)}
+                      placeholder="Type photo category (e.g. Wheels, Documents)"
+                      selectClassName="h-8 px-2.5 rounded-lg bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs font-semibold text-slate-900 dark:text-white"
+                      inputClassName="h-8 px-2.5 rounded-lg bg-white dark:bg-[#121215] border border-blue-400/60 dark:border-blue-500/50 text-xs text-slate-900 dark:text-white w-48 focus:outline-none"
+                    />
                   </div>
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-medium text-slate-600 dark:text-zinc-400">Angle label:</span>
@@ -1416,23 +1483,20 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
                           </select>
                         </div>
 
-                        <select
+                        <SelectWithOther
                           value={photo.category}
-                          onChange={(e) =>
+                          options={PHOTO_CATEGORIES}
+                          onChange={(val) =>
                             setGallery((prev) =>
                               prev.map((p, i) =>
-                                i === idx ? { ...p, category: e.target.value as PhotoCategory } : p
+                                i === idx ? { ...p, category: val as PhotoCategory } : p
                               )
                             )
                           }
-                          className="w-full h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
-                        >
-                          {PHOTO_CATEGORIES.map((c) => (
-                            <option key={c} value={c}>
-                              {c}
-                            </option>
-                          ))}
-                        </select>
+                          placeholder="Type custom category (e.g. Wheels)"
+                          selectClassName="w-full h-8 px-2 rounded bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.1] text-xs text-slate-900 dark:text-white"
+                          inputClassName="w-full h-8 px-2 rounded bg-white dark:bg-[#121215] border border-blue-400/60 dark:border-blue-500/50 text-xs text-slate-900 dark:text-white focus:outline-none"
+                        />
 
                         <input
                           type="text"

@@ -1,13 +1,14 @@
-export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid';
-export type TransmissionType = 'Automatic' | 'PDK' | 'DCT' | 'Manual';
-export type CarStatus = 'Available' | 'Reserved' | 'Sold' | 'Draft';
+export type FuelType = 'Petrol' | 'Diesel' | 'Electric' | 'Hybrid' | (string & {});
+export type TransmissionType = 'Automatic' | 'PDK' | 'DCT' | 'Manual' | (string & {});
+export type CarStatus = 'Available' | 'Reserved' | 'Sold' | 'Draft' | (string & {});
 export type PriceType = 'Negotiable' | 'Fixed';
 
 export type PhotoCategory =
   | 'Exterior'
   | 'Interior'
   | 'Engine & Mechanical'
-  | 'Underbody & Storage';
+  | 'Underbody & Storage'
+  | (string & {});
 
 export interface CarPhoto {
   id: string;
@@ -170,7 +171,7 @@ export interface Car {
   serviceHistory: ServiceHistory;
   documents: DocumentItem[];
   sellerName: string;
-  sellerType: 'Certified Gallery' | 'Verified Partner Dealer' | 'Private Consignment';
+  sellerType: 'Certified Gallery' | 'Verified Partner Dealer' | 'Private Consignment' | (string & {});
   sellerProfile?: string;
   sellerPhone: string;
   sellerWhatsapp: string;
