@@ -246,6 +246,7 @@ export function normalizeCarRecord(raw: Partial<Car> & { id: string }): Car {
     location: raw.location || 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
     status: raw.status || 'Available',
     featured: Boolean(raw.featured),
+    featuredOrder: typeof raw.featuredOrder === 'number' ? raw.featuredOrder : undefined,
     category: raw.category || 'Luxury & Performance',
     bodyType: raw.bodyType || 'Coupe',
     color: raw.color || '',

@@ -135,6 +135,7 @@ export interface Car {
   location: string;
   status: CarStatus;
   featured: boolean;
+  featuredOrder?: number;
   category: string;
   bodyType: string;
   color: string;

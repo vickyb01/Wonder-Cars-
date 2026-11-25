@@ -227,6 +227,9 @@ export function AdminPage() {
   const [carBrandFilter, setCarBrandFilter] = useState('All');
   const [carStatusFilter, setCarStatusFilter] = useState<'All' | CarStatus>('All');
   const [deleteConfirmCar, setDeleteConfirmCar] = useState<CarType | null>(null);
+  const [deletingCar, setDeletingCar] = useState(false);
+  const [featuredCandidateId, setFeaturedCandidateId] = useState('');
+  const [featuredSavingId, setFeaturedSavingId] = useState<string | null>(null);
 
   // Enquiries CRM State
   const [enquiryFilter, setEnquiryFilter] = useState<'All' | EnquiryStatus>('All');
@@ -478,6 +481,23 @@ export function AdminPage() {
     setNotifDropdownOpen(false);
   }
 
+  // Featured Homepage Cars (Strict Max 6, sorted by featuredOrder)
+  const featuredCarsList = useMemo(() => {
+    return cars
+      .filter((c) => Boolean(c.featured) && c.status !== 'Draft')
+      .sort((a, b) => {
+        const orderA = typeof a.featuredOrder === 'number' ? a.featuredOrder : Number.MAX_SAFE_INTEGER;
+        const orderB = typeof b.featuredOrder === 'number' ? b.featuredOrder : Number.MAX_SAFE_INTEGER;
+        if (orderA !== orderB) return orderA - orderB;
+        return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+      })
+      .slice(0, 6);
+  }, [cars]);
+
+  const nonFeaturedEligibleCars = useMemo(() => {
+    return cars.filter((c) => !c.featured && c.status !== 'Draft');
+  }, [cars]);
+
   // Filtered Cars
   const filteredCars = useMemo(() => {
     return cars.filter((car) => {
@@ -518,12 +538,55 @@ export function AdminPage() {
   }
 
   async function handleToggleFeatured(carId: string, featured: boolean) {
+    const nextFeatured = !featured;
+    if (nextFeatured && featuredCarsList.length >= 6) {
+      setSaveFeedback({
+        type: 'error',
+        text: 'Homepage Featured Portfolio can show only 6 cars max. Please remove one car from Featured Portfolio above first.',
+      });
+      return;
+    }
+    setFeaturedSavingId(carId);
     try {
-      const updated = await patchCarFeatured(carId, !featured);
+      const nextOrder = nextFeatured ? featuredCarsList.length + 1 : undefined;
+      const updated = await patchCarFeatured(carId, nextFeatured, nextOrder);
       setCars((prev) => prev.map((c) => (c.id === carId ? updated : c)));
-      setSaveFeedback({ type: 'success', text: `Featured status updated to ${!featured}.` });
+      setFeaturedCandidateId('');
+      setSaveFeedback({
+        type: 'success',
+        text: nextFeatured
+          ? `"${updated.year} ${updated.brand} ${updated.model}" added to Homepage Featured Top 6.`
+          : `"${updated.year} ${updated.brand} ${updated.model}" removed from Homepage Featured Top 6.`,
+      });
     } catch (err: unknown) {
       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to update featured flag.' });
+    } finally {
+      setFeaturedSavingId(null);
+    }
+  }
+
+  async function handleMoveFeatured(carId: string, direction: 'up' | 'down') {
+    const idx = featuredCarsList.findIndex((c) => c.id === carId);
+    if (idx < 0) return;
+    const swapIdx = direction === 'up' ? idx - 1 : idx + 1;
+    if (swapIdx < 0 || swapIdx >= featuredCarsList.length) return;
+
+    const reordered = [...featuredCarsList];
+    const [moved] = reordered.splice(idx, 1);
+    reordered.splice(swapIdx, 0, moved);
+
+    setFeaturedSavingId(carId);
+    try {
+      const updates = await Promise.all(
+        reordered.map((c, index) => patchCarFeatured(c.id, true, index + 1)),
+      );
+      const updatedById = new Map(updates.map((u) => [u.id, u]));
+      setCars((prev) => prev.map((c) => updatedById.get(c.id) || c));
+      setSaveFeedback({ type: 'success', text: 'Homepage Featured Portfolio order saved.' });
+    } catch (err: unknown) {
+      setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to reorder featured cars.' });
+    } finally {
+      setFeaturedSavingId(null);
     }
   }
 
@@ -538,14 +601,35 @@ export function AdminPage() {
   }
 
   async function handleDeleteCarConfirmed() {
-    if (!deleteConfirmCar) return;
+    if (!deleteConfirmCar || deletingCar) return;
+    const target = deleteConfirmCar;
+    setDeletingCar(true);
     try {
-      await deleteCar(deleteConfirmCar.id);
-      setCars((prev) => prev.filter((c) => c.id !== deleteConfirmCar.id));
+      await deleteCar(target.id);
+      setCars((prev) => prev.filter((c) => c.id !== target.id));
+      setOverview((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          totalCars: Math.max(0, prev.totalCars - 1),
+          availableCars: target.status === 'Available' ? Math.max(0, prev.availableCars - 1) : prev.availableCars,
+          soldCars: target.status === 'Sold' ? Math.max(0, prev.soldCars - 1) : prev.soldCars,
+          recentCars: prev.recentCars.filter((c) => c.id !== target.id),
+        };
+      });
       setDeleteConfirmCar(null);
-      setSaveFeedback({ type: 'success', text: 'Car listing deleted successfully.' });
+      setSaveFeedback({
+        type: 'success',
+        text: `"${target.year} ${target.brand} ${target.model}" permanently deleted from inventory.`,
+      });
+      Promise.all([
+        fetchCars({ includeDrafts: 'true', sort: 'newest' }).then((fresh) => setCars(fresh)),
+        fetchAdminOverview().then((ov) => setOverview(ov)),
+      ]).catch(() => {});
     } catch (err: unknown) {
       setSaveFeedback({ type: 'error', text: err instanceof Error ? err.message : 'Failed to delete car.' });
+    } finally {
+      setDeletingCar(false);
     }
   }
 
@@ -1481,6 +1565,118 @@ export function AdminPage() {
                     <span>Add New Car</span>
                   </button>
                 </div>
+              </div>
+
+              {/* Homepage Featured Portfolio Picker (Strict Max 6) */}
+              <div className="bg-white rounded-2xl border border-amber-200/90 p-5 shadow-xs space-y-4">
+                <div className="flex flex-wrap items-center justify-between gap-3">
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <Star className="w-4 h-4 text-amber-500 fill-amber-500" />
+                      <h3 className="text-sm font-bold text-slate-900">
+                        Homepage Featured Portfolio (Top 6 Selector)
+                      </h3>
+                      <span
+                        className={`px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                          featuredCarsList.length === 6
+                            ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+                            : 'bg-amber-50 text-amber-700 border border-amber-200'
+                        }`}
+                      >
+                        {featuredCarsList.length} / 6 Selected
+                      </span>
+                    </div>
+                    <p className="text-xs text-slate-500 mt-0.5">
+                      Choose exactly which 6 cars appear in &ldquo;Hand-Picked Collector Automobiles&rdquo; on the Homepage. All remaining cars appear in Latest Arrivals &amp; Inventory below.
+                    </p>
+                  </div>
+
+                  {featuredCarsList.length < 6 && nonFeaturedEligibleCars.length > 0 && (
+                    <div className="flex items-center gap-2 w-full sm:w-auto">
+                      <select
+                        value={featuredCandidateId}
+                        onChange={(e) => setFeaturedCandidateId(e.target.value)}
+                        className={`${inputCls} min-w-[220px] py-2`}
+                      >
+                        <option value="">Select car to add to Top 6...</option>
+                        {nonFeaturedEligibleCars.map((c) => (
+                          <option key={c.id} value={c.id}>
+                            {c.year} {c.brand} {c.model} ({formatINRCompact(c.priceInr)})
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        disabled={!featuredCandidateId || Boolean(featuredSavingId)}
+                        onClick={() => featuredCandidateId && handleToggleFeatured(featuredCandidateId, false)}
+                        className="px-3.5 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:opacity-50 text-white font-semibold text-xs whitespace-nowrap transition-colors"
+                      >
+                        + Add to Top 6
+                      </button>
+                    </div>
+                  )}
+                </div>
+
+                {featuredCarsList.length === 0 ? (
+                  <div className="rounded-xl border border-dashed border-slate-200 p-4 text-center text-xs text-slate-500">
+                    No cars selected for Homepage Featured Portfolio yet. Select up to 6 cars above or click the Star icon in the table below.
+                  </div>
+                ) : (
+                  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-3">
+                    {featuredCarsList.map((car, index) => (
+                      <div
+                        key={car.id}
+                        className="flex items-center gap-3 p-2.5 rounded-xl border border-slate-200 bg-slate-50/70"
+                      >
+                        <div className="w-6 h-6 rounded-full bg-amber-500 text-white text-[11px] font-bold flex items-center justify-center shrink-0">
+                          {index + 1}
+                        </div>
+                        <VehicleImage
+                          src={car.images?.[0] || car.gallery?.[0]?.url || ''}
+                          alt={`${car.year} ${car.brand} ${car.model}`}
+                          className="w-14 h-10 rounded-lg object-cover bg-slate-200 shrink-0"
+                        />
+                        <div className="min-w-0 flex-1">
+                          <div className="text-xs font-bold text-slate-900 truncate">
+                            {car.year} {car.brand} {car.model}
+                          </div>
+                          <div className="text-[11px] text-slate-500 truncate">
+                            {formatINRCompact(car.priceInr)} · {car.status}
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-1 shrink-0">
+                          <button
+                            type="button"
+                            disabled={index === 0 || Boolean(featuredSavingId)}
+                            onClick={() => handleMoveFeatured(car.id, 'up')}
+                            title="Move Up"
+                            className="p-1 rounded-md border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-35 text-slate-600"
+                          >
+                            <ArrowUp className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={index === featuredCarsList.length - 1 || Boolean(featuredSavingId)}
+                            onClick={() => handleMoveFeatured(car.id, 'down')}
+                            title="Move Down"
+                            className="p-1 rounded-md border border-slate-200 bg-white hover:bg-slate-100 disabled:opacity-35 text-slate-600"
+                          >
+                            <ArrowDown className="w-3.5 h-3.5" />
+                          </button>
+                          <button
+                            type="button"
+                            disabled={Boolean(featuredSavingId)}
+                            onClick={() => handleToggleFeatured(car.id, true)}
+                            title="Remove from Top 6"
+                            className="p-1 rounded-md border border-red-200 bg-red-50 hover:bg-red-100 disabled:opacity-40 text-red-600"
+                          >
+                            <X className="w-3.5 h-3.5" />
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
 
               {/* Filters Bar */}
@@ -5228,9 +5424,10 @@ export function AdminPage() {
           setCarModalOpen(false);
           setSaveFeedback({ type: 'success', text: `Car "${savedCar.year} ${savedCar.brand} ${savedCar.model}" saved permanently.` });
           // Refresh complete authoritative list from backend
-          fetchCars({ includeDrafts: 'true', sort: 'newest' })
-            .then((freshList) => setCars(freshList))
-            .catch(() => {});
+          Promise.all([
+            fetchCars({ includeDrafts: 'true', sort: 'newest' }).then((freshList) => setCars(freshList)),
+            fetchAdminOverview().then((ov) => setOverview(ov)),
+          ]).catch(() => {});
         }}
       />
 
@@ -5250,17 +5447,20 @@ export function AdminPage() {
             <div className="flex gap-2 pt-2">
               <button
                 type="button"
+                disabled={deletingCar}
                 onClick={() => setDeleteConfirmCar(null)}
-                className="flex-1 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs"
+                className="flex-1 py-2 rounded-lg bg-slate-100 hover:bg-slate-200 disabled:opacity-50 text-slate-700 font-semibold text-xs"
               >
                 Cancel
               </button>
               <button
                 type="button"
+                disabled={deletingCar}
                 onClick={handleDeleteCarConfirmed}
-                className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 text-white font-semibold text-xs"
+                className="flex-1 py-2 rounded-lg bg-red-600 hover:bg-red-700 disabled:opacity-60 text-white font-semibold text-xs inline-flex items-center justify-center gap-1.5"
               >
-                Confirm Delete
+                {deletingCar && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
+                <span>{deletingCar ? 'Deleting...' : 'Confirm Delete'}</span>
               </button>
             </div>
           </div>

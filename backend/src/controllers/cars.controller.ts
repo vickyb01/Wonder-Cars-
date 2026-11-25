@@ -420,11 +420,33 @@ export async function patchCarFeatured(req: Request, res: Response): Promise<voi
     return;
   }
   const prevFeatured = car.featured;
-  car.featured = Boolean(req.body?.featured);
+  const prevOrder = car.featuredOrder;
+  const nextFeatured = Boolean(req.body?.featured);
+  const nextOrder =
+    req.body?.featuredOrder !== undefined && Number.isFinite(Number(req.body.featuredOrder))
+      ? Number(req.body.featuredOrder)
+      : car.featuredOrder;
+
+  if (nextFeatured && !prevFeatured) {
+    const activeFeaturedCount = db.cars.filter((c) => c.id !== car.id && c.featured && c.status !== 'Draft').length;
+    if (activeFeaturedCount >= 6) {
+      res.status(400).json({ error: 'Maximum 6 cars can be featured on the Homepage. Remove one featured car first.' });
+      return;
+    }
+  }
+
+  car.featured = nextFeatured;
+  if (nextFeatured) {
+    car.featuredOrder = nextOrder ?? db.cars.filter((c) => c.featured && c.id !== car.id).length + 1;
+  } else {
+    delete car.featuredOrder;
+  }
+
   try {
     await persistCarUpdate(car, db);
   } catch (err) {
     car.featured = prevFeatured;
+    car.featuredOrder = prevOrder;
     res.status(500).json({ error: 'Database persistence failed while updating featured flag.' });
     return;
   }

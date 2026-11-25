@@ -45,6 +45,7 @@ export interface DatabaseState {
   notifications: NotificationItem[];
   activityLogs: ActivityLogItem[];
   visitorCount?: number;
+  carsSeeded?: boolean;
 }
 
 export const SEED_ADMIN_USERS: AdminUser[] = [
@@ -687,12 +688,21 @@ export async function initPersistence(): Promise<void> {
       await saveAppStateToMongo(stateWithoutCars as unknown as Record<string, unknown>);
     }
 
-    // Load or seed cars collection
+    // Load or seed cars collection (seed only once so deleted cars stay deleted)
     const remoteCars = await loadCarsFromMongo();
-    if (remoteCars && remoteCars.length > 0) {
+    const alreadySeeded = Boolean((remoteState as Partial<DatabaseState> | null)?.carsSeeded);
+    if (remoteCars && (remoteCars.length > 0 || alreadySeeded)) {
       memoryState.cars = remoteCars.map((c) => normalizeCarRecord(c));
-    } else if (localState.cars.length > 0) {
+      if (!alreadySeeded) {
+        memoryState.carsSeeded = true;
+        const { cars: _cars, ...stateWithoutCars } = memoryState;
+        await saveAppStateToMongo(stateWithoutCars as unknown as Record<string, unknown>);
+      }
+    } else if (localState.cars.length > 0 && !alreadySeeded) {
       await seedCarsToMongoIfEmpty(localState.cars);
+      memoryState.carsSeeded = true;
+      const { cars: _cars, ...stateWithoutCars } = memoryState;
+      await saveAppStateToMongo(stateWithoutCars as unknown as Record<string, unknown>);
     }
 
     writeLocalDbFile(memoryState);

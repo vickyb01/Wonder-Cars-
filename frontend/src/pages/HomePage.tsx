@@ -167,6 +167,12 @@ export function HomePage() {
     return () => window.clearTimeout(timer);
   }, [heroSlideIndex]);
 
+  const pickTopSixFeatured = (list: CarType[]) =>
+    list
+      .filter((c) => c.featured)
+      .sort((a, b) => (a.featuredOrder ?? 999) - (b.featuredOrder ?? 999))
+      .slice(0, 6);
+
   useEffect(() => {
     let active = true;
     async function load() {
@@ -177,7 +183,7 @@ export function HomePage() {
         ]);
         if (!active) return;
         setAllCars(all);
-        setFeaturedCars(all.filter((c) => c.featured));
+        setFeaturedCars(pickTopSixFeatured(all));
         setLatestCars(all);
         if (homeSet) setHomepageSettings(homeSet);
       } catch {
@@ -188,12 +194,17 @@ export function HomePage() {
     }
     load();
 
-    const unsubscribe = subscribeToInventoryUpdates(() => {
+    const unsubscribe = subscribeToInventoryUpdates((evt) => {
+      if (evt?.type === 'delete' && evt.carId) {
+        setAllCars((prev) => prev.filter((c) => c.id !== evt.carId));
+        setFeaturedCars((prev) => prev.filter((c) => c.id !== evt.carId));
+        setLatestCars((prev) => prev.filter((c) => c.id !== evt.carId));
+      }
       fetchCars({ status: 'Available', sort: 'newest' })
         .then((all) => {
           if (!active) return;
           setAllCars(all);
-          setFeaturedCars(all.filter((c) => c.featured));
+          setFeaturedCars(pickTopSixFeatured(all));
           setLatestCars(all);
         })
         .catch(() => {});

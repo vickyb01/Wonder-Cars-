@@ -14,8 +14,10 @@ export interface CloudinaryTestResult {
 }
 
 export function isCloudinaryConfigured(): boolean {
+  const cloudName = CLOUDINARY_CLOUD_NAME.trim();
   return Boolean(
-    CLOUDINARY_CLOUD_NAME.trim() &&
+    cloudName &&
+    !/\s/.test(cloudName) &&
     CLOUDINARY_API_KEY.trim() &&
     CLOUDINARY_API_SECRET.trim()
   );
@@ -29,6 +31,14 @@ export async function testCloudinaryConnection(): Promise<CloudinaryTestResult> 
       connected: false,
       cloudName: cleanCloudName,
       error: 'Cloudinary credentials missing in .env',
+    };
+  }
+  if (/\s/.test(cleanCloudName)) {
+    return {
+      configured: true,
+      connected: false,
+      cloudName: cleanCloudName,
+      error: 'Cloudinary Cloud Name cannot contain spaces; using MongoDB/local image storage.',
     };
   }
 

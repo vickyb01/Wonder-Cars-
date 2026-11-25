@@ -3642,7 +3642,7 @@
       "ownership": "1st Owner",
       "location": "Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.",
       "status": "Available",
-      "featured": false,
+      "featured": true,
       "category": "Flagship Luxury SUV",
       "bodyType": "SUV",
       "color": "Carpathian Grey",

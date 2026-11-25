@@ -109,7 +109,11 @@ export function InventoryPage() {
   }, [loadFiltered]);
 
   useEffect(() => {
-    const unsubscribe = subscribeToInventoryUpdates(() => {
+    const unsubscribe = subscribeToInventoryUpdates((evt) => {
+      if (evt?.type === 'delete' && evt.carId) {
+        setCars((prev) => prev.filter((c) => c.id !== evt.carId));
+        setAllCarsForOptions((prev) => prev.filter((c) => c.id !== evt.carId));
+      }
       loadFiltered();
     });
     return unsubscribe;

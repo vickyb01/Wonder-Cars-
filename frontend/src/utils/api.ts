@@ -211,19 +211,8 @@ export function normalizeMediaUrl(url?: string): string {
     return trimmed;
   }
   if (trimmed.startsWith('/uploads/') || trimmed.startsWith('uploads/')) {
-    const cleanPath = trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
-    const isLocal =
-      typeof window !== 'undefined' &&
-      (window.location.hostname === 'localhost' ||
-        window.location.hostname === '127.0.0.1' ||
-        window.location.hostname.startsWith('192.168.') ||
-        window.location.hostname.startsWith('10.') ||
-        window.location.hostname.endsWith('.local'));
-    if (isLocal) {
-      return cleanPath;
-    }
-    const base = API_BASE || LIVE_BACKEND_URL;
-    return `${base}${cleanPath}`;
+    // Keep /uploads/... relative so Vercel CDN (public/uploads) + Vercel proxy rewrite (/uploads/:path* -> Render) work fast
+    return trimmed.startsWith('/') ? trimmed : `/${trimmed}`;
   }
   return trimmed;
 }
@@ -770,91 +759,51 @@ export async function geocodeLocationServer(address: string): Promise<{
 
 // Cars Enhancements
 export async function duplicateCar(id: string): Promise<Car> {
-  try {
-    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
-      method: 'POST',
-      headers: authHeaders(),
-    });
-    const data = await handleJsonResponse<Car>(res);
-    const normalized = normalizeCarImages(data);
-    saveLocalCustomCar(normalized);
-    return normalized;
-  } catch (err) {
-    console.warn('Backend duplicate failed; duplicating locally:', err);
-    const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
-    const source = allKnown.find((c) => c.id === id);
-    const newId = `car-${Date.now()}`;
-    const duplicated = normalizeCarImages(
-      normalizeCarRecord({
-        ...(source || {}),
-        id: newId,
-        listingCode: `WC-${String(Date.now()).slice(-4)}`,
-        slug: `${source ? source.model.toLowerCase().replace(/[^a-z0-9]+/g, '-') : 'car'}-copy-${newId.slice(-4)}`,
-        model: source ? `${source.model} (Copy)` : 'Copy',
-        status: 'Draft',
-        featured: false,
-        createdAt: new Date().toISOString(),
-      })
-    );
-    saveLocalCustomCar(duplicated);
-    return duplicated;
-  }
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/duplicate`, {
+    method: 'POST',
+    headers: authHeaders(),
+  });
+  const data = await handleJsonResponse<Car>(res);
+  const normalized = normalizeCarImages(data);
+  updateGlobalCatalogCache([normalized]);
+  broadcastInventoryUpdate({ type: 'upsert', car: normalized });
+  return normalized;
 }
 
 export async function patchCarStatus(id: string, status: CarStatus): Promise<Car> {
-  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
-  const existing = allKnown.find((c) => c.id === id);
-  if (existing) {
-    const updated = { ...existing, status };
-    saveLocalCustomCar(updated);
-  }
-  try {
-    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders(),
-      },
-      body: JSON.stringify({ status }),
-    });
-    const data = await handleJsonResponse<Car>(res);
-    const normalized = normalizeCarImages(data);
-    saveLocalCustomCar(normalized);
-    return normalized;
-  } catch (err) {
-    if (existing) {
-      return { ...existing, status };
-    }
-    throw err;
-  }
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/status`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: JSON.stringify({ status }),
+  });
+  const data = await handleJsonResponse<Car>(res);
+  const normalized = normalizeCarImages(data);
+  updateGlobalCatalogCache([normalized]);
+  broadcastInventoryUpdate({ type: 'upsert', car: normalized });
+  return normalized;
 }
 
-export async function patchCarFeatured(id: string, featured: boolean): Promise<Car> {
-  const allKnown = [...getLocalCustomCars(), ...getGlobalCatalogCache()];
-  const existing = allKnown.find((c) => c.id === id);
-  if (existing) {
-    const updated = { ...existing, featured };
-    saveLocalCustomCar(updated);
-  }
-  try {
-    const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
-      method: 'PATCH',
-      headers: {
-        'Content-Type': 'application/json',
-        ...authHeaders(),
-      },
-      body: JSON.stringify({ featured }),
-    });
-    const data = await handleJsonResponse<Car>(res);
-    const normalized = normalizeCarImages(data);
-    saveLocalCustomCar(normalized);
-    return normalized;
-  } catch (err) {
-    if (existing) {
-      return { ...existing, featured };
-    }
-    throw err;
-  }
+export async function patchCarFeatured(
+  id: string,
+  featured: boolean,
+  featuredOrder?: number
+): Promise<Car> {
+  const res = await apiFetch(`/api/admin/cars/${encodeURIComponent(id)}/featured`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      ...authHeaders(),
+    },
+    body: JSON.stringify({ featured, featuredOrder }),
+  });
+  const data = await handleJsonResponse<Car>(res);
+  const normalized = normalizeCarImages(data);
+  updateGlobalCatalogCache([normalized]);
+  broadcastInventoryUpdate({ type: 'upsert', car: normalized });
+  return normalized;
 }
 
 // CRM Enquiries & Export
