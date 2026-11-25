@@ -54,4 +54,13 @@ export const APP_BASE_URL = process.env.APP_URL && process.env.APP_URL !== 'MY_A
   ? process.env.APP_URL
   : 'http://localhost:5000';
 
+// Google Analytics 4 (GA4) & Data API Configuration
+export const GA4_PROPERTY_ID = (process.env.GA4_PROPERTY_ID || process.env.VITE_GA_PROPERTY_ID || '').replace(/^properties\//, '').trim();
+export const GA_CLIENT_EMAIL = (process.env.GA_CLIENT_EMAIL || process.env.GOOGLE_CLIENT_EMAIL || '').trim();
+export const GA_PRIVATE_KEY = (process.env.GA_PRIVATE_KEY || process.env.GOOGLE_PRIVATE_KEY || '').replace(/\\n/g, '\n').trim();
+export const GA_KEY_FILE = (process.env.GA_KEY_FILE || process.env.GOOGLE_APPLICATION_CREDENTIALS || '').trim();
+export const GA_SERVICE_ACCOUNT_JSON = (process.env.GA_SERVICE_ACCOUNT_JSON || '').trim();
+export const GA_MEASUREMENT_ID = (process.env.GA_MEASUREMENT_ID || process.env.VITE_GA_MEASUREMENT_ID || '').trim();
+
+
 

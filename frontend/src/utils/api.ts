@@ -1218,3 +1218,62 @@ export async function sendTestEmail(targetEmail?: string): Promise<{
   return handleJsonResponse(res);
 }
 
+// ==========================================
+// Google Analytics 4 (GA4) & Showroom Analytics API
+// ==========================================
+import type { AnalyticsDashboardResponse, AnalyticsDateRangeKey, AnalyticsStatus } from '../types/analytics';
+
+export async function fetchAnalyticsDashboard(
+  dateRange: AnalyticsDateRangeKey = '30d',
+  startDate?: string,
+  endDate?: string
+): Promise<AnalyticsDashboardResponse> {
+  const params = new URLSearchParams();
+  if (dateRange) params.set('dateRange', dateRange);
+  if (startDate) params.set('startDate', startDate);
+  if (endDate) params.set('endDate', endDate);
+
+  const query = params.toString();
+  const res = await apiFetch(`/api/admin/analytics/overview${query ? `?${query}` : ''}`, {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse<AnalyticsDashboardResponse>(res);
+}
+
+export async function fetchAnalyticsStatus(): Promise<AnalyticsStatus> {
+  const res = await apiFetch('/api/admin/analytics/status', {
+    headers: authHeaders(),
+  });
+  return handleJsonResponse<AnalyticsStatus>(res);
+}
+
+export async function downloadAnalyticsCsv(
+  dateRange: AnalyticsDateRangeKey = '30d',
+  startDate?: string,
+  endDate?: string
+): Promise<void> {
+  const params = new URLSearchParams();
+  if (dateRange) params.set('dateRange', dateRange);
+  if (startDate) params.set('startDate', startDate);
+  if (endDate) params.set('endDate', endDate);
+
+  const query = params.toString();
+  const res = await apiFetch(`/api/admin/analytics/export${query ? `?${query}` : ''}`, {
+    headers: authHeaders(),
+  });
+
+  if (!res.ok) {
+    throw new Error(`CSV export failed (${res.status})`);
+  }
+
+  const blob = await res.blob();
+  const url = window.URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `wonder-cars-analytics-${dateRange}-${new Date().toISOString().slice(0, 10)}.csv`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  window.URL.revokeObjectURL(url);
+}
+

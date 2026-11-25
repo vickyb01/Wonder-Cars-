@@ -5,6 +5,7 @@ import sellRequestsRoutes from './sellRequests.routes.ts';
 import contentRoutes from './content.routes.ts';
 import settingsRoutes from './settings.routes.ts';
 import adminRoutes from './admin.routes.ts';
+import analyticsRoutes from './analytics.routes.ts';
 
 const router = Router();
 
@@ -24,6 +25,7 @@ router.use(sellRequestsRoutes);
 router.use(contentRoutes);
 router.use(settingsRoutes);
 router.use(adminRoutes);
+router.use(analyticsRoutes);
 
 export default router;
 

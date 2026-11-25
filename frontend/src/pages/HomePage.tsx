@@ -11,6 +11,7 @@ import { BrandSelectionSection } from '../components/BrandSelectionSection';
 import { ContactSection } from '../components/ContactSection';
 import { BRAND_CATALOG, toBrandSlug, matchesBrandFilter } from '../data/brands';
 import { formatINRCompact, formatKm } from '../utils/format';
+import { trackSearchCar } from '../utils/analytics';
 
 const HERO_SLIDES = [
   {
@@ -211,6 +212,11 @@ export function HomePage() {
       setIsSearchOpen(true);
       return;
     }
+    trackSearchCar(searchQuery.trim() || selectedBrand, {
+      brand: selectedBrand,
+      maxPrice,
+      fuelType,
+    });
     const params = new URLSearchParams();
     if (searchQuery.trim()) params.set('search', searchQuery.trim());
     if (selectedBrand !== 'All') params.set('brand', toBrandSlug(selectedBrand));

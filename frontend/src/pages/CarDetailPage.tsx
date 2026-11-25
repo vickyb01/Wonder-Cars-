@@ -13,6 +13,7 @@ import {
 } from 'lucide-react';
 import type { Car } from '../types/car';
 import { fetchCarDetail, getWishlistIds, toggleWishlistId, subscribeToInventoryUpdates } from '../utils/api';
+import { trackClickCall, trackClickWhatsApp, trackViewCar } from '../utils/analytics';
 import {
   buildWhatsAppUrl,
   calculateVehicleAge,
@@ -76,6 +77,13 @@ export function CarDetailPage() {
           setSimilar(res.similar);
           setSellerOtherCars(res.sellerOtherCars);
           setError('');
+          trackViewCar({
+            id: res.car.id,
+            brand: res.car.brand,
+            model: res.car.model,
+            year: res.car.year,
+            priceInr: res.car.priceInr,
+          });
         })
         .catch((err) => {
           if (!active) return;
@@ -610,6 +618,7 @@ export function CarDetailPage() {
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           <a
             href={`tel:${car.sellerPhone.replace(/\s+/g, '')}`}
+            onClick={() => trackClickCall(car.sellerPhone, `/cars/${car.id}`, `${car.year} ${car.brand} ${car.model}`)}
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-slate-100 dark:bg-white/[0.08] border border-slate-200 dark:border-white/[0.1] flex items-center justify-center text-blue-700 dark:text-blue-400"
             aria-label="Call seller"
           >
@@ -619,6 +628,7 @@ export function CarDetailPage() {
             href={whatsappQuickHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackClickWhatsApp(car.sellerWhatsapp || '918384068347', `/cars/${car.id}`, `${car.year} ${car.brand} ${car.model}`)}
             className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-emerald-50 dark:bg-emerald-600/25 border border-emerald-300 dark:border-emerald-500/35 flex items-center justify-center text-emerald-700 dark:text-emerald-300"
             aria-label="WhatsApp seller"
           >

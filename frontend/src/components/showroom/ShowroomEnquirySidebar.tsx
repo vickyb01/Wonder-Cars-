@@ -20,6 +20,7 @@ import {
 import type { Car, EnquiryType, WhatsappDeliveryResult } from '../../types/car';
 import { submitEnquiry } from '../../utils/api';
 import { useCart } from '../../context/CartContext';
+import { trackClickCall, trackClickWhatsApp, trackGenerateLead } from '../../utils/analytics';
 import {
   buildWhatsAppUrl,
   estimateMonthlyEmi,
@@ -132,6 +133,9 @@ export function ShowroomEnquirySidebar({
         offerPriceInr: activeFormMode === 'offer' ? Number(offerPriceInr) : undefined,
         notes: message.trim() || defaultMessage,
       });
+
+      // Track lead generation in GA4 & Showroom Telemetry
+      trackGenerateLead(enquiryType, `${car.year} ${car.brand} ${car.model}`, car.id, car.priceInr);
 
       setSubmittedData({
         name: name.trim(),
@@ -279,6 +283,7 @@ export function ShowroomEnquirySidebar({
             href={whatsappHref}
             target="_blank"
             rel="noopener noreferrer"
+            onClick={() => trackClickWhatsApp(car.sellerWhatsapp || '918384068347', `/cars/${car.id}`, `${car.year} ${car.brand} ${car.model}`)}
             className="inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-emerald-50 dark:bg-emerald-600/20 hover:bg-emerald-100 dark:hover:bg-emerald-600/30 border border-emerald-200 dark:border-emerald-500/30 text-emerald-700 dark:text-emerald-300 text-xs font-semibold transition-colors"
           >
             <MessageCircle className="w-4 h-4" />
@@ -286,6 +291,7 @@ export function ShowroomEnquirySidebar({
           </a>
           <a
             href={`tel:${car.sellerPhone.replace(/\s+/g, '')}`}
+            onClick={() => trackClickCall(car.sellerPhone, `/cars/${car.id}`, `${car.year} ${car.brand} ${car.model}`)}
             className="inline-flex items-center justify-center gap-2 py-2.5 px-3 rounded-lg bg-slate-100 dark:bg-white/[0.06] hover:bg-slate-200 dark:hover:bg-white/[0.12] border border-slate-200 dark:border-white/[0.1] text-slate-900 dark:text-white text-xs font-semibold transition-colors"
           >
             <Phone className="w-4 h-4 text-blue-700 dark:text-blue-400" />

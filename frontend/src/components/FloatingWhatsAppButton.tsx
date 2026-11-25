@@ -2,6 +2,7 @@ import { useLocation } from 'react-router-dom';
 import { ShoppingCart } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { buildWhatsAppUrl } from '../utils/format';
+import { trackClickWhatsApp } from '../utils/analytics';
 
 export function FloatingWhatsAppButton() {
   const { pathname } = useLocation();
@@ -43,6 +44,7 @@ export function FloatingWhatsAppButton() {
         href={href}
         target="_blank"
         rel="noopener noreferrer"
+        onClick={() => trackClickWhatsApp('918384068347', pathname, 'Floating Widget')}
         aria-label="Chat with Wonder Cars on WhatsApp"
         title="Chat on WhatsApp"
         className={`hidden md:flex fixed right-6 z-40 w-14 h-14 rounded-full bg-[#25D366] hover:bg-[#1EBE5D] text-white shadow-lg shadow-slate-900/20 dark:shadow-black/50 items-center justify-center transition-transform duration-150 hover:scale-105 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500 ${

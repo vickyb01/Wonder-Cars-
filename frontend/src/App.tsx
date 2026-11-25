@@ -18,6 +18,21 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { AdminPage } from './pages/AdminPage';
+import { initGA, trackPageView } from './utils/analytics';
+
+function RouteTracker() {
+  const { pathname, search } = useLocation();
+
+  useEffect(() => {
+    // Only track non-admin customer pages in GA4 to keep customer analytics accurate
+    if (!pathname.startsWith('/admin')) {
+      const fullPath = `${pathname}${search}`;
+      trackPageView(fullPath);
+    }
+  }, [pathname, search]);
+
+  return null;
+}
 
 function ScrollToTop() {
   const { pathname, hash } = useLocation();
@@ -89,6 +104,7 @@ export default function App() {
   const [mapsQuotaExceeded, setMapsQuotaExceeded] = useState(false);
 
   useEffect(() => {
+    initGA();
     const handleQuotaExceeded = () => setMapsQuotaExceeded(true);
     window.addEventListener('gmp-quota-exceeded', handleQuotaExceeded);
     return () => window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);
@@ -98,6 +114,7 @@ export default function App() {
     <MotionConfig reducedMotion="user">
       <ThemeProvider>
         <BrowserRouter>
+          <RouteTracker />
           <ScrollToTop />
           <CompareProvider>
             <WishlistProvider>

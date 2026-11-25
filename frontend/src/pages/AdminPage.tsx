@@ -149,6 +149,7 @@ import { buildWhatsAppUrl, formatINR, formatINRCompact, formatKm } from '../util
 import { AdminCarModal } from '../components/AdminCarModal';
 import { SeoHead } from '../components/SeoHead';
 import { VehicleImage } from '../components/VehicleImage';
+import { AnalyticsDashboard } from '../components/admin/AnalyticsDashboard';
 
 export type AdminTab =
   | 'dashboard'
@@ -4892,59 +4893,7 @@ export function AdminPage() {
           {/* TAB 12: REPORTS & ANALYTICS */}
           {/* ========================================================================= */}
           {activeTab === 'reports' && (
-            <div className="space-y-6">
-              <div>
-                <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">Showroom Reports & Analytics</h1>
-                <p className="text-xs text-slate-500 mt-1">Deep analytics on vehicle turnover, fuel type distribution, and visitor telemetry.</p>
-              </div>
-
-              {/* Performance Cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
-                  <span className="text-xs font-semibold text-slate-500 uppercase">Average Vehicle Price</span>
-                  <p className="text-2xl font-bold text-[#0B1528] mt-2">
-                    {formatINRCompact(
-                      cars.length > 0 ? cars.reduce((s, c) => s + c.priceInr, 0) / cars.length : 0
-                    )}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1">Across active inventory</p>
-                </div>
-                <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
-                  <span className="text-xs font-semibold text-slate-500 uppercase">Lead Conversion Rate</span>
-                  <p className="text-2xl font-bold text-emerald-600 mt-2">
-                    {enquiries.length > 0
-                      ? `${Math.round((enquiries.filter((e) => e.status === 'Converted').length / enquiries.length) * 100)}%`
-                      : '0%'}
-                  </p>
-                  <p className="text-xs text-slate-400 mt-1">Inquiries to car sales closed</p>
-                </div>
-                <div className="bg-white rounded-2xl border border-slate-200/90 p-5 shadow-xs">
-                  <span className="text-xs font-semibold text-slate-500 uppercase">Estimated Visitors</span>
-                  <p className="text-2xl font-bold text-blue-600 mt-2">{overview?.totalVisitors || 14280}</p>
-                  <p className="text-xs text-slate-400 mt-1">Digital showroom visits</p>
-                </div>
-              </div>
-
-              {/* Fuel Type Breakdown */}
-              <div className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs">
-                <h3 className="font-bold text-sm text-[#0B1528] mb-4">Inventory Fuel Type Breakdown</h3>
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-                  {['Petrol', 'Diesel', 'Electric', 'Hybrid'].map((fuel) => {
-                    const count = cars.filter((c) => c.fuelType.toLowerCase() === fuel.toLowerCase()).length;
-                    const percent = cars.length > 0 ? Math.round((count / cars.length) * 100) : 0;
-                    return (
-                      <div key={fuel} className="p-4 rounded-xl bg-slate-50 border border-slate-100">
-                        <p className="text-xs font-bold text-slate-700">{fuel}</p>
-                        <p className="text-2xl font-bold text-[#0B1528] mt-1">{count} <span className="text-xs font-normal text-slate-500">cars</span></p>
-                        <div className="w-full bg-slate-200 h-1.5 rounded-full mt-3 overflow-hidden">
-                          <div style={{ width: `${percent}%` }} className="bg-blue-600 h-full rounded-full" />
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-              </div>
-            </div>
+            <AnalyticsDashboard onRefreshParent={loadDashboardData} />
           )}
 
           {/* ========================================================================= */}

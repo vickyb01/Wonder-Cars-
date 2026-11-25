@@ -13,6 +13,7 @@ import {
   resolveBrandDisplayName,
   toBrandSlug,
 } from '../data/brands';
+import { trackSearchCar } from '../utils/analytics';
 import { DEFAULT_EMI_CONFIG } from '../utils/emi';
 import { formatINRCompact } from '../utils/format';
 
@@ -88,6 +89,14 @@ export function InventoryPage() {
     try {
       const data = await fetchCars(filters);
       setCars(data);
+      if (filters.search || (filters.brand && filters.brand !== 'All') || (filters.fuelType && filters.fuelType !== 'All')) {
+        trackSearchCar(filters.search || filters.brand || 'filtered', {
+          brand: filters.brand,
+          fuelType: filters.fuelType,
+          minPrice: filters.minPrice,
+          maxPrice: filters.maxPrice,
+        });
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Unable to load vehicle inventory.');
     } finally {

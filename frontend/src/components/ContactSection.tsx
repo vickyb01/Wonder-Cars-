@@ -6,6 +6,7 @@ import { useCart } from '../context/CartContext';
 import { buildWhatsAppUrl } from '../utils/format';
 import { EMPTY_LOCATION_SETTINGS, formatFullAddress, buildOpenMapsUrl } from '../utils/location';
 import { ShowroomGoogleMap } from './ShowroomGoogleMap';
+import { trackClickCall, trackClickWhatsApp, trackGenerateLead } from '../utils/analytics';
 
 const FALLBACK_CONTACT: BusinessLocationSettings = {
   ...EMPTY_LOCATION_SETTINGS,
@@ -164,6 +165,7 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
         notes: message.trim(),
       });
       openCart();
+      trackGenerateLead('general', 'General Showroom Enquiry');
       setSent(true);
       setName('');
       setEmail('');
@@ -241,9 +243,13 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                     <h3 className="text-base font-bold text-slate-900 dark:text-white">
                       Dealership Contact — Naman Jain
                     </h3>
-                    <p className="text-base sm:text-lg font-semibold text-slate-900 dark:text-white font-mono tabular-nums mt-0.5">
+                    <a
+                      href={telUrl}
+                      onClick={() => trackClickCall(displayPhone, '/contact', 'Dealership Contact')}
+                      className="text-base sm:text-lg font-semibold text-blue-600 dark:text-blue-400 hover:underline font-mono tabular-nums mt-0.5 inline-block"
+                    >
                       {displayPhone}
-                    </p>
+                    </a>
                   </div>
                 </div>
 
@@ -329,6 +335,7 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                     href={whatsappUrl}
                     target="_blank"
                     rel="noopener noreferrer"
+                    onClick={() => trackClickWhatsApp(displayWhatsapp, '/contact', 'Showroom Contact Section')}
                     aria-label="WhatsApp"
                     title="WhatsApp"
                     className="w-11 h-11 rounded-xl bg-white dark:bg-[#18181B] border border-slate-200 dark:border-white/[0.08] text-[#15803D] dark:text-[#25D366] hover:border-[#25D366] hover:text-white hover:bg-[#25D366] flex items-center justify-center transition-colors shadow-xs dark:shadow-none"

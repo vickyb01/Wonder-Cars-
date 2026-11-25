@@ -1,5 +1,23 @@
 [
   {
+    "id": "wa-doc-1795517474636",
+    "enquiryId": "enq-1795517474462",
+    "customerName": "Avnt netam",
+    "customerPhone": "8007316645",
+    "recipientWhatsapp": "+918007316645",
+    "showroomWhatsapp": "8384068347",
+    "messageType": "document",
+    "carId": "car-1795405569642",
+    "carTitle": "2021 Maruti Suzuki Baleno (Zeta)",
+    "documentUrl": "http://localhost:5000/api/cars/car-1795405569642/brochure",
+    "filename": "WonderCars-MarutiSuzuki-Baleno-Inspection-Brochure.pdf",
+    "caption": "★ WONDER CARS ★ Booking Dossier & 210-Point Inspection Certificate\nVehicle: 2021 Maruti Suzuki Baleno (Zeta)\nPrice: ₹5,35,000 · Warranty: 6 Months Warranty Included\nSlot: 2026-11-25 (11:00 AM)\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nConcierge: Naman Jain (+91 83840 68347)",
+    "timestamp": "2026-11-24T10:51:14.636Z",
+    "status": "pending_credentials",
+    "provider": "simulation_logged",
+    "error": "WHATSAPP_ACCESS_TOKEN and/or WHATSAPP_PHONE_NUMBER_ID are not configured in .env. Live WhatsApp document delivery is suspended until Meta Cloud API credentials are provided."
+  },
+  {
     "id": "wa-doc-1795461930737",
     "enquiryId": "enq-1795461930567",
     "customerName": "vicky bhelave",
