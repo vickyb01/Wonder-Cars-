@@ -509,6 +509,7 @@ export function ComparePage() {
         phone: enquiryPhone.trim(),
         city: contactCar.location,
         message: enquiryMessage.trim(),
+        source: 'Compare Cars Page',
       });
       // Add to Enquiry Cart and open Cart Drawer
       addToCart({

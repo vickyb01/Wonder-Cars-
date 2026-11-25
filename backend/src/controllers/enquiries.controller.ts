@@ -83,6 +83,7 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
     city: body.city ? String(body.city) : undefined,
     offerPriceInr: body.offerPriceInr ? Number(body.offerPriceInr) : undefined,
     message,
+    source: body.source ? String(body.source).trim() : 'Website Booking Form',
     status: 'New',
     createdAt: new Date().toISOString(),
   };
@@ -102,10 +103,16 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
   writeDb(db);
   logActivity('System', 'New Enquiry Received', `${name} submitted enquiry for ${carTitle || 'car'}`);
   
-  // 2. Find car details
+  // 2. Find actual car details from database using selected carId
   let car: Car | undefined;
-  if (body.carId) {
-    car = db.cars.find((c) => c.id === body.carId || c.slug === body.carId);
+  const rawCarId = String(body.carId || '').trim();
+  if (rawCarId) {
+    car = db.cars.find(
+      (c) =>
+        c.id === rawCarId ||
+        c.slug === rawCarId ||
+        (c.listingCode && c.listingCode.toLowerCase() === rawCarId.toLowerCase())
+    );
   }
 
   // 3. Run existing PDF/brochure generation logic (reuses existing design & layout)
@@ -135,16 +142,19 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
     };
   }
 
-  // 5. Automatically send Showroom Owner Notification Email (subject: "New Car Booking Received" with attached PDF)
-  sendShowroomOwnerBookingEmail(newEnquiry, car, brochureHtml).catch((err) => {
-    console.error('[EnquiryController] Error sending showroom owner notification email:', err);
-  });
+  // 5 & 6. Dispatch completely separate Owner Notification Email & Customer Confirmation Email
+  const [ownerResult, customerResult] = await Promise.allSettled([
+    sendShowroomOwnerBookingEmail(newEnquiry, car, brochureHtml),
+    email && email !== 'Not Provided'
+      ? sendCustomerConfirmationEmail(newEnquiry, car)
+      : Promise.resolve({ success: false, message: 'No customer email provided' }),
+  ]);
 
-  // 6. Send customer confirmation email if customer email provided
-  if (email && email !== 'Not Provided') {
-    sendCustomerConfirmationEmail(newEnquiry, car).catch((err) => {
-      console.error('[EnquiryController] Error sending customer confirmation email:', err);
-    });
+  if (ownerResult.status === 'rejected') {
+    console.error('[EnquiryController] Error sending showroom owner notification email:', ownerResult.reason);
+  }
+  if (customerResult.status === 'rejected') {
+    console.error('[EnquiryController] Error sending customer confirmation email:', customerResult.reason);
   }
 
   // Attach delivery status so the frontend and database have verifiable confirmation

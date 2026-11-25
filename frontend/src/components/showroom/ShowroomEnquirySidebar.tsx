@@ -115,6 +115,7 @@ export function ShowroomEnquirySidebar({
         city: locationChoice.trim() || car.location,
         offerPriceInr: activeFormMode === 'offer' ? Number(offerPriceInr) : undefined,
         message: message.trim() || defaultMessage,
+        source: 'Car Details Page',
       });
 
       // Record in Enquiry Cart state
@@ -456,10 +457,12 @@ export function ShowroomEnquirySidebar({
                   <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
                   <div>
                     <p className="font-bold text-slate-900 dark:text-white">
-                      Showroom Owner Notified & Lead Recorded
+                      Booking Request Recorded
                     </p>
                     <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                      Booking details saved in Admin CRM. Email alert directed to <strong className="text-slate-900 dark:text-white">vickybhelave25@navgurukul.org</strong> with subject <em>"New Car Booking Received"</em> and the PDF attached.
+                      {submittedData?.email
+                        ? `A confirmation email has been sent to ${submittedData.email}. Our Wonder Cars team will contact you soon.`
+                        : 'Your booking request has been saved. Our Wonder Cars team will contact you soon.'}
                     </p>
                   </div>
                 </div>

@@ -30,13 +30,8 @@ export const UPLOADS_DIR = path.resolve(BACKEND_ROOT, 'src', 'uploads');
 
 // Email Lead Notification Configuration
 export const LEAD_NOTIFICATION_EMAIL = process.env.LEAD_NOTIFICATION_EMAIL || 'vickybhelave25@navgurukul.org';
-export const SHOWROOM_OWNER_EMAILS = Array.from(
-  new Set([
-    process.env.SHOWROOM_OWNER_EMAIL || 'vickybhelave25@navgurukul.org',
-    'vickybhelave25@navgurukul.org',
-    'bhelavevicky66@gmail.com',
-  ].filter(Boolean))
-);
+export const OWNER_NOTIFICATION_EMAIL = 'vickybhelave25@navgurukul.org';
+export const SHOWROOM_OWNER_EMAILS = [OWNER_NOTIFICATION_EMAIL];
 export const SMTP_HOST = process.env.SMTP_HOST || 'smtp.gmail.com';
 export const SMTP_PORT = Number(process.env.SMTP_PORT || 587);
 export const SMTP_SECURE = process.env.SMTP_SECURE === 'true';
@@ -50,9 +45,12 @@ export const WHATSAPP_ACCESS_TOKEN = process.env.WHATSAPP_ACCESS_TOKEN || proces
 export const WHATSAPP_PHONE_NUMBER_ID = process.env.WHATSAPP_PHONE_NUMBER_ID || '';
 export const WHATSAPP_BUSINESS_ACCOUNT_ID = process.env.WHATSAPP_BUSINESS_ACCOUNT_ID || '';
 export const WHATSAPP_API_VERSION = process.env.WHATSAPP_API_VERSION || 'v21.0';
-export const APP_BASE_URL = process.env.APP_URL && process.env.APP_URL !== 'MY_APP_URL'
-  ? process.env.APP_URL
-  : 'http://localhost:5000';
+export const APP_BASE_URL =
+  process.env.APP_URL && process.env.APP_URL !== 'MY_APP_URL'
+    ? process.env.APP_URL
+    : process.env.RENDER === 'true' || Boolean(process.env.RENDER_EXTERNAL_URL)
+    ? 'https://www.usedcarnearby.com'
+    : 'http://localhost:5000';
 
 // Google Analytics 4 (GA4) & Data API Configuration
 export const GA4_PROPERTY_ID = (process.env.GA4_PROPERTY_ID || process.env.VITE_GA_PROPERTY_ID || '').replace(/^properties\//, '').trim();
