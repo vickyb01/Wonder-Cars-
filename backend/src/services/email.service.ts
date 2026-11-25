@@ -672,9 +672,51 @@ export function buildCustomerConfirmationHtml(enquiry: Enquiry, car?: Car, baseU
 </html>`;
 }
 
+async function buildCarPdfAttachments(
+  enquiry: Enquiry,
+  car?: Car,
+  brochurePdfBuffer?: Buffer
+): Promise<Array<{ filename: string; content: Buffer; contentType: string }>> {
+  const cleanBrand = (car?.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
+  const cleanModel = (car?.model || 'Booking').replace(/[^a-zA-Z0-9_-]/g, '');
+  let resolvedPdfBuffer = brochurePdfBuffer;
+
+  if (!resolvedPdfBuffer && car) {
+    try {
+      resolvedPdfBuffer = await generateCarBookingPdfBuffer(car, {
+        bookingId: enquiry.id,
+        customerName: enquiry.name,
+        customerPhone: enquiry.phone,
+        customerEmail: enquiry.email !== 'Not Provided' ? enquiry.email : undefined,
+        requestType: enquiry.type,
+        preferredDate: enquiry.preferredDate,
+        preferredTime: enquiry.preferredTime,
+        city: enquiry.city,
+        offerPriceInr: enquiry.offerPriceInr,
+        message: enquiry.message,
+      });
+    } catch (pdfErr) {
+      console.error('[EmailService] Failed to build email PDF attachment:', pdfErr);
+    }
+  }
+
+  if (!resolvedPdfBuffer || resolvedPdfBuffer.length === 0) {
+    return [];
+  }
+
+  return [
+    {
+      filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`,
+      content: resolvedPdfBuffer,
+      contentType: 'application/pdf',
+    },
+  ];
+}
+
 export async function sendCustomerConfirmationEmail(
   enquiry: Enquiry,
-  car?: Car
+  car?: Car,
+  brochurePdfBuffer?: Buffer
 ): Promise<{ success: boolean; message: string; method?: string }> {
   if (!enquiry.email || enquiry.email === 'Not Provided' || !enquiry.email.includes('@')) {
     return { success: false, message: 'No customer email provided' };
@@ -719,6 +761,8 @@ export async function sendCustomerConfirmationEmail(
   ];
   const text = textLines.join('\n');
 
+  const attachments = await buildCarPdfAttachments(enquiry, car, brochurePdfBuffer);
+
   const logPayload: Record<string, any> = {
     id: `email-cust-${Date.now()}`,
     type: 'customer_confirmation',
@@ -727,6 +771,7 @@ export async function sendCustomerConfirmationEmail(
     subject,
     customerName: enquiry.name,
     customerPhone: enquiry.phone,
+    attachedFiles: attachments.map((a) => a.filename),
     timestamp: new Date().toISOString(),
     status: 'pending',
     method: 'unknown',
@@ -739,6 +784,7 @@ export async function sendCustomerConfirmationEmail(
         subject,
         text,
         html,
+        attachments,
       });
 
       logPayload.status = 'sent';
@@ -1015,38 +1061,7 @@ export async function sendShowroomOwnerBookingEmail(
     : enquiry.carTitle || '';
 
   const bookingDateTimeFormatted = formatIstDateTime(enquiry.createdAt);
-
-  const cleanBrand = (car?.brand || 'Car').replace(/[^a-zA-Z0-9_-]/g, '');
-  const cleanModel = (car?.model || 'Booking').replace(/[^a-zA-Z0-9_-]/g, '');
-  const attachments: any[] = [];
-
-  let resolvedPdfBuffer = brochurePdfBuffer;
-  if (!resolvedPdfBuffer && car) {
-    try {
-      resolvedPdfBuffer = await generateCarBookingPdfBuffer(car, {
-        bookingId: enquiry.id,
-        customerName: enquiry.name,
-        customerPhone: enquiry.phone,
-        customerEmail: enquiry.email !== 'Not Provided' ? enquiry.email : undefined,
-        requestType: enquiry.type,
-        preferredDate: enquiry.preferredDate,
-        preferredTime: enquiry.preferredTime,
-        city: enquiry.city,
-        offerPriceInr: enquiry.offerPriceInr,
-        message: enquiry.message,
-      });
-    } catch (pdfErr) {
-      console.error('[EmailService] Failed to build owner email PDF attachment:', pdfErr);
-    }
-  }
-
-  if (resolvedPdfBuffer && resolvedPdfBuffer.length > 0) {
-    attachments.push({
-      filename: `WonderCars-${cleanBrand}-${cleanModel}-Brochure.pdf`,
-      content: resolvedPdfBuffer,
-      contentType: 'application/pdf',
-    });
-  }
+  const attachments = await buildCarPdfAttachments(enquiry, car, brochurePdfBuffer);
 
   const html = buildOwnerNotificationHtml(enquiry, car, APP_BASE_URL, attachments.length > 0);
   const textLines = [

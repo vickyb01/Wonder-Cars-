@@ -160,11 +160,11 @@ export async function createEnquiry(req: Request, res: Response): Promise<void> 
     };
   }
 
-  // 5 & 6. Dispatch completely separate Owner Notification Email & Customer Confirmation Email
+  // 5 & 6. Dispatch completely separate Owner Notification Email & Customer Confirmation Email (both with PDF brochure)
   const [ownerResult, customerResult] = await Promise.allSettled([
     sendShowroomOwnerBookingEmail(newEnquiry, car, brochurePdfBuffer),
     email && email !== 'Not Provided'
-      ? sendCustomerConfirmationEmail(newEnquiry, car)
+      ? sendCustomerConfirmationEmail(newEnquiry, car, brochurePdfBuffer)
       : Promise.resolve({ success: false, message: 'No customer email provided' }),
   ]);
 
