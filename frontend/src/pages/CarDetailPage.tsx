@@ -233,6 +233,7 @@ export function CarDetailPage() {
       <ShowroomGallery
         carTitle={carTitle}
         gallery={car.gallery}
+        images={car.images}
         videoWalkthroughUrl={car.videoWalkthroughUrl}
         fullScreenHero
       />

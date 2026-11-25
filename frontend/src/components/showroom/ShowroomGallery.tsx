@@ -16,6 +16,7 @@ import { VehicleImage } from '../VehicleImage';
 interface ShowroomGalleryProps {
   carTitle: string;
   gallery: CarPhoto[];
+  images?: string[];
   videoWalkthroughUrl?: string;
   fullScreenHero?: boolean;
 }
@@ -31,6 +32,7 @@ const CATEGORIES: ('All' | PhotoCategory)[] = [
 export function ShowroomGallery({
   carTitle,
   gallery,
+  images = [],
   videoWalkthroughUrl,
   fullScreenHero = false,
 }: ShowroomGalleryProps) {
@@ -42,25 +44,45 @@ export function ShowroomGallery({
   const [videoOpen, setVideoOpen] = useState(false);
   const touchStartX = useRef<number | null>(null);
 
+  const mergedGallery = useMemo(() => {
+    const base = Array.isArray(gallery) ? gallery.filter((p) => Boolean(p?.url)) : [];
+    const seenUrls = new Set(base.map((p) => p.url));
+    const extras: CarPhoto[] = [];
+    (images || []).forEach((url, idx) => {
+      if (url && !seenUrls.has(url)) {
+        seenUrls.add(url);
+        extras.push({
+          id: `extra-img-${idx}-${base.length + extras.length}`,
+          url,
+          category: 'Exterior',
+          angleLabel: `Gallery Photo ${base.length + extras.length + 1}`,
+          order: base.length + extras.length,
+        });
+      }
+    });
+    return [...base, ...extras];
+  }, [gallery, images]);
+
   const categoryCounts = useMemo(() => {
-    const counts: Record<string, number> = { All: gallery.length };
+    const counts: Record<string, number> = { All: mergedGallery.length };
     CATEGORIES.slice(1).forEach((cat) => {
-      counts[cat] = gallery.filter((p) => p.category === cat).length;
+      counts[cat] = mergedGallery.filter((p) => p.category === cat).length;
     });
     return counts;
-  }, [gallery]);
+  }, [mergedGallery]);
 
   const filteredPhotos = useMemo(() => {
-    if (selectedCategory === 'All') return gallery;
-    return gallery.filter((p) => p.category === selectedCategory);
-  }, [gallery, selectedCategory]);
+    if (selectedCategory === 'All') return mergedGallery;
+    return mergedGallery.filter((p) => p.category === selectedCategory);
+  }, [mergedGallery, selectedCategory]);
 
   useEffect(() => {
     setActiveIndex(0);
     setZoomed(false);
-  }, [selectedCategory, gallery.length]);
+  }, [selectedCategory, mergedGallery.length]);
 
-  const currentPhoto = filteredPhotos[activeIndex] || filteredPhotos[0];
+  const safeIndex = filteredPhotos.length > 0 ? Math.min(activeIndex, filteredPhotos.length - 1) : 0;
+  const currentPhoto = filteredPhotos[safeIndex] || filteredPhotos[0];
 
   const handlePrev = () => {
     if (filteredPhotos.length <= 1) return;
@@ -80,9 +102,13 @@ export function ShowroomGallery({
         return;
       }
       if (e.key === 'ArrowLeft') {
-        handlePrev();
+        if (filteredPhotos.length <= 1) return;
+        setZoomed(false);
+        setActiveIndex((prev) => (prev - 1 + filteredPhotos.length) % filteredPhotos.length);
       } else if (e.key === 'ArrowRight') {
-        handleNext();
+        if (filteredPhotos.length <= 1) return;
+        setZoomed(false);
+        setActiveIndex((prev) => (prev + 1) % filteredPhotos.length);
       } else if (e.key === 'Escape') {
         setLightboxOpen(false);
         setVideoOpen(false);
@@ -91,7 +117,7 @@ export function ShowroomGallery({
     };
     window.addEventListener('keydown', onKeyDown);
     return () => window.removeEventListener('keydown', onKeyDown);
-  });
+  }, [filteredPhotos.length]);
 
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     if (!zoomed) return;
@@ -119,7 +145,7 @@ export function ShowroomGallery({
               onClick={() => setSelectedCategory('All')}
               className="mt-2 px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-800 dark:bg-blue-600 dark:hover:bg-blue-500 text-xs font-semibold text-white cursor-pointer"
             >
-              View All Uploaded Photos ({gallery.length})
+              View All Uploaded Photos ({mergedGallery.length})
             </button>
           </div>
         </div>
@@ -145,46 +171,43 @@ export function ShowroomGallery({
             touchStartX.current = null;
           }}
         >
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={currentPhoto.id}
-              initial={{ opacity: 0.35 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0.35 }}
-              transition={{ duration: 0.2 }}
-              className="relative w-full h-full overflow-hidden flex items-center justify-center bg-black"
-              onClick={() => setZoomed((z) => !z)}
+          <motion.div
+            key={`${currentPhoto.id || currentPhoto.url}-${safeIndex}`}
+            initial={{ opacity: 0.72 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.16 }}
+            className="relative z-10 w-full h-full overflow-hidden flex items-center justify-center bg-black"
+            onClick={() => setZoomed((z) => !z)}
+          >
+            {/* Ambient blurred backdrop so there are no empty gaps */}
+            <VehicleImage
+              src={currentPhoto.url}
+              alt=""
+              aria-hidden="true"
+              className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+            />
+
+            {/* Main Full Car Image - 100% Uncropped & Centered */}
+            <div
+              className={`relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4 pb-12 sm:pb-16 transition-transform duration-200 ${
+                zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
+              }`}
+              style={{
+                transform: zoomed ? 'scale(1.8)' : 'scale(1)',
+                transformOrigin: `${panOrigin.x}% ${panOrigin.y}%`,
+              }}
             >
-              {/* Ambient blurred backdrop so there are no empty gaps */}
               <VehicleImage
                 src={currentPhoto.url}
-                alt=""
-                aria-hidden="true"
-                className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
+                alt={`${carTitle} - ${currentPhoto.angleLabel}`}
+                loading="eager"
+                className="max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-2xl"
               />
-
-              {/* Main Full Car Image - 100% Uncropped & Centered */}
-              <div
-                className={`relative z-10 w-full h-full flex items-center justify-center p-2 sm:p-4 pb-12 sm:pb-16 transition-transform duration-200 ${
-                  zoomed ? 'cursor-zoom-out' : 'cursor-zoom-in'
-                }`}
-                style={{
-                  transform: zoomed ? 'scale(1.8)' : 'scale(1)',
-                  transformOrigin: `${panOrigin.x}% ${panOrigin.y}%`,
-                }}
-              >
-                <VehicleImage
-                  src={currentPhoto.url}
-                  alt={`${carTitle} - ${currentPhoto.angleLabel}`}
-                  loading="eager"
-                  className="max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-2xl"
-                />
-              </div>
-            </motion.div>
-          </AnimatePresence>
+            </div>
+          </motion.div>
 
           {/* Bottom Scrim & Metadata (high contrast dark overlay over photos in both themes) */}
-          <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/90 via-black/45 to-transparent pointer-events-none">
+          <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/45 to-transparent pointer-events-none">
             <div
               className={`${
                 fullScreenHero ? 'max-w-7xl mx-auto px-4 sm:px-8 py-3 sm:py-6' : 'p-3.5 sm:p-5'
@@ -200,12 +223,15 @@ export function ShowroomGallery({
 
               <div className="flex items-center gap-1.5 sm:gap-2 pointer-events-auto">
                 <span className="px-2 sm:px-2.5 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] font-mono text-[11px] sm:text-xs text-white tabular-nums">
-                  {String(activeIndex + 1).padStart(2, '0')} / {String(filteredPhotos.length).padStart(2, '0')}
+                  {String(safeIndex + 1).padStart(2, '0')} / {String(filteredPhotos.length).padStart(2, '0')}
                 </span>
 
                 <button
                   type="button"
-                  onClick={() => setZoomed((z) => !z)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setZoomed((z) => !z);
+                  }}
                   className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-[11px] sm:text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
                   aria-label={zoomed ? 'Zoom out' : 'Zoom in'}
                 >
@@ -215,7 +241,10 @@ export function ShowroomGallery({
 
                 <button
                   type="button"
-                  onClick={() => setLightboxOpen(true)}
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setLightboxOpen(true);
+                  }}
                   className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1 sm:py-1.5 rounded-lg bg-black/75 backdrop-blur-md border border-white/[0.14] text-[11px] sm:text-xs font-medium text-white hover:border-blue-400 cursor-pointer"
                   aria-label="Open fullscreen gallery"
                 >
@@ -230,16 +259,28 @@ export function ShowroomGallery({
             <>
               <button
                 type="button"
-                onClick={handlePrev}
-                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 backdrop-blur-md border border-white/[0.18] flex items-center justify-center text-white hover:bg-blue-700 transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handlePrev();
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
+                className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/75 backdrop-blur-md border border-white/25 flex items-center justify-center text-white hover:bg-blue-700 active:scale-95 transition-all cursor-pointer shadow-lg"
                 aria-label="Previous photo"
               >
                 <ChevronLeft className="w-5 h-5" />
               </button>
               <button
                 type="button"
-                onClick={handleNext}
-                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 backdrop-blur-md border border-white/[0.18] flex items-center justify-center text-white hover:bg-blue-700 transition-colors cursor-pointer"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNext();
+                }}
+                onMouseDown={(e) => e.stopPropagation()}
+                onTouchStart={(e) => e.stopPropagation()}
+                onTouchEnd={(e) => e.stopPropagation()}
+                className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 z-30 w-11 h-11 rounded-full bg-black/75 backdrop-blur-md border border-white/25 flex items-center justify-center text-white hover:bg-blue-700 active:scale-95 transition-all cursor-pointer shadow-lg"
                 aria-label="Next photo"
               >
                 <ChevronRight className="w-5 h-5" />
@@ -289,14 +330,14 @@ export function ShowroomGallery({
           <div className="flex items-center gap-2.5 overflow-x-auto pb-1">
             {filteredPhotos.map((photo, idx) => (
               <button
-                key={photo.id}
+                key={`${photo.id || photo.url}-${idx}`}
                 type="button"
                 onClick={() => {
                   setActiveIndex(idx);
                   setZoomed(false);
                 }}
                 className={`relative shrink-0 w-24 sm:w-28 aspect-[4/3] rounded-lg overflow-hidden border transition-all cursor-pointer ${
-                  idx === activeIndex
+                  idx === safeIndex
                     ? 'border-blue-700 dark:border-blue-500 ring-1 ring-blue-700 dark:ring-blue-500'
                     : 'border-slate-200 dark:border-white/[0.08] opacity-70 hover:opacity-100'
                 }`}
@@ -335,7 +376,7 @@ export function ShowroomGallery({
               </div>
               <div className="flex items-center gap-3">
                 <span className="font-mono text-xs text-zinc-400 tabular-nums">
-                  {activeIndex + 1} / {filteredPhotos.length}
+                  {safeIndex + 1} / {filteredPhotos.length}
                 </span>
                 <button
                   type="button"
@@ -353,6 +394,7 @@ export function ShowroomGallery({
               onClick={(e) => e.stopPropagation()}
             >
               <VehicleImage
+                key={`lightbox-${currentPhoto.id || currentPhoto.url}-${safeIndex}`}
                 src={currentPhoto.url}
                 alt={currentPhoto.angleLabel}
                 className="max-h-[78vh] w-auto max-w-full object-contain rounded-lg"
@@ -361,16 +403,22 @@ export function ShowroomGallery({
                 <>
                   <button
                     type="button"
-                    onClick={handlePrev}
-                    className="absolute left-2 sm:left-4 w-11 h-11 rounded-full bg-white/10 hover:bg-blue-700 flex items-center justify-center text-white cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handlePrev();
+                    }}
+                    className="absolute left-2 sm:left-4 z-30 w-11 h-11 rounded-full bg-black/70 hover:bg-blue-700 border border-white/25 flex items-center justify-center text-white cursor-pointer"
                     aria-label="Previous fullscreen image"
                   >
                     <ChevronLeft className="w-6 h-6" />
                   </button>
                   <button
                     type="button"
-                    onClick={handleNext}
-                    className="absolute right-2 sm:right-4 w-11 h-11 rounded-full bg-white/10 hover:bg-blue-700 flex items-center justify-center text-white cursor-pointer"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleNext();
+                    }}
+                    className="absolute right-2 sm:right-4 z-30 w-11 h-11 rounded-full bg-black/70 hover:bg-blue-700 border border-white/25 flex items-center justify-center text-white cursor-pointer"
                     aria-label="Next fullscreen image"
                   >
                     <ChevronRight className="w-6 h-6" />
