@@ -383,166 +383,69 @@ export function ShowroomEnquirySidebar({
           </p>
         </div>
 
-        {submittedMode ? (() => {
-          const isWaDelivered =
-            submittedData?.whatsappDelivery?.status === 'sent' &&
-            submittedData?.whatsappDelivery?.success === true;
-          const isWaPending = submittedData?.whatsappDelivery?.status === 'pending_credentials';
-          const cleanCustPhone = submittedData?.phone.replace(/\D/g, '') || '';
-          const custWaPhone =
-            cleanCustPhone.startsWith('91') && cleanCustPhone.length > 10
-              ? cleanCustPhone
-              : `91${cleanCustPhone.slice(-10)}`;
-          const waDirectHref = `https://wa.me/${custWaPhone}?text=${encodeURIComponent(
-            `★ WONDER CARS ★ Booking Confirmation\n\nDear ${submittedData?.name || 'Customer'},\nYour booking request for the ${car.year} ${car.brand} ${car.model} (${car.listingCode}) has been confirmed.\n\n📄 210-Point Inspection Brochure: ${typeof window !== 'undefined' ? window.location.origin : ''}/api/cars/${car.id}/brochure\n\nShowroom: Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.\nConcierge: Naman Jain (+91 83840 68347)`
-          )}`;
-
-          return (
-            <div className="p-5 rounded-xl bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 space-y-4">
-              <div className="flex items-center gap-2.5 text-emerald-700 dark:text-emerald-300 font-bold text-sm">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping shrink-0" />
-                <CheckCircle2 className="w-5 h-5 shrink-0 text-emerald-600 dark:text-emerald-400" />
-                <span>
-                  {isWaDelivered
-                    ? `PDF & Car Details Sent to +91 ${submittedData?.phone}!`
-                    : 'Test Drive Scheduled Confirmed!'}
-                </span>
-              </div>
-
-              <div className="text-xs text-slate-700 dark:text-zinc-300 space-y-1.5 leading-relaxed">
-                <p>
-                  Namaste <strong className="text-slate-900 dark:text-white">{submittedData?.name || 'Customer'}</strong> ji! Aapki <strong className="text-slate-900 dark:text-white">{car.year} {car.brand} {car.model}</strong> ki request confirm ho chuki hai.
-                </p>
-                {isWaDelivered ? (
-                  <p className="text-emerald-700 dark:text-emerald-300 font-medium">
-                    📲 Car ki complete details aur printable 210-Point Inspection PDF Brochure aapke WhatsApp number <strong>+91 {submittedData?.phone}</strong> par automatically dispatch kar di gayi hai.
-                  </p>
-                ) : (
-                  <p className="text-slate-600 dark:text-zinc-300">
-                    Aapki enquiry record kar li gayi hai aur showroom team ko email alert bhej diya gaya hai. Aap direct WhatsApp button se bhi instant brochure access kar sakte hain.
-                  </p>
-                )}
-                {submittedData?.preferredDate && (
-                  <p className="text-blue-700 dark:text-blue-400 font-medium">
-                    📅 Slot: {submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'}) at Wonder Cars Preet Vihar Showroom
-                  </p>
-                )}
-              </div>
-
-              {/* Verified Delivery Status */}
-              <div className="p-3.5 rounded-xl bg-white/90 dark:bg-black/40 border border-slate-200 dark:border-white/[0.08] space-y-2.5 text-xs">
-                {isWaDelivered ? (
-                  <div className="flex items-start gap-2.5 text-emerald-700 dark:text-emerald-400 font-semibold">
-                    <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
-                    <div>
-                      <p className="font-bold text-slate-900 dark:text-white">
-                        WhatsApp Document Attachment Sent
-                      </p>
-                      <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                        The official 210-Point Inspection PDF has been automatically delivered as a document to customer WhatsApp number <strong className="text-slate-900 dark:text-white">+91 {submittedData?.phone}</strong> (ID: {submittedData?.whatsappDelivery?.messageId}).
-                      </p>
-                    </div>
-                  </div>
-                ) : isWaPending ? (
-                  <div className="flex items-start gap-2.5 text-amber-700 dark:text-amber-400 font-semibold">
-                    <Clock className="w-4 h-4 shrink-0 mt-0.5 text-amber-600 dark:text-amber-400" />
-                    <div>
-                      <p className="font-bold text-slate-900 dark:text-white">
-                        WhatsApp Auto-Delivery Pending API Setup
-                      </p>
-                      <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                        Booking details saved. Meta WhatsApp Cloud API credentials (<code className="font-mono bg-black/10 dark:bg-white/10 px-1 rounded">WHATSAPP_ACCESS_TOKEN</code>) are pending in backend <code className="font-mono bg-black/10 dark:bg-white/10 px-1 rounded">.env</code>.
-                      </p>
-                    </div>
-                  </div>
-                ) : (
-                  <div className="flex items-start gap-2.5 text-rose-700 dark:text-rose-400 font-semibold">
-                    <AlertCircle className="w-4 h-4 shrink-0 mt-0.5 text-rose-600 dark:text-rose-400" />
-                    <div>
-                      <p className="font-bold text-slate-900 dark:text-white">
-                        WhatsApp Cloud Delivery Unconfirmed
-                      </p>
-                      <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                        {submittedData?.whatsappDelivery?.error || 'Message was not accepted by Meta WhatsApp API.'}
-                      </p>
-                    </div>
-                  </div>
-                )}
-
-                <div className="flex items-start gap-2.5 text-emerald-700 dark:text-emerald-400 font-semibold">
-                  <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5 text-emerald-600 dark:text-emerald-400" />
-                  <div>
-                    <p className="font-bold text-slate-900 dark:text-white">
-                      Booking Request Recorded
-                    </p>
-                    <p className="text-[11px] font-normal text-slate-600 dark:text-zinc-300 mt-0.5">
-                      {submittedData?.email
-                        ? `A confirmation email has been sent to ${submittedData.email}. Our Wonder Cars team will contact you soon.`
-                        : 'Your booking request has been saved. Our Wonder Cars team will contact you soon.'}
-                    </p>
-                  </div>
-                </div>
-
-                {submittedData?.preferredDate && (
-                  <div className="flex items-start gap-2.5 text-blue-700 dark:text-blue-400 font-medium">
-                    <Calendar className="w-4 h-4 shrink-0 mt-0.5 text-blue-600 dark:text-blue-400" />
-                    <p className="text-[11px]">
-                      Viewing Slot: <strong>{submittedData.preferredDate} ({submittedData.preferredTime || '11:00 AM'})</strong> at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.
-                    </p>
-                  </div>
-                )}
-              </div>
-
-              {/* 1-Click WhatsApp Button (direct fallback for customer or showroom agent) */}
-              <a
-                href={waDirectHref}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="w-full py-2.5 px-3 rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold inline-flex items-center justify-center gap-2 transition-colors cursor-pointer shadow-sm"
-              >
-                <MessageCircle className="w-4 h-4" />
-                <span>💬 Open Details on WhatsApp (+91 {submittedData?.phone})</span>
-              </a>
-
-              <div className="flex items-center justify-between gap-2 pt-1 text-xs">
-                <button
-                  type="button"
-                  onClick={() =>
-                    downloadBookingPdf(car, {
-                      bookingId: submittedData?.bookingId,
-                      name: submittedData?.name,
-                      phone: submittedData?.phone,
-                      email: submittedData?.email,
-                      date: submittedData?.preferredDate,
-                      time: submittedData?.preferredTime,
-                      type: submittedData?.mode,
-                      city: submittedData?.city,
-                    })
-                  }
-                  className="inline-flex items-center gap-1.5 text-amber-600 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Download Booking PDF</span>
-                </button>
-
-                <button
-                  type="button"
-                  onClick={() => {
-                    setSubmittedMode(null);
-                    setSubmittedData(null);
-                  }}
-                  className="font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
-                >
-                  Book another test drive
-                </button>
-              </div>
-
-              <div className="pt-2 border-t border-slate-200 dark:border-white/[0.08] text-[11px] text-slate-500 dark:text-zinc-400">
-                Showroom Concierge: <strong className="text-slate-800 dark:text-zinc-200">+91 83840 68347</strong> (Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.)
-              </div>
+        {submittedMode ? (
+          <div className="p-6 rounded-2xl bg-emerald-50/90 dark:bg-emerald-950/20 border border-emerald-200 dark:border-emerald-500/30 text-center space-y-5">
+            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-500/15 dark:bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center shadow-lg shadow-emerald-500/15">
+              <CheckCircle2 className="w-9 h-9 text-emerald-600 dark:text-emerald-400" strokeWidth={2.2} />
             </div>
-          );
-        })() : (
+
+            <div className="space-y-1.5">
+              <h4 className="font-display text-xl font-bold text-emerald-700 dark:text-emerald-400">
+                Submitted
+              </h4>
+              <p className="text-xs text-slate-700 dark:text-zinc-300 leading-relaxed">
+                {car.year} {car.brand} {car.model}
+                {submittedData?.preferredDate
+                  ? ` · ${submittedData.preferredDate} (${submittedData.preferredTime || '11:00 AM'})`
+                  : ''}
+              </p>
+            </div>
+
+            <a
+              href="https://mail.google.com/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full py-3 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs sm:text-sm font-bold inline-flex items-center justify-center gap-2 transition-colors shadow-md shadow-emerald-600/25"
+            >
+              <Mail className="w-4 h-4 shrink-0" />
+              <span>View in Gmail Message</span>
+              <ExternalLink className="w-3.5 h-3.5 shrink-0 opacity-85" />
+            </a>
+
+            <div className="flex items-center justify-between gap-2 pt-2 border-t border-emerald-200/80 dark:border-white/[0.08] text-xs">
+              <button
+                type="button"
+                onClick={() =>
+                  downloadBookingPdf(car, {
+                    bookingId: submittedData?.bookingId,
+                    name: submittedData?.name,
+                    phone: submittedData?.phone,
+                    email: submittedData?.email,
+                    date: submittedData?.preferredDate,
+                    time: submittedData?.preferredTime,
+                    type: submittedData?.mode,
+                    city: submittedData?.city,
+                  })
+                }
+                className="inline-flex items-center gap-1.5 text-amber-700 dark:text-amber-400 hover:underline font-semibold cursor-pointer"
+              >
+                <Download className="w-3.5 h-3.5" />
+                <span>Download PDF</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => {
+                  setSubmittedMode(null);
+                  setSubmittedData(null);
+                }}
+                className="font-semibold text-blue-700 dark:text-blue-400 hover:underline cursor-pointer"
+              >
+                Book another
+              </button>
+            </div>
+          </div>
+        ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
             {activeFormMode === 'offer' && (
               <div>
