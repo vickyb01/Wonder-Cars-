@@ -189,3 +189,24 @@ export interface AnalyticsDashboardResponse {
   visitors: VisitorAnalytics;
   enquiries: EnquiryAnalytics;
 }
+
+export interface TelemetryEventPayload {
+  eventName: 'view_car' | 'search_car' | 'click_call' | 'click_whatsapp' | 'generate_lead' | 'page_view';
+  carId?: string;
+  carTitle?: string;
+  brand?: string;
+  priceInr?: number;
+  searchTerm?: string;
+  filters?: Record<string, unknown>;
+  phoneNumber?: string;
+  whatsappNumber?: string;
+  pagePath?: string;
+  pageTitle?: string;
+  enquiryType?: string;
+  timestamp?: string;
+  clientId?: string;
+  sessionId?: string;
+  device?: string;
+  referrer?: string;
+  userAgent?: string;
+}

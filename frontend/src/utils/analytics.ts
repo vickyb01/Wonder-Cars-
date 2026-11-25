@@ -44,19 +44,63 @@ export function initGA(): void {
   isGaInitialized = true;
 }
 
+function getClientId(): string {
+  try {
+    let id = localStorage.getItem('wc_client_id');
+    if (!id) {
+      id = 'wc_c_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+      localStorage.setItem('wc_client_id', id);
+    }
+    return id;
+  } catch {
+    return 'wc_c_anon';
+  }
+}
+
+function getSessionId(): string {
+  try {
+    let id = sessionStorage.getItem('wc_session_id');
+    if (!id) {
+      id = 'wc_s_' + Math.random().toString(36).substring(2, 10) + Date.now().toString(36);
+      sessionStorage.setItem('wc_session_id', id);
+    }
+    return id;
+  } catch {
+    return 'wc_s_anon';
+  }
+}
+
+function getDeviceType(): 'Mobile' | 'Desktop' | 'Tablet' {
+  if (typeof window === 'undefined') return 'Desktop';
+  const ua = navigator.userAgent;
+  if (/(tablet|ipad|playbook|silk)|(android(?!.*mobi))/i.test(ua)) {
+    return 'Tablet';
+  }
+  if (/Mobile|iP(hone|od)|Android|BlackBerry|IEMobile|Kindle|Silk-Accelerated|(hpw|web)OS|Opera M(obi|ini)/i.test(ua)) {
+    return 'Mobile';
+  }
+  return 'Desktop';
+}
+
 /**
  * Dispatch lightweight telemetry to backend /api/analytics/track (fail-safe)
  */
 async function sendServerTelemetry(payload: Record<string, unknown>): Promise<void> {
   try {
+    const fullPayload = {
+      ...payload,
+      clientId: getClientId(),
+      sessionId: getSessionId(),
+      device: getDeviceType(),
+      timestamp: new Date().toISOString(),
+      referrer: typeof document !== 'undefined' ? document.referrer : '',
+      userAgent: typeof navigator !== 'undefined' ? navigator.userAgent : '',
+    };
     const targetUrl = API_BASE ? `${API_BASE}/api/analytics/track` : '/api/analytics/track';
     fetch(targetUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        ...payload,
-        timestamp: new Date().toISOString(),
-      }),
+      body: JSON.stringify(fullPayload),
       keepalive: true,
     }).catch(() => {
       // Secondary fallback to Live Render backend if needed
@@ -64,7 +108,7 @@ async function sendServerTelemetry(payload: Record<string, unknown>): Promise<vo
         fetch(`${LIVE_BACKEND_URL}/api/analytics/track`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
+          body: JSON.stringify(fullPayload),
           keepalive: true,
         }).catch(() => {});
       }

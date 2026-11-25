@@ -204,4 +204,9 @@ export interface TelemetryEventPayload {
   pageTitle?: string;
   enquiryType?: string;
   timestamp?: string;
+  clientId?: string;
+  sessionId?: string;
+  device?: string;
+  referrer?: string;
+  userAgent?: string;
 }

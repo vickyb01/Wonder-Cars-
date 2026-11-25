@@ -239,7 +239,7 @@ export function AnalyticsDashboard({ onRefreshParent }: AnalyticsDashboardProps)
             </div>
             <div className="flex items-baseline gap-2">
               <span className="text-3xl font-extrabold tracking-tight">
-                {realtime?.activeUsersLast30Min || 4}
+                {realtime?.activeUsersLast30Min ?? 0}
               </span>
               <span className="text-xs text-slate-300 font-medium">active on showroom</span>
             </div>
@@ -260,21 +260,25 @@ export function AnalyticsDashboard({ onRefreshParent }: AnalyticsDashboardProps)
               <span className="text-[11px] font-semibold text-blue-600">Now</span>
             </div>
             <div className="mt-2 space-y-1.5">
-              {(realtime?.topActivePages || []).slice(0, 2).map((page, i) => (
-                <div key={i} className="flex items-center justify-between text-xs">
-                  <span className="text-slate-800 font-medium truncate max-w-[190px]" title={page.title}>
-                    {page.path}
-                  </span>
-                  <span className="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full text-[10px]">
-                    {page.activeUsers} live
-                  </span>
-                </div>
-              ))}
+              {(realtime?.topActivePages || []).length > 0 ? (
+                (realtime?.topActivePages || []).slice(0, 2).map((page, i) => (
+                  <div key={i} className="flex items-center justify-between text-xs">
+                    <span className="text-slate-800 font-medium truncate max-w-[190px]" title={page.title}>
+                      {page.path}
+                    </span>
+                    <span className="font-bold text-slate-900 bg-slate-100 px-2 py-0.5 rounded-full text-[10px]">
+                      {page.activeUsers} live
+                    </span>
+                  </div>
+                ))
+              ) : (
+                <p className="text-xs text-slate-400 py-1">No visitors active right now</p>
+              )}
             </div>
           </div>
           <div className="text-[11px] text-slate-400 pt-1 mt-1 border-t border-slate-100 flex items-center justify-between">
-            <span>Mobile: {realtime?.activeDevices.mobile || 68}%</span>
-            <span>Desktop: {realtime?.activeDevices.desktop || 28}%</span>
+            <span>Mobile: {realtime?.activeDevices.mobile ?? 0}%</span>
+            <span>Desktop: {realtime?.activeDevices.desktop ?? 0}%</span>
           </div>
         </div>
 
@@ -683,20 +687,28 @@ export function AnalyticsDashboard({ onRefreshParent }: AnalyticsDashboardProps)
                   <h3 className="font-bold text-base text-[#0B1528] mb-1">Customer Search Telemetry</h3>
                   <p className="text-xs text-slate-500 mb-4">Most searched car models, brands and budget filters.</p>
                   <div className="space-y-3">
-                    {cars.searches.map((s, idx) => (
-                      <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
-                        <div className="flex items-center gap-2">
-                          <Search className="w-3.5 h-3.5 text-blue-600" />
-                          <span className="font-bold text-slate-800">{s.term}</span>
+                    {cars.searches && cars.searches.length > 0 ? (
+                      cars.searches.map((s, idx) => (
+                        <div key={idx} className="flex items-center justify-between p-3 rounded-xl bg-slate-50 border border-slate-100 text-xs">
+                          <div className="flex items-center gap-2">
+                            <Search className="w-3.5 h-3.5 text-blue-600" />
+                            <span className="font-bold text-slate-800">{s.term}</span>
+                          </div>
+                          <div className="flex items-center gap-2 font-mono">
+                            {s.filters && <span className="text-[11px] text-slate-500">{s.filters}</span>}
+                            <span className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-bold text-slate-900">
+                              {s.count} searches
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center gap-2 font-mono">
-                          <span className="text-[11px] text-slate-500">{s.filters}</span>
-                          <span className="bg-white px-2 py-0.5 rounded-md border border-slate-200 font-bold text-slate-900">
-                            {s.count} searches
-                          </span>
-                        </div>
+                      ))
+                    ) : (
+                      <div className="p-6 text-center rounded-xl bg-slate-50 border border-slate-100">
+                        <Search className="w-5 h-5 text-slate-400 mx-auto mb-1.5" />
+                        <p className="text-xs font-semibold text-slate-700">No search telemetry recorded yet</p>
+                        <p className="text-[11px] text-slate-400 mt-0.5">Visitor search queries and filter selections will appear here automatically.</p>
                       </div>
-                    ))}
+                    )}
                   </div>
                 </div>
 
