@@ -29,9 +29,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'cars.html',
     canonicalPath: '/cars',
-    title: 'Browse Certified Pre-Owned Inventory | Used Car Nearby',
+    title: 'Browse Pre-Owned Cars Inventory | Used Car Nearby',
     description:
-      'Explore verified luxury and performance pre-owned cars with transparent INR pricing at Used Car Nearby by Wonder Cars, Preet Vihar, Delhi.',
+      'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare specifications, view transparent INR pricing, and book a viewing.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -78,7 +78,7 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
     canonicalPath: null,
     title: 'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars',
     description:
-      'Explore pre-owned luxury and performance cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Transparent INR pricing and viewing bookings.',
+      'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare cars, view transparent INR pricing, and book a showroom viewing.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,

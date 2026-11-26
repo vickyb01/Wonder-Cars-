@@ -7,6 +7,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { CarCard } from '../components/CarCard';
 import { EmiFilterPanel } from '../components/EmiFilterPanel';
 import { SeoHead } from '../components/SeoHead';
+import { CARS_SEO_DESCRIPTION, CARS_SEO_TITLE } from '../utils/seo';
 import {
   BRAND_CATALOG,
   matchesBrandFilter,
@@ -468,9 +469,9 @@ export function InventoryPage() {
         title={
           selectedBrandDisplay !== 'All'
             ? `${selectedBrandDisplay} Cars`
-            : 'Browse Certified Pre-Owned Inventory'
+            : CARS_SEO_TITLE
         }
-        description="Explore verified luxury and performance pre-owned cars with transparent INR pricing at Wonder Cars, Preet Vihar, Delhi."
+        description={CARS_SEO_DESCRIPTION}
         canonicalPath="/cars"
       />
 

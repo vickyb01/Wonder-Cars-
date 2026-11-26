@@ -36,7 +36,10 @@ export const SITE_BRAND_NAME = 'Used Car Nearby';
 export const DEALERSHIP_NAME = 'Wonder Cars';
 export const HOMEPAGE_SEO_TITLE = 'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars';
 export const HOMEPAGE_SEO_DESCRIPTION =
-  'Explore pre-owned luxury and performance cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Transparent INR pricing and viewing bookings.';
+  'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare cars, view transparent INR pricing, and book a showroom viewing.';
+export const CARS_SEO_TITLE = 'Browse Pre-Owned Cars Inventory';
+export const CARS_SEO_DESCRIPTION =
+  'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare specifications, view transparent INR pricing, and book a viewing.';
 
 /** Ensures page titles carry the Used Car Nearby website brand consistently without duplicating it. */
 export function formatSeoTitle(title: string): string {
