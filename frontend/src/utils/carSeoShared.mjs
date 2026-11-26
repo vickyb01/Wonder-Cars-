@@ -513,6 +513,25 @@ export function buildNotFoundSeoData(siteBase = CANONICAL_ORIGIN) {
 }
 
 /**
+ * Builds SEO metadata for unknown / 404 routes (noindex, no canonical, no Car JSON-LD).
+ * @param {string} [siteBase]
+ */
+export function buildPageNotFoundSeoData(siteBase = CANONICAL_ORIGIN) {
+  const base = normalizeSiteUrl(siteBase);
+  return {
+    title: `Page Not Found | ${SITE_BRAND_NAME}`,
+    description:
+      'The page you requested could not be found on Used Car Nearby. Browse certified pre-owned cars or return to the homepage.',
+    canonicalPath: null,
+    canonicalUrl: null,
+    robots: 'noindex, nofollow',
+    ogType: 'website',
+    ogImage: `${base}/assets/wonder-cars.jpg`,
+    jsonLd: null,
+  };
+}
+
+/**
  * Serializes JSON-LD safely for inline HTML <script> tags.
  * @param {unknown} data
  * @returns {string}

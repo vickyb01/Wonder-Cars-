@@ -18,6 +18,7 @@ import { ContactPage } from './pages/ContactPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
 import { AdminPage } from './pages/AdminPage';
+import { NotFoundPage } from './pages/NotFoundPage';
 import { initGA, trackPageView } from './utils/analytics';
 import { wakeBackend } from './utils/api';
 
@@ -92,7 +93,7 @@ function AppLayout({ mapsQuotaExceeded }: { mapsQuotaExceeded: boolean }) {
           <Route path="/privacy" element={<PrivacyPage />} />
           <Route path="/terms" element={<TermsPage />} />
           <Route path="/admin" element={<AdminPage />} />
-          <Route path="*" element={<HomePage />} />
+          <Route path="*" element={<NotFoundPage />} />
         </Routes>
       </main>
       {!isAdminRoute && <Footer />}

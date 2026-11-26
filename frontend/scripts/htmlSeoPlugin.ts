@@ -79,10 +79,10 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'spa-fallback.html',
     canonicalPath: null,
-    title: 'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars',
+    title: 'Page Not Found | Used Car Nearby',
     description:
-      'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare cars, view transparent INR pricing, and book a showroom viewing.',
-    robots: 'index, follow',
+      'The page you requested could not be found on Used Car Nearby. Browse certified pre-owned cars or return to the homepage.',
+    robots: 'noindex, nofollow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
   },

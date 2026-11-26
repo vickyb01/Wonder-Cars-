@@ -7,6 +7,10 @@
       "includeFiles": "dist/spa-fallback.html",
       "maxDuration": 10
     },
+    "api/not-found.mjs": {
+      "includeFiles": "dist/spa-fallback.html",
+      "maxDuration": 10
+    },
     "api/sitemap.mjs": {
       "maxDuration": 10
     }
@@ -40,13 +44,30 @@
       ]
     }
   ],
+  "redirects": [
+    {
+      "source": "/compare",
+      "destination": "/cars",
+      "permanent": true
+    },
+    {
+      "source": "/sell",
+      "destination": "/cars",
+      "permanent": true
+    },
+    {
+      "source": "/gallery",
+      "destination": "/about#gallery",
+      "permanent": true
+    }
+  ],
   "rewrites": [
     {
       "source": "/uploads/:path*",
       "destination": "https://wonder-cars-1.onrender.com/uploads/:path*"
     },
     {
-      "source": "/api/((?!mail-relay|car-page|sitemap).*)",
+      "source": "/api/((?!mail-relay|car-page|sitemap|not-found).*)",
       "destination": "https://wonder-cars-1.onrender.com/api/$1"
     },
     {
@@ -86,8 +107,8 @@
       "destination": "/admin.html"
     },
     {
-      "source": "/((?!api/|sitemap\\.xml$|robots\\.txt$).+)",
-      "destination": "/spa-fallback.html"
+      "source": "/((?!api/|uploads/|sitemap\\.xml$|robots\\.txt$).+)",
+      "destination": "/api/not-found"
     }
   ]
 }
