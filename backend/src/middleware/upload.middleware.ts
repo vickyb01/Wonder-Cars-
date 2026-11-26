@@ -10,12 +10,14 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 const ALLOWED_MIME_TYPES = new Set([
   'image/jpeg',
   'image/jpg',
+  'image/pjpeg',
+  'image/jfif',
   'image/png',
   'image/webp',
   'image/avif',
 ]);
 
-const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.png', '.webp', '.avif']);
+const ALLOWED_EXTENSIONS = new Set(['.jpg', '.jpeg', '.jfif', '.png', '.webp', '.avif']);
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -36,7 +38,7 @@ const storage = multer.diskStorage({
 
 export const upload = multer({
   storage,
-  limits: { fileSize: 10 * 1024 * 1024, files: 70 },
+  limits: { fileSize: 15 * 1024 * 1024, files: 70 },
   fileFilter: (_req, file, cb) => {
     const ext = path.extname(file.originalname).toLowerCase();
     const mimeOk = ALLOWED_MIME_TYPES.has(file.mimetype.toLowerCase());

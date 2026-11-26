@@ -195,6 +195,78 @@ export function toggleWishlistId(carId: string): { ids: string[]; saved: boolean
 }
 
 export const LIVE_BACKEND_URL = 'https://wonder-cars-1.onrender.com';
+export const BACKEND_READY_EVENT = 'wonder-backend-ready';
+
+let backendAwakeState = false;
+let wakePromise: Promise<boolean> | null = null;
+
+export function isBackendAwake(): boolean {
+  return backendAwakeState;
+}
+
+function markBackendAwake(): void {
+  const wasAwake = backendAwakeState;
+  backendAwakeState = true;
+  if (!wasAwake && typeof window !== 'undefined') {
+    window.dispatchEvent(new CustomEvent(BACKEND_READY_EVENT));
+  }
+}
+
+export function wakeBackend(): Promise<boolean> {
+  if (backendAwakeState) return Promise.resolve(true);
+  if (wakePromise) return wakePromise;
+
+  wakePromise = (async () => {
+    const bases = Array.from(
+      new Set([API_BASE || '', LIVE_BACKEND_URL].map((b) => b.replace(/\/$/, '')))
+    );
+    const delays = [0, 2500, 4000, 6000, 8000, 10000, 12000, 15000, 15000, 15000];
+    for (const delay of delays) {
+      if (delay > 0) {
+        await new Promise((r) => setTimeout(r, delay));
+      }
+      if (backendAwakeState) return true;
+      for (const base of bases) {
+        try {
+          const url = base ? `${base}/healthz` : '/healthz';
+          const res = await fetch(url, { cache: 'no-store' });
+          if (res.ok) {
+            markBackendAwake();
+            return true;
+          }
+        } catch {
+          // Render still cold-starting or offline; keep polling
+        }
+      }
+    }
+    return false;
+  })().finally(() => {
+    wakePromise = null;
+  });
+
+  return wakePromise;
+}
+
+export function getUploadUrlCandidates(url?: string): string[] {
+  const normalized = normalizeMediaUrl(url);
+  if (!normalized) return [];
+  if (normalized.includes('/uploads/')) {
+    const match = normalized.match(/\/uploads\/[^?#]+/);
+    if (match) {
+      const relativePath = match[0];
+      const directRenderUrl = `${LIVE_BACKEND_URL.replace(/\/$/, '')}${relativePath}`;
+      // Prefer direct Render backend for uploaded media when running outside localhost to avoid Vercel proxy cold-start timeouts
+      if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
+        return Array.from(new Set([normalized, directRenderUrl, relativePath]));
+      }
+      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
+        return Array.from(new Set([relativePath, directRenderUrl]));
+      }
+      return Array.from(new Set([relativePath, directRenderUrl]));
+    }
+  }
+  return [normalized];
+}
 
 export const API_BASE = (
   (import.meta.env.VITE_API_URL as string) ||
@@ -228,34 +300,48 @@ export function normalizeCarImages(car: Car): Car {
 
 async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<Response> {
   const isApiRequest = typeof input === 'string' && input.startsWith('/api');
+  const isGetMethod = !init?.method || init.method.toUpperCase() === 'GET';
   const targetUrl = isApiRequest ? `${API_BASE}${input}` : input;
 
   const performFetch = async (url: RequestInfo | URL): Promise<Response> => {
     try {
       const res = await fetch(url, init);
+      if (res.ok) {
+        markBackendAwake();
+      }
       // If local dev server proxy returned 502 Bad Gateway (local backend offline), seamlessly fallback to Live Render backend
       if (!res.ok && res.status === 502 && !API_BASE && isApiRequest) {
-        return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+        const directRes = await fetch(`${LIVE_BACKEND_URL}${input}`, init);
+        if (directRes.ok) markBackendAwake();
+        return directRes;
       }
       return res;
     } catch (err) {
       if (!API_BASE && isApiRequest) {
-        return fetch(`${LIVE_BACKEND_URL}${input}`, init);
+        const directRes = await fetch(`${LIVE_BACKEND_URL}${input}`, init);
+        if (directRes.ok) markBackendAwake();
+        return directRes;
       }
       throw err;
     }
   };
 
   try {
-    const res = await performFetch(targetUrl);
-    // Cold start retry: if Render returns 502/503/504 while waking up, wait 2s and retry once
+    let res = await performFetch(targetUrl);
+    // Cold start retries: if Render returns 502/503/504 while waking up, trigger warmup & retry cleanly
     if (!res.ok && [502, 503, 504].includes(res.status) && isApiRequest) {
-      await new Promise((r) => setTimeout(r, 2000));
-      return await performFetch(targetUrl);
+      void wakeBackend();
+      const retryDelays = isGetMethod ? [2500, 5000] : [2500];
+      for (const delay of retryDelays) {
+        await new Promise((r) => setTimeout(r, delay));
+        res = await performFetch(targetUrl);
+        if (res.ok || ![502, 503, 504].includes(res.status)) break;
+      }
     }
     return res;
   } catch (err) {
     if (isApiRequest && typeof input === 'string') {
+      void wakeBackend();
       const fallbackUrl = `${LIVE_BACKEND_URL}${input}`;
       if (targetUrl !== fallbackUrl) {
         try {
@@ -391,6 +477,10 @@ export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
     if (!hasFilterQuery) {
       try {
         localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(authoritative));
+        // Prune any deleted/broken cars from legacy local custom cache so deleted vehicles never return
+        const serverIds = new Set(authoritative.map((c) => c.id));
+        const customCars = getLocalCustomCars().filter((c) => serverIds.has(c.id));
+        localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(customCars));
       } catch {}
     } else {
       updateGlobalCatalogCache(authoritative);
@@ -681,11 +771,13 @@ export async function deleteCar(id: string): Promise<void> {
 const ALLOWED_IMAGE_MIME_TYPES = new Set([
   'image/jpeg',
   'image/jpg',
+  'image/pjpeg',
+  'image/jfif',
   'image/png',
   'image/webp',
   'image/avif',
 ]);
-const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
+const MAX_IMAGE_SIZE_BYTES = 15 * 1024 * 1024;
 
 export async function uploadCarImages(files: File[]): Promise<string[]> {
   if (!files || files.length === 0) {
@@ -696,7 +788,7 @@ export async function uploadCarImages(files: File[]): Promise<string[]> {
   }
 
   for (const file of files) {
-    const extValid = /\.(jpe?g|png|webp|avif)$/i.test(file.name);
+    const extValid = /\.(jpe?g|jfif|png|webp|avif)$/i.test(file.name);
     const mimeValid = file.type ? ALLOWED_IMAGE_MIME_TYPES.has(file.type.toLowerCase()) : extValid;
     if (!mimeValid && !extValid) {
       throw new Error(`Unsupported file "${file.name}". Please upload JPG, PNG, WebP, or AVIF images.`);
@@ -705,7 +797,7 @@ export async function uploadCarImages(files: File[]): Promise<string[]> {
       throw new Error(`Image "${file.name}" appears to be empty.`);
     }
     if (file.size > MAX_IMAGE_SIZE_BYTES) {
-      throw new Error(`Image "${file.name}" exceeds the 10 MB size limit.`);
+      throw new Error(`Image "${file.name}" exceeds the 15 MB size limit.`);
     }
   }
 

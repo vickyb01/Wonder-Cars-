@@ -46,9 +46,10 @@ if (!fs.existsSync(UPLOADS_DIR)) {
 // Serve uploaded files statically
 app.use('/uploads', (_req, res, next) => {
   res.setHeader('Cross-Origin-Resource-Policy', 'cross-origin');
+  res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
   next();
 });
-app.use('/uploads', express.static(UPLOADS_DIR));
+app.use('/uploads', express.static(UPLOADS_DIR, { maxAge: '365d', immutable: true }));
 
 // Also check frontend public uploads directory as fallback if present
 const frontendUploads = [
@@ -58,12 +59,18 @@ const frontendUploads = [
 ].find((dir) => fs.existsSync(dir));
 
 if (frontendUploads) {
-  app.use('/uploads', express.static(frontendUploads));
+  app.use('/uploads', express.static(frontendUploads, { maxAge: '365d', immutable: true }));
 }
 
 // Serve uploaded images stored in MongoDB if not found on ephemeral disk
 app.get('/uploads/:filename', async (req, res, next) => {
-  const safeFilename = path.basename(String(req.params.filename || ''));
+  let rawFilename = String(req.params.filename || '');
+  try {
+    rawFilename = decodeURIComponent(rawFilename);
+  } catch {
+    // Keep original if malformed URI encoding
+  }
+  const safeFilename = path.basename(rawFilename);
   if (!safeFilename) {
     next();
     return;

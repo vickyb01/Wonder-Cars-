@@ -2604,13 +2604,10 @@ export function AdminPage() {
                     >
                       {/* Image Preview */}
                       <div className="w-20 h-14 rounded-lg bg-slate-900 border border-slate-200 overflow-hidden shrink-0 relative group">
-                        <img
+                        <VehicleImage
                           src={slide.src}
                           alt={slide.alt || `Slide ${idx + 1}`}
                           className="w-full h-full object-cover"
-                          onError={(e) => {
-                            (e.target as HTMLElement).style.display = 'none';
-                          }}
                         />
                         <span className="absolute bottom-1 left-1 bg-black/70 text-white text-[9px] font-bold px-1 rounded">
                           #{idx + 1}
@@ -3355,7 +3352,7 @@ export function AdminPage() {
                   <div className="flex flex-col sm:flex-row items-center gap-4">
                     {aboutSettings?.heroBgImage && (
                       <div className="w-28 h-16 rounded-lg overflow-hidden border border-slate-300 shrink-0 bg-black">
-                        <img src={aboutSettings.heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
+                        <VehicleImage src={aboutSettings.heroBgImage} alt="Hero BG" className="w-full h-full object-cover" />
                       </div>
                     )}
                     <div className="flex-1 w-full space-y-2">
@@ -3408,7 +3405,7 @@ export function AdminPage() {
                     <div className="sm:col-span-3">
                       {aboutSettings?.heroCarImage ? (
                         <div className="w-full aspect-[4/3] rounded-lg overflow-hidden border border-slate-300 bg-black">
-                          <img src={aboutSettings.heroCarImage} alt="Hero Car" className="w-full h-full object-cover" />
+                          <VehicleImage src={aboutSettings.heroCarImage} alt="Hero Car" className="w-full h-full object-cover" />
                         </div>
                       ) : (
                         <div className="w-full aspect-[4/3] rounded-lg border border-dashed border-slate-300 bg-white flex items-center justify-center text-slate-400 text-xs">
@@ -3567,7 +3564,7 @@ export function AdminPage() {
                 <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-start">
                   <div className="sm:col-span-4 flex flex-col items-center p-4 rounded-xl bg-slate-50 border border-slate-200/80 text-center space-y-3">
                     <div className="w-28 h-28 rounded-full overflow-hidden border-2 border-amber-500/40 p-1 bg-white shadow-inner">
-                      <img
+                      <VehicleImage
                         src={aboutSettings?.ownerImage || '/assets/naman-jain-portrait.png'}
                         alt="Owner"
                         className="w-full h-full object-contain rounded-full"
@@ -3818,7 +3815,7 @@ export function AdminPage() {
                         className="rounded-xl border border-slate-200 bg-slate-50 overflow-hidden shadow-2xs flex flex-col justify-between"
                       >
                         <div className="relative aspect-[4/3] bg-black">
-                          <img src={item.image} alt={item.title} className="w-full h-full object-cover" />
+                          <VehicleImage src={item.image} alt={item.title} className="w-full h-full object-cover" />
                           <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-black/75 text-amber-300 backdrop-blur-sm">
                             {item.category}
                           </span>
@@ -4011,7 +4008,7 @@ export function AdminPage() {
                       >
                         <div className="space-y-2">
                           <div className="relative aspect-[4/3] rounded-lg overflow-hidden border border-slate-300 bg-black flex items-center justify-center p-2">
-                            <img src={cert.image} alt={cert.title} className="max-h-full max-w-full object-contain" />
+                            <VehicleImage src={cert.image} alt={cert.title} className="max-h-full max-w-full object-contain" />
                             <span className="absolute top-2 left-2 px-2 py-0.5 rounded text-[10px] font-bold bg-amber-500 text-white">
                               {cert.badge}
                             </span>
@@ -4955,7 +4952,7 @@ export function AdminPage() {
                     {mediaFiles.map((m) => (
                       <div key={m.filename} className="group relative rounded-xl border border-slate-200 overflow-hidden bg-slate-100 flex flex-col justify-between">
                         <div className="aspect-4/3 w-full overflow-hidden">
-                          <img src={m.url} alt={m.filename} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
+                          <VehicleImage src={m.url} alt={m.filename} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300" />
                         </div>
                         <div className="p-2 bg-white flex items-center justify-between text-[11px] text-slate-500">
                           <span className="truncate max-w-[80px]">{m.filename}</span>

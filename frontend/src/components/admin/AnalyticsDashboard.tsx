@@ -33,6 +33,7 @@ import {
   Users,
   Zap,
 } from 'lucide-react';
+import { VehicleImage } from '../VehicleImage';
 import type {
   AnalyticsDashboardResponse,
   AnalyticsDateRangeKey,
@@ -635,7 +636,7 @@ export function AnalyticsDashboard({ onRefreshParent }: AnalyticsDashboardProps)
                             <span className="text-slate-400 font-bold text-xs w-4">#{i + 1}</span>
                             <div className="w-12 h-8 rounded-lg bg-slate-200 overflow-hidden shrink-0 border border-slate-200">
                               {carItem.thumbnail ? (
-                                <img
+                                <VehicleImage
                                   src={carItem.thumbnail}
                                   alt={carItem.title}
                                   className="w-full h-full object-cover"
