@@ -6,6 +6,7 @@ import type { Car as CarType, HomepageSettings } from '../types/car';
 import { fetchCars, fetchHomepageSettings, subscribeToInventoryUpdates } from '../utils/api';
 import { CarCard } from '../components/CarCard';
 import { SeoHead } from '../components/SeoHead';
+import { HOMEPAGE_SEO_DESCRIPTION, HOMEPAGE_SEO_TITLE } from '../utils/seo';
 import { VehicleImage } from '../components/VehicleImage';
 import { BrandSelectionSection } from '../components/BrandSelectionSection';
 import { ContactSection } from '../components/ContactSection';
@@ -307,8 +308,8 @@ export function HomePage() {
   return (
     <div className="bg-white dark:bg-[#09090B] text-slate-900 dark:text-[#FAFAFA] transition-colors duration-200">
       <SeoHead
-        title="Find Your Perfect Drive"
-        description="Discover quality pre-owned luxury and performance cars at the right price. Certified 210-point inspected inventory across India."
+        title={HOMEPAGE_SEO_TITLE}
+        description={HOMEPAGE_SEO_DESCRIPTION}
         canonicalPath="/"
       />
 
@@ -384,7 +385,9 @@ export function HomePage() {
               transition={{ duration: 0.55, ease: [0.16, 1, 0.3, 1] }}
               className="font-display text-4xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-[1.08] bg-gradient-to-r from-[#FFF176] via-[#FFB300] to-[#FF7043] bg-clip-text text-transparent"
             >
-              {homepageSettings?.heroHeading || 'Used Cars Nearby'}
+              {!homepageSettings?.heroHeading || homepageSettings.heroHeading === 'Used Cars Nearby'
+                ? 'Used Car Nearby'
+                : homepageSettings.heroHeading}
             </motion.h1>
 
             <motion.div
@@ -402,6 +405,8 @@ export function HomePage() {
               </p>
 
               <p className="text-sm sm:text-base text-slate-200 dark:text-zinc-300 leading-relaxed">
+                Welcome to <strong className="font-semibold text-white">Used Car Nearby</strong> (UsedCarNearby.com), the online showroom of{' '}
+                <strong className="font-semibold text-white">Wonder Cars</strong> in Preet Vihar, Delhi.{' '}
                 {homepageSettings?.heroTagline ||
                   'Looking for a reliable car in top-notch condition? Every vehicle is 100% certified, professionally detailed, and backed by a 6-month warranty for complete peace of mind.'}
               </p>

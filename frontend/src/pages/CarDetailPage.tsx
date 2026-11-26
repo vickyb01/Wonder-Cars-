@@ -122,7 +122,7 @@ export function CarDetailPage() {
   async function handleShare() {
     if (!car) return;
     const shareUrl = window.location.href;
-    const title = `${car.year} ${car.brand} ${car.model} — Strada Motors`;
+    const title = `${car.year} ${car.brand} ${car.model} — Wonder Cars | Used Car Nearby`;
     try {
       if (navigator.share) {
         await navigator.share({ title, url: shareUrl });
@@ -377,7 +377,7 @@ export function CarDetailPage() {
                       </div>
                       <div>
                         <p className="text-sm font-semibold text-emerald-900 dark:text-emerald-200">
-                          {car.warrantyPeriod} Strada Guarantee &amp; Warranty Included
+                          {car.warrantyPeriod} Wonder Cars Guarantee &amp; Warranty Included
                         </p>
                         {isMeaningful(car.warrantyDetails) && (
                           <p className="text-xs text-emerald-800/85 dark:text-emerald-300/80 mt-0.5 leading-relaxed">

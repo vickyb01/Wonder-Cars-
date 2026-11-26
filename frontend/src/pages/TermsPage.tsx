@@ -32,7 +32,7 @@ export function TermsPage() {
             2. Reservations &amp; Test Drives
           </h2>
           <p>
-            Vehicles remain open to purchase until a formal booking deposit is acknowledged in writing by Strada Motors. Test drives require a valid Indian driving licence and prior appointment confirmation.
+            Vehicles remain open to purchase until a formal booking deposit is acknowledged in writing by Wonder Cars. Test drives require a valid Indian driving licence and prior appointment confirmation.
           </p>
         </section>
 

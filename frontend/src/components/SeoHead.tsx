@@ -3,7 +3,9 @@ import { useLocation } from 'react-router-dom';
 import {
   buildCanonicalUrl,
   formatSeoTitle,
+  HOMEPAGE_SEO_DESCRIPTION,
   resolveSeoImageUrl,
+  SITE_BRAND_NAME,
 } from '../utils/seo';
 
 interface SeoHeadProps {
@@ -64,9 +66,7 @@ export function SeoHead({
     const formattedTitle = formatSeoTitle(title);
     document.title = formattedTitle;
 
-    const effectiveDescription =
-      description?.trim() ||
-      'Discover quality pre-owned luxury and performance cars at the right price. Certified 210-point inspected vehicles at Wonder Cars, Preet Vihar, Delhi.';
+    const effectiveDescription = description?.trim() || HOMEPAGE_SEO_DESCRIPTION;
     const canonicalUrl = noCanonical ? null : buildCanonicalUrl(canonicalPath || pathname);
     const resolvedImage = resolveSeoImageUrl(ogImage);
 
@@ -74,7 +74,7 @@ export function SeoHead({
     upsertMetaTag('name', 'robots', robots);
     syncCanonicalTag(canonicalUrl);
 
-    upsertMetaTag('property', 'og:site_name', 'Wonder Cars');
+    upsertMetaTag('property', 'og:site_name', SITE_BRAND_NAME);
     upsertMetaTag('property', 'og:title', formattedTitle);
     upsertMetaTag('property', 'og:description', effectiveDescription);
     upsertMetaTag('property', 'og:type', ogType);

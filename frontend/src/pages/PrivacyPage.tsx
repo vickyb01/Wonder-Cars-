@@ -21,7 +21,7 @@ export function PrivacyPage() {
             1. Information We Collect
           </h2>
           <p>
-            When you schedule a test drive, request a vehicle valuation, or contact our gallery concierge, Strada Motors collects your name, telephone number, email address, preferred city, and vehicle details necessary to fulfill your request.
+            When you schedule a test drive, request a vehicle valuation, or contact our gallery concierge, Wonder Cars collects your name, telephone number, email address, preferred city, and vehicle details necessary to fulfill your request.
           </p>
         </section>
 

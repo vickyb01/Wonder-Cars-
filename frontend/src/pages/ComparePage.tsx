@@ -476,7 +476,7 @@ export function ComparePage() {
     setEnquirySent(false);
     setEnquiryError('');
     setEnquiryMessage(
-      `Hello ${car.sellerName}, I compared ${car.year} ${car.brand} ${car.model} (${car.listingCode}) on Strada Motors and would like to know availability and arrange an inspection.`
+      `Hello ${car.sellerName}, I compared ${car.year} ${car.brand} ${car.model} (${car.listingCode}) on Used Car Nearby (Wonder Cars) and would like to know availability and arrange an inspection.`
     );
   }
 

@@ -37,19 +37,19 @@ export function Navbar() {
           <Link
             to="/"
             className="flex items-center shrink-0 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500 rounded-lg py-1 select-none"
-            aria-label="Wonder Cars Home"
+            aria-label="Used Car Nearby (UsedCarNearby.com) by Wonder Cars Home"
           >
             {/* Light Theme Logo */}
             <img
               src="/assets/wonder-cars-logo.png"
-              alt="Wonder Cars"
+              alt="Used Car Nearby — Wonder Cars showroom"
               className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
               loading="eager"
             />
             {/* Dark Theme Logo */}
             <img
               src="/assets/wonder-cars-logo-dark.png"
-              alt="Wonder Cars"
+              alt="Used Car Nearby — Wonder Cars showroom"
               className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
               loading="eager"
             />

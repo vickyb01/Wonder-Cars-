@@ -32,14 +32,20 @@ export function buildCanonicalUrl(pathOrUrl?: string): string {
   return cleanPath === '/' ? `${CANONICAL_ORIGIN}/` : `${CANONICAL_ORIGIN}${cleanPath}`;
 }
 
-/** Ensures page titles carry a single Wonder Cars brand suffix. */
+export const SITE_BRAND_NAME = 'Used Car Nearby';
+export const DEALERSHIP_NAME = 'Wonder Cars';
+export const HOMEPAGE_SEO_TITLE = 'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars';
+export const HOMEPAGE_SEO_DESCRIPTION =
+  'Explore pre-owned luxury and performance cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Transparent INR pricing and viewing bookings.';
+
+/** Ensures page titles carry the Used Car Nearby website brand consistently without duplicating it. */
 export function formatSeoTitle(title: string): string {
   const trimmed = title.trim();
-  if (!trimmed) return 'Wonder Cars';
-  if (/\bwonder cars\b/i.test(trimmed)) {
+  if (!trimmed) return HOMEPAGE_SEO_TITLE;
+  if (/used car nearby/i.test(trimmed)) {
     return trimmed;
   }
-  return `${trimmed} | Wonder Cars`;
+  return `${trimmed} | ${SITE_BRAND_NAME}`;
 }
 
 /** Resolves a public image path to an absolute canonical URL suitable for Open Graph/Twitter cards. */

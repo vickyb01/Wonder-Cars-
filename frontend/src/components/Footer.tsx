@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Phone, Mail, MapPin } from 'lucide-react';
+import { Phone, Mail, MapPin, QrCode, X, Download } from 'lucide-react';
 import type { BusinessLocationSettings } from '../types/car';
 import { fetchBusinessLocation } from '../utils/api';
 import { buildWhatsAppUrl } from '../utils/format';
@@ -42,6 +42,16 @@ function WhatsAppIcon() {
 
 export function Footer() {
   const [loc, setLoc] = useState<Partial<BusinessLocationSettings>>({});
+  const [qrOpen, setQrOpen] = useState(false);
+
+  useEffect(() => {
+    if (!qrOpen) return;
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setQrOpen(false);
+    };
+    window.addEventListener('keydown', onKeyDown);
+    return () => window.removeEventListener('keydown', onKeyDown);
+  }, [qrOpen]);
 
   useEffect(() => {
     let active = true;
@@ -76,23 +86,28 @@ export function Footer() {
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8 sm:gap-10 lg:gap-12 text-center lg:text-left">
           {/* Brand Column */}
           <div className="space-y-4 flex flex-col items-center lg:items-start">
-            <Link to="/" className="inline-flex items-center justify-center lg:justify-start group" aria-label="Wonder Cars Home">
+            <Link to="/" className="inline-flex items-center justify-center lg:justify-start group" aria-label="Used Car Nearby (UsedCarNearby.com) by Wonder Cars Home">
               <img
                 src="/assets/wonder-cars-logo.png"
-                alt="Wonder Cars"
+                alt="Used Car Nearby — Wonder Cars"
                 className="h-16 sm:h-20 w-auto object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
               <img
                 src="/assets/wonder-cars-logo-dark.png"
-                alt="Wonder Cars"
+                alt="Used Car Nearby — Wonder Cars"
                 className="h-16 sm:h-20 w-auto object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
               />
             </Link>
-            <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 max-w-sm lg:max-w-none">
-              Curated pre-owned luxury and performance automobiles across India. Every vehicle undergoes a 210–point forensic audit before entering our showroom.
-            </p>
+            <div className="space-y-1.5">
+              <p className="text-sm font-semibold text-slate-900 dark:text-white">
+                Used Car Nearby <span className="font-normal text-slate-500 dark:text-zinc-400">(UsedCarNearby.com)</span>
+              </p>
+              <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 max-w-sm lg:max-w-none">
+                Online pre-owned car showcase by <strong className="font-medium text-slate-900 dark:text-zinc-200">Wonder Cars</strong>, Preet Vihar, Delhi — 210-point inspected luxury and performance vehicles.
+              </p>
+            </div>
           </div>
 
           {/* Marketplace Links */}
@@ -118,6 +133,16 @@ export function Footer() {
                 <Link to="/admin" className="hover:text-blue-700 dark:hover:text-white transition-colors">
                   Admin Portal
                 </Link>
+              </li>
+              <li>
+                <button
+                  type="button"
+                  onClick={() => setQrOpen(true)}
+                  className="inline-flex items-center gap-1.5 hover:text-blue-700 dark:hover:text-white transition-colors cursor-pointer"
+                >
+                  <QrCode className="w-4 h-4 text-blue-700 dark:text-blue-400" aria-hidden="true" />
+                  <span>Scan QR</span>
+                </button>
               </li>
             </ul>
           </div>
@@ -219,6 +244,56 @@ export function Footer() {
           </div>
         </div>
       </div>
+
+      {qrOpen && (
+        <div
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/75 backdrop-blur-sm p-4"
+          role="dialog"
+          aria-modal="true"
+          aria-label="Wonder Cars QR Code"
+          onClick={() => setQrOpen(false)}
+        >
+          <div
+            className="relative w-full max-w-sm rounded-2xl bg-white dark:bg-[#121215] border border-slate-200 dark:border-white/[0.12] shadow-2xl p-6 text-center space-y-4"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <button
+              type="button"
+              onClick={() => setQrOpen(false)}
+              aria-label="Close QR popup"
+              className="absolute top-3.5 right-3.5 w-8 h-8 rounded-full flex items-center justify-center text-slate-500 hover:text-slate-900 dark:text-zinc-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/[0.08] transition-colors cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+
+            <div className="space-y-1">
+              <h4 className="font-display text-lg font-bold text-slate-900 dark:text-white">
+                Scan QR Code
+              </h4>
+              <p className="text-xs text-slate-500 dark:text-zinc-400">
+                Used Car Nearby — Wonder Cars
+              </p>
+            </div>
+
+            <div className="mx-auto w-fit p-3 rounded-2xl bg-white border border-slate-200 shadow-sm">
+              <img
+                src="/assets/wonder-cars-qr.jpg"
+                alt="Used Car Nearby Wonder Cars QR Code"
+                className="w-60 sm:w-64 h-60 sm:h-64 object-contain rounded-lg"
+              />
+            </div>
+
+            <a
+              href="/assets/wonder-cars-qr.jpg"
+              download="WonderCars-QR.jpg"
+              className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-white text-sm font-semibold shadow-md transition-all"
+            >
+              <Download className="w-4 h-4" aria-hidden="true" />
+              <span>Download QR</span>
+            </a>
+          </div>
+        </div>
+      )}
     </footer>
   );
 }

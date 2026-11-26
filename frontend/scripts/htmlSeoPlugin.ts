@@ -19,9 +19,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'about.html',
     canonicalPath: '/about',
-    title: 'About Us | Wonder Cars',
+    title: 'About Us | Used Car Nearby',
     description:
-      "Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars. Founded by Naman Jain on trust, forensic quality audits, and clear title transparency.",
+      "Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars, showcased online on Used Car Nearby (UsedCarNearby.com).",
     robots: 'index, follow',
     ogType: 'website',
     ogImage: `${DEFAULT_SITE_URL}/assets/about-hero-bg.jpg`,
@@ -29,9 +29,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'cars.html',
     canonicalPath: '/cars',
-    title: 'Browse Certified Pre-Owned Inventory | Wonder Cars',
+    title: 'Browse Certified Pre-Owned Inventory | Used Car Nearby',
     description:
-      'Explore verified luxury and performance pre-owned cars with transparent INR pricing at Wonder Cars, Preet Vihar, Delhi.',
+      'Explore verified luxury and performance pre-owned cars with transparent INR pricing at Used Car Nearby by Wonder Cars, Preet Vihar, Delhi.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -39,9 +39,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'contact.html',
     canonicalPath: '/contact',
-    title: 'Contact Us | Wonder Cars',
+    title: 'Contact Us | Used Car Nearby',
     description:
-      'Contact Wonder Cars for vehicle enquiries, inspection reports, or test drive appointments, and view our Preet Vihar, Delhi showroom location on Google Maps.',
+      'Contact Wonder Cars via Used Car Nearby for vehicle enquiries, inspection reports, or test drive appointments in Preet Vihar, Delhi.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -49,8 +49,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'privacy.html',
     canonicalPath: '/privacy',
-    title: 'Privacy Policy | Wonder Cars',
-    description: 'Privacy Policy for Wonder Cars.',
+    title: 'Privacy Policy | Used Car Nearby',
+    description: 'Privacy Policy for Used Car Nearby (Wonder Cars).',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -58,8 +58,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'terms.html',
     canonicalPath: '/terms',
-    title: 'Terms & Conditions | Wonder Cars',
-    description: 'Terms and Conditions governing vehicle listings and transactions at Wonder Cars.',
+    title: 'Terms & Conditions | Used Car Nearby',
+    description: 'Terms and Conditions governing vehicle listings and transactions at Wonder Cars on Used Car Nearby.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -67,8 +67,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'admin.html',
     canonicalPath: null,
-    title: 'Admin Login — Wonder Cars',
-    description: 'Secure authentication gateway for Wonder Cars showroom administration.',
+    title: 'Admin Login — Used Car Nearby',
+    description: 'Secure authentication gateway for Wonder Cars showroom administration on Used Car Nearby.',
     robots: 'noindex, nofollow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -76,9 +76,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'spa-fallback.html',
     canonicalPath: null,
-    title: 'Wonder Cars — Curated Pre-Owned Luxury & Performance Cars',
+    title: 'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars',
     description:
-      'Discover quality pre-owned luxury and performance cars at the right price. Certified 210-point inspected vehicles at Wonder Cars, Preet Vihar, Delhi.',
+      'Explore pre-owned luxury and performance cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Transparent INR pricing and viewing bookings.',
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -117,20 +117,21 @@ function injectHeadSeo(
   const ogImage = opts.ogImage || `${siteBase}/assets/wonder-cars.jpg`;
   const ogType = opts.ogType || 'website';
 
-  // Strip any pre-existing managed SEO tags so there are never duplicate canonicals or meta tags
+  // Strip pre-existing managed SEO tags & homepage-only WebSite schema so inner shells stay route-accurate
   let html = templateHtml
     .replace(/<title>[\s\S]*?<\/title>\s*/gi, '')
     .replace(/<meta\s+name=["'](?:description|robots)["'][^>]*>\s*/gi, '')
     .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+property=["']og:(?:site_name|title|description|url|type|image)["'][^>]*>\s*/gi, '')
-    .replace(/<meta\s+name=["']twitter:(?:card|title|description|image)["'][^>]*>\s*/gi, '');
+    .replace(/<meta\s+name=["']twitter:(?:card|title|description|image)["'][^>]*>\s*/gi, '')
+    .replace(/<script[^>]*id=["']website-schema["'][^>]*>[\s\S]*?<\/script>\s*/gi, '');
 
   const seoLines = [
     `    <title>${escapeXml(opts.title)}</title>`,
     `    <meta name="description" content="${escapeXml(opts.description)}" />`,
     `    <meta name="robots" content="${escapeXml(opts.robots)}" />`,
     ...(canonicalUrl ? [`    <link rel="canonical" href="${escapeXml(canonicalUrl)}" />`] : []),
-    `    <meta property="og:site_name" content="Wonder Cars" />`,
+    `    <meta property="og:site_name" content="Used Car Nearby" />`,
     `    <meta property="og:title" content="${escapeXml(opts.title)}" />`,
     `    <meta property="og:description" content="${escapeXml(opts.description)}" />`,
     ...(canonicalUrl ? [`    <meta property="og:url" content="${escapeXml(canonicalUrl)}" />`] : []),
@@ -169,7 +170,7 @@ export function generateStaticRouteHtmlShells(
 
   for (const car of cars) {
     const carName = [car.year, car.brand, car.model, car.variant].filter(Boolean).join(' ').trim() || car.id;
-    const title = `${carName} | Wonder Cars`;
+    const title = `${carName} | Used Car Nearby`;
     const descParts = [
       carName,
       formatKmSimple(car.kilometres),
