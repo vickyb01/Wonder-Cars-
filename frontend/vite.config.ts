@@ -23,14 +23,14 @@ function normalizeSiteUrl(rawUrl: string): string {
   return cleaned || DEFAULT_SITE_URL;
 }
 
-function createSitemapPlugin(env: Record<string, string>): Plugin {
+function createSeoBuildPlugin(env: Record<string, string>): Plugin {
   const siteUrl = normalizeSiteUrl(env.VITE_SITE_URL || env.SITE_URL || DEFAULT_SITE_URL);
   const apiBaseUrl = env.VITE_API_URL || env.VITE_API_BASE_URL || DEFAULT_API_URL;
   const backendDbPath = path.resolve(__dirname, '../backend/data/db.json');
   let isBuildCommand = false;
 
   return {
-    name: 'generate-xml-sitemap',
+    name: 'dynamic-seo-plugin',
     configResolved(config) {
       isBuildCommand = config.command === 'build';
     },
@@ -53,14 +53,11 @@ function createSitemapPlugin(env: Record<string, string>): Plugin {
         }
       });
     },
-    async closeBundle(error?: Error): Promise<void> {
+    closeBundle(error?: Error): void {
       if (error || !isBuildCommand) return;
       const distDir = path.resolve(__dirname, 'dist');
       if (!fs.existsSync(distDir)) return;
-      const cars = await loadPublicCars(apiBaseUrl, backendDbPath);
-      const xml = buildSitemapXml(siteUrl, cars);
-      fs.writeFileSync(path.join(distDir, 'sitemap.xml'), xml, 'utf8');
-      generateStaticRouteHtmlShells(distDir, siteUrl, cars);
+      generateStaticRouteHtmlShells(distDir, siteUrl);
     },
   };
 }
@@ -71,7 +68,7 @@ export default defineConfig(({ mode }) => {
     plugins: [
       react(),
       tailwindcss(),
-      createSitemapPlugin(env),
+      createSeoBuildPlugin(env),
       {
         name: 'copy-unbundled-src-assets',
         apply: 'build',
@@ -109,4 +106,3 @@ export default defineConfig(({ mode }) => {
     },
   };
 });
-

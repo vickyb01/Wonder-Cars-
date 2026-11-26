@@ -1,7 +1,10 @@
 import fs from 'fs';
 import path from 'path';
-import type { SitemapCarRecord } from './sitemapGenerator.ts';
-import { DEFAULT_SITE_URL, escapeXml } from './sitemapGenerator.ts';
+import {
+  CANONICAL_ORIGIN,
+  injectHeadSeoHtml,
+  normalizeSiteUrl,
+} from '../src/utils/carSeoShared.mjs';
 
 interface StaticHtmlSeoRoute {
   fileName: string;
@@ -13,7 +16,7 @@ interface StaticHtmlSeoRoute {
   ogImage?: string;
 }
 
-const DEFAULT_OG_IMAGE = `${DEFAULT_SITE_URL}/assets/wonder-cars.jpg`;
+const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/assets/wonder-cars.jpg`;
 
 const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
@@ -24,7 +27,7 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
       "Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars, showcased online on Used Car Nearby (UsedCarNearby.com).",
     robots: 'index, follow',
     ogType: 'website',
-    ogImage: `${DEFAULT_SITE_URL}/assets/about-hero-bg.jpg`,
+    ogImage: `${CANONICAL_ORIGIN}/assets/about-hero-bg.jpg`,
   },
   {
     fileName: 'cars.html',
@@ -85,120 +88,33 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   },
 ];
 
-function formatInrSimple(price?: number): string {
-  if (!price || !Number.isFinite(price)) return '';
-  return `₹${new Intl.NumberFormat('en-IN').format(price)}`;
-}
-
-function formatKmSimple(km?: number): string {
-  if (km === undefined || km === null || !Number.isFinite(km)) return '';
-  return `${new Intl.NumberFormat('en-IN').format(km)} km`;
-}
-
-function resolveCarOgImage(siteBase: string, images?: string[]): string {
-  const first = images?.[0]?.trim();
-  if (!first || first.startsWith('data:')) {
-    return `${siteBase}/assets/wonder-cars.jpg`;
-  }
-  if (/^https?:\/\//i.test(first)) {
-    return first;
-  }
-  return `${siteBase}${first.startsWith('/') ? first : `/${first}`}`;
-}
-
-function injectHeadSeo(
-  templateHtml: string,
-  siteBase: string,
-  opts: Omit<StaticHtmlSeoRoute, 'fileName'>
-): string {
-  const canonicalUrl = opts.canonicalPath
-    ? `${siteBase}${opts.canonicalPath === '/' ? '/' : opts.canonicalPath}`
-    : null;
-  const ogImage = opts.ogImage || `${siteBase}/assets/wonder-cars.jpg`;
-  const ogType = opts.ogType || 'website';
-
-  // Strip pre-existing managed SEO tags & homepage-only WebSite schema so inner shells stay route-accurate
-  let html = templateHtml
-    .replace(/<title>[\s\S]*?<\/title>\s*/gi, '')
-    .replace(/<meta\s+name=["'](?:description|robots)["'][^>]*>\s*/gi, '')
-    .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
-    .replace(/<meta\s+property=["']og:(?:site_name|title|description|url|type|image)["'][^>]*>\s*/gi, '')
-    .replace(/<meta\s+name=["']twitter:(?:card|title|description|image)["'][^>]*>\s*/gi, '')
-    .replace(/<script[^>]*id=["']website-schema["'][^>]*>[\s\S]*?<\/script>\s*/gi, '');
-
-  const seoLines = [
-    `    <title>${escapeXml(opts.title)}</title>`,
-    `    <meta name="description" content="${escapeXml(opts.description)}" />`,
-    `    <meta name="robots" content="${escapeXml(opts.robots)}" />`,
-    ...(canonicalUrl ? [`    <link rel="canonical" href="${escapeXml(canonicalUrl)}" />`] : []),
-    `    <meta property="og:site_name" content="Used Car Nearby" />`,
-    `    <meta property="og:title" content="${escapeXml(opts.title)}" />`,
-    `    <meta property="og:description" content="${escapeXml(opts.description)}" />`,
-    ...(canonicalUrl ? [`    <meta property="og:url" content="${escapeXml(canonicalUrl)}" />`] : []),
-    `    <meta property="og:type" content="${escapeXml(ogType)}" />`,
-    `    <meta property="og:image" content="${escapeXml(ogImage)}" />`,
-    `    <meta name="twitter:card" content="summary_large_image" />`,
-    `    <meta name="twitter:title" content="${escapeXml(opts.title)}" />`,
-    `    <meta name="twitter:description" content="${escapeXml(opts.description)}" />`,
-    `    <meta name="twitter:image" content="${escapeXml(ogImage)}" />`,
-  ].join('\n');
-
-  return html.replace(/<meta\s+name=["']viewport["'][^>]*>/i, (match) => `${match}\n${seoLines}`);
-}
-
-/** Generates per-route static HTML entry shells inside dist/ so crawlers & curl see accurate canonicals and metadata in initial HTML. */
-export function generateStaticRouteHtmlShells(
-  distDir: string,
-  siteUrl: string,
-  cars: SitemapCarRecord[]
-): void {
+/**
+ * Generates static HTML entry shells inside dist/ for fixed routes and the SPA fallback.
+ * Dynamic car pages (/cars/:id) and /sitemap.xml are served at runtime by Vercel functions,
+ * so any stale static dist/cars or dist/sitemap.xml artifacts are removed to prevent shadowing.
+ */
+export function generateStaticRouteHtmlShells(distDir: string, siteUrl: string): void {
   const indexPath = path.join(distDir, 'index.html');
   if (!fs.existsSync(indexPath)) return;
 
-  const siteBase = siteUrl.trim().replace(/\/+$/, '') || DEFAULT_SITE_URL;
+  const siteBase = normalizeSiteUrl(siteUrl || CANONICAL_ORIGIN);
   const baseHtml = fs.readFileSync(indexPath, 'utf8');
 
   for (const route of STATIC_HTML_ROUTES) {
-    const html = injectHeadSeo(baseHtml, siteBase, route);
+    const html = injectHeadSeoHtml(baseHtml, {
+      ...route,
+      siteUrl: siteBase,
+    });
     fs.writeFileSync(path.join(distDir, route.fileName), html, 'utf8');
   }
 
+  // Ensure no static car HTML shells or static sitemap shadow dynamic Vercel serverless routes
   const carsDir = path.join(distDir, 'cars');
-  if (cars.length > 0 && !fs.existsSync(carsDir)) {
-    fs.mkdirSync(carsDir, { recursive: true });
+  if (fs.existsSync(carsDir)) {
+    fs.rmSync(carsDir, { recursive: true, force: true });
   }
-
-  for (const car of cars) {
-    const carName = [car.year, car.brand, car.model, car.variant].filter(Boolean).join(' ').trim() || car.id;
-    const title = `${carName} | Used Car Nearby`;
-    const descParts = [
-      carName,
-      formatKmSimple(car.kilometres),
-      car.fuelType,
-      car.transmission,
-      formatInrSimple(car.priceInr),
-    ].filter(Boolean);
-    const description =
-      descParts.length > 1
-        ? `${descParts.join(' · ')} at Wonder Cars, Preet Vihar, Delhi.`
-        : `${carName} — Certified pre-owned vehicle at Wonder Cars, Preet Vihar, Delhi.`;
-    const canonicalPath = `/cars/${encodeURIComponent(car.id)}`;
-    const ogImage = resolveCarOgImage(siteBase, car.images);
-
-    const carHtml = injectHeadSeo(baseHtml, siteBase, {
-      canonicalPath,
-      title,
-      description,
-      robots: 'index, follow',
-      ogType: 'website',
-      ogImage,
-    });
-
-    fs.writeFileSync(path.join(carsDir, `${car.id}.html`), carHtml, 'utf8');
-
-    // If a slug route is accessed directly, serve the same HTML with canonical pointing to /cars/<car.id>
-    if (car.slug && car.slug !== car.id && /^[a-z0-9-]+$/i.test(car.slug)) {
-      fs.writeFileSync(path.join(carsDir, `${car.slug}.html`), carHtml, 'utf8');
-    }
+  const staticSitemapPath = path.join(distDir, 'sitemap.xml');
+  if (fs.existsSync(staticSitemapPath)) {
+    fs.rmSync(staticSitemapPath, { force: true });
   }
 }

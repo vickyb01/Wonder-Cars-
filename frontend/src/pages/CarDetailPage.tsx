@@ -24,6 +24,7 @@ import {
 } from '../utils/format';
 import { CarCard } from '../components/CarCard';
 import { SeoHead } from '../components/SeoHead';
+import { buildCarName, buildCarSeoData, isPublicCarStatus } from '../utils/carSeoShared.mjs';
 import { ShowroomGallery } from '../components/showroom/ShowroomGallery';
 import { InspectionReportsSection } from '../components/showroom/InspectionReportsSection';
 import { HistoryAndLegalSection } from '../components/showroom/HistoryAndLegalSection';
@@ -66,6 +67,7 @@ export function CarDetailPage() {
     window.scrollTo(0, 0);
     if (!id) return;
     let active = true;
+    setCar(null);
     setLoading(true);
     setError('');
 
@@ -87,6 +89,7 @@ export function CarDetailPage() {
         })
         .catch((err) => {
           if (!active) return;
+          setCar(null);
           setError(err instanceof Error ? err.message : 'Unable to load vehicle details.');
         })
         .finally(() => {
@@ -97,12 +100,21 @@ export function CarDetailPage() {
     loadCar();
 
     const unsubscribe = subscribeToInventoryUpdates((data) => {
+      if (data?.type === 'delete' && data.carId && data.carId === id) {
+        setCar(null);
+        setError('Vehicle not found');
+        return;
+      }
       if (
         data?.car &&
         (data.car.id === id || data.car.slug === id || data.car.listingCode?.toLowerCase() === id.toLowerCase())
       ) {
-        setCar(data.car);
-        setError('');
+        if (isPublicCarStatus(data.car.status)) {
+          setCar(data.car);
+          setError('');
+        } else {
+          loadCar();
+        }
       } else {
         loadCar();
       }
@@ -151,7 +163,13 @@ export function CarDetailPage() {
   if (error || !car) {
     return (
       <div className="min-h-screen bg-white dark:bg-[#09090B] pt-32 pb-20 max-w-2xl mx-auto px-5 text-center space-y-5">
-        <SeoHead title="Vehicle Not Found" robots="noindex, nofollow" noCanonical />
+        <SeoHead
+          title="Vehicle Not Found"
+          description="This vehicle listing is unavailable or has been removed from Used Car Nearby."
+          robots="noindex, nofollow"
+          noCanonical
+          jsonLd={null}
+        />
         <h1 className="font-display text-3xl font-bold text-slate-900 dark:text-white">Vehicle Unavailable</h1>
         <p className="text-slate-600 dark:text-zinc-400 text-sm">
           {error || 'This listing may have been removed or is currently in draft.'}
@@ -167,7 +185,9 @@ export function CarDetailPage() {
     );
   }
 
-  const carTitle = `${car.year} ${car.brand} ${car.model} ${car.variant}`;
+  const carTitle = buildCarName(car);
+  const isPublished = isPublicCarStatus(car.status);
+  const seoData = buildCarSeoData(car);
   const age = calculateVehicleAge(car.registrationDate, car.registrationYear || car.year);
   const insuranceDoc = car.documents.find((d) => d.key === 'insurance');
 
@@ -223,10 +243,14 @@ export function CarDetailPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-16 md:pt-[72px] pb-28 lg:pb-20 transition-colors duration-200">
       <SeoHead
-        title={carTitle}
-        description={`${carTitle} · ${formatKm(car.kilometres)} · ${car.fuelType} · ${car.transmission} · ${formatINR(car.priceInr)} at Wonder Cars, Preet Vihar, Delhi.`}
-        canonicalPath={`/cars/${car.id}`}
-        ogImage={car.images?.[0]}
+        title={seoData.title}
+        description={seoData.description}
+        canonicalPath={seoData.canonicalPath}
+        robots={isPublished ? seoData.robots : 'noindex, nofollow'}
+        ogType="website"
+        ogImage={seoData.ogImage}
+        noCanonical={!isPublished}
+        jsonLd={isPublished ? seoData.jsonLd : null}
       />
 
       {/* Full-Screen Car Photo Gallery Showcase */}

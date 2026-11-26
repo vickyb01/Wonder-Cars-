@@ -2,20 +2,16 @@
   "framework": "vite",
   "cleanUrls": true,
   "trailingSlash": false,
-  "headers": [
-    {
-      "source": "/sitemap.xml",
-      "headers": [
-        {
-          "key": "Content-Type",
-          "value": "application/xml; charset=utf-8"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=0, must-revalidate"
-        }
-      ]
+  "functions": {
+    "api/car-page.mjs": {
+      "includeFiles": "dist/spa-fallback.html",
+      "maxDuration": 10
     },
+    "api/sitemap.mjs": {
+      "maxDuration": 10
+    }
+  },
+  "headers": [
     {
       "source": "/robots.txt",
       "headers": [
@@ -50,8 +46,12 @@
       "destination": "https://wonder-cars-1.onrender.com/uploads/:path*"
     },
     {
-      "source": "/api/((?!mail-relay).*)",
+      "source": "/api/((?!mail-relay|car-page|sitemap).*)",
       "destination": "https://wonder-cars-1.onrender.com/api/$1"
+    },
+    {
+      "source": "/sitemap.xml",
+      "destination": "/api/sitemap"
     },
     {
       "source": "/about",
@@ -64,6 +64,10 @@
     {
       "source": "/cars",
       "destination": "/cars.html"
+    },
+    {
+      "source": "/cars/:id",
+      "destination": "/api/car-page?id=:id"
     },
     {
       "source": "/privacy",

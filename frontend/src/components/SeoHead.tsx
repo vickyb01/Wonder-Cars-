@@ -16,6 +16,8 @@ interface SeoHeadProps {
   ogType?: 'website' | 'article' | 'product';
   ogImage?: string;
   noCanonical?: boolean;
+  jsonLd?: Record<string, unknown> | null;
+  jsonLdId?: string;
 }
 
 function upsertMetaTag(attrName: 'name' | 'property', attrValue: string, content: string): void {
@@ -31,6 +33,11 @@ function upsertMetaTag(attrName: 'name' | 'property', attrValue: string, content
     document.head.appendChild(tag);
   }
   tag.setAttribute('content', content);
+}
+
+function removeMetaTag(attrName: 'name' | 'property', attrValue: string): void {
+  const selector = `meta[${attrName}="${attrValue}"]`;
+  document.head.querySelectorAll<HTMLMetaElement>(selector).forEach((el) => el.remove());
 }
 
 function syncCanonicalTag(href: string | null): void {
@@ -51,6 +58,57 @@ function syncCanonicalTag(href: string | null): void {
   link.setAttribute('href', href);
 }
 
+function removeJsonLdScript(id: string): void {
+  document.head.querySelectorAll<HTMLScriptElement>(`script[type="application/ld+json"]`).forEach((el) => {
+    if (el.id === id) {
+      el.remove();
+    }
+  });
+}
+
+function syncJsonLdScript(id: string, jsonLd?: Record<string, unknown> | null): void {
+  const allScripts = document.head.querySelectorAll<HTMLScriptElement>('script[type="application/ld+json"]');
+  let targetScript: HTMLScriptElement | null = null;
+
+  allScripts.forEach((el) => {
+    if (el.id === id) {
+      if (!targetScript) {
+        targetScript = el;
+      } else {
+        el.remove();
+      }
+      return;
+    }
+
+    // Remove any duplicate Car JSON-LD scripts injected elsewhere while preserving site/dealer schemas
+    if (el.id !== 'website-schema' && el.id !== 'autodealer-schema') {
+      try {
+        const parsed = JSON.parse(el.textContent || '{}') as { '@type'?: string };
+        if (parsed && parsed['@type'] === 'Car') {
+          el.remove();
+        }
+      } catch {
+        // Ignore unparseable third-party JSON-LD
+      }
+    }
+  });
+
+  if (!jsonLd) {
+    if (targetScript) {
+      (targetScript as HTMLScriptElement).remove();
+    }
+    return;
+  }
+
+  if (!targetScript) {
+    targetScript = document.createElement('script');
+    targetScript.type = 'application/ld+json';
+    targetScript.id = id;
+    document.head.appendChild(targetScript);
+  }
+  targetScript.textContent = JSON.stringify(jsonLd);
+}
+
 export function SeoHead({
   title,
   description,
@@ -59,8 +117,11 @@ export function SeoHead({
   ogType = 'website',
   ogImage,
   noCanonical = false,
+  jsonLd,
+  jsonLdId = 'car-schema',
 }: SeoHeadProps) {
   const { pathname } = useLocation();
+  const serializedJsonLd = jsonLd ? JSON.stringify(jsonLd) : '';
 
   useEffect(() => {
     const formattedTitle = formatSeoTitle(title);
@@ -81,13 +142,25 @@ export function SeoHead({
     upsertMetaTag('property', 'og:image', resolvedImage);
     if (canonicalUrl) {
       upsertMetaTag('property', 'og:url', canonicalUrl);
+    } else {
+      removeMetaTag('property', 'og:url');
     }
 
     upsertMetaTag('name', 'twitter:card', 'summary_large_image');
     upsertMetaTag('name', 'twitter:title', formattedTitle);
     upsertMetaTag('name', 'twitter:description', effectiveDescription);
     upsertMetaTag('name', 'twitter:image', resolvedImage);
-  }, [title, description, canonicalPath, pathname, robots, ogType, ogImage, noCanonical]);
+
+    syncJsonLdScript(jsonLdId, serializedJsonLd ? (JSON.parse(serializedJsonLd) as Record<string, unknown>) : null);
+  }, [title, description, canonicalPath, pathname, robots, ogType, ogImage, noCanonical, jsonLdId, serializedJsonLd]);
+
+  useEffect(() => {
+    return () => {
+      if (serializedJsonLd) {
+        removeJsonLdScript(jsonLdId);
+      }
+    };
+  }, [jsonLdId, serializedJsonLd]);
 
   return null;
 }

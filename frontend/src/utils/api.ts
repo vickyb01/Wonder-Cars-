@@ -101,11 +101,18 @@ export function saveLocalCustomCar(car: Car): void {
 
 export function removeLocalCustomCar(carId: string): void {
   try {
+    const target = String(carId || '').trim();
+    const targetLower = target.toLowerCase();
+    const matchesTarget = (c: Car) =>
+      c.id === target ||
+      c.slug === target ||
+      (Boolean(c.listingCode) && c.listingCode.toLowerCase() === targetLower);
+
     const current = getLocalCustomCars();
-    const next = current.filter((c) => c.id !== carId);
+    const next = current.filter((c) => !matchesTarget(c));
     localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(next));
 
-    const cached = getGlobalCatalogCache().filter((c) => c.id !== carId);
+    const cached = getGlobalCatalogCache().filter((c) => !matchesTarget(c));
     localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(cached));
 
     broadcastInventoryUpdate({ type: 'delete', carId });
@@ -353,11 +360,20 @@ async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<R
   }
 }
 
+export class ApiRequestError extends Error {
+  status: number;
+  constructor(message: string, status: number) {
+    super(message);
+    this.name = 'ApiRequestError';
+    this.status = status;
+  }
+}
+
 async function handleJsonResponse<T>(res: Response): Promise<T> {
   const data = await res.json().catch(() => ({}));
   if (!res.ok) {
     const msg = typeof data?.error === 'string' ? data.error : `Request failed (${res.status})`;
-    throw new Error(msg);
+    throw new ApiRequestError(msg, res.status);
   }
   return data as T;
 }
@@ -491,12 +507,33 @@ export async function fetchCars(filters: CarFilters = {}): Promise<Car[]> {
   return applyLocalFilters(cached, filters);
 }
 
+function purgeCarFromLocalCaches(identifier: string): void {
+  try {
+    const target = String(identifier || '').trim();
+    if (!target) return;
+    const targetLower = target.toLowerCase();
+    const matchesTarget = (c: Car) =>
+      c.id === target ||
+      c.slug === target ||
+      (Boolean(c.listingCode) && c.listingCode.toLowerCase() === targetLower);
+
+    const customCars = getLocalCustomCars().filter((c) => !matchesTarget(c));
+    localStorage.setItem(CUSTOM_CARS_KEY, JSON.stringify(customCars));
+
+    const cached = getGlobalCatalogCache().filter((c) => !matchesTarget(c));
+    localStorage.setItem(FULL_CATALOG_CACHE_KEY, JSON.stringify(cached));
+  } catch {
+    // Ignore localStorage unavailability
+  }
+}
+
 export async function fetchCarDetail(id: string): Promise<{
   car: Car;
   similar: Car[];
   sellerOtherCars: Car[];
 }> {
   const cleanId = String(id || '').trim();
+  const hasAdminToken = Boolean(getAdminToken());
   const customCars = getLocalCustomCars();
   const cached = getGlobalCatalogCache();
   const allKnown = [...customCars, ...cached];
@@ -518,6 +555,11 @@ export async function fetchCarDetail(id: string): Promise<{
       sellerOtherCars: Car[];
     }>(res);
 
+    if (!data?.car || (!hasAdminToken && data.car.status === 'Draft')) {
+      purgeCarFromLocalCaches(cleanId);
+      throw new ApiRequestError('Vehicle not found', 404);
+    }
+
     const normalizedCar = normalizeCarImages(data.car);
     const result = {
       car: normalizedCar,
@@ -525,25 +567,36 @@ export async function fetchCarDetail(id: string): Promise<{
       sellerOtherCars: (data.sellerOtherCars || []).map(normalizeCarImages),
     };
 
-    saveLocalCustomCar(normalizedCar);
+    if (normalizedCar.status !== 'Draft') {
+      updateGlobalCatalogCache([normalizedCar]);
+    }
     return result;
   } catch (err) {
-    // If backend returns 404 (Render wiped it) or times out / 502/504
-    if (localMatch) {
-      console.warn(`Serving car ${cleanId} from persistent client inventory:`, err);
-      rehydrateBackendCars().catch(() => {});
+    const errStatus = err instanceof ApiRequestError ? err.status : undefined;
+    // Never restore deleted, 404, or client-rejected cars from localStorage fallback
+    if (errStatus !== undefined && errStatus >= 400 && errStatus < 500) {
+      purgeCarFromLocalCaches(cleanId);
+      if (localMatch?.id && localMatch.id !== cleanId) {
+        purgeCarFromLocalCaches(localMatch.id);
+      }
+      throw err;
+    }
 
-      const similar = allKnown
-        .filter((c) => c.id !== localMatch.id && (c.bodyType === localMatch.bodyType || c.brand === localMatch.brand))
+    // Transient network or 5xx backend outage only: allow non-Draft cached fallback without rehydrating backend
+    if (localMatch && (localMatch.status !== 'Draft' || hasAdminToken)) {
+      console.warn(`Serving car ${cleanId} from cached catalog during backend outage:`, err);
+      const publicOthers = allKnown.filter((c) => c.id !== localMatch.id && c.status !== 'Draft');
+      const similar = publicOthers
+        .filter((c) => c.bodyType === localMatch.bodyType || c.brand === localMatch.brand)
         .slice(0, 4);
-      const sellerOtherCars = allKnown
-        .filter((c) => c.id !== localMatch.id && c.brand === localMatch.brand)
+      const sellerOtherCars = publicOthers
+        .filter((c) => c.brand === localMatch.brand)
         .slice(0, 4);
 
       return {
         car: localMatch,
-        similar: similar.length ? similar : allKnown.filter((c) => c.id !== localMatch.id).slice(0, 4),
-        sellerOtherCars: sellerOtherCars.length ? sellerOtherCars : allKnown.filter((c) => c.id !== localMatch.id).slice(0, 4),
+        similar: similar.length ? similar : publicOthers.slice(0, 4),
+        sellerOtherCars: sellerOtherCars.length ? sellerOtherCars : publicOthers.slice(0, 4),
       };
     }
     throw err;
