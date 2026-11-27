@@ -11,6 +11,7 @@ import {
   ZoomOut,
 } from 'lucide-react';
 import type { CarPhoto, PhotoCategory } from '../../types/car';
+import { getUploadUrlCandidates, normalizeMediaUrl } from '../../utils/api';
 import { VehicleImage } from '../VehicleImage';
 
 interface ShowroomGalleryProps {
@@ -83,6 +84,25 @@ export function ShowroomGallery({
 
   const safeIndex = filteredPhotos.length > 0 ? Math.min(activeIndex, filteredPhotos.length - 1) : 0;
   const currentPhoto = filteredPhotos[safeIndex] || filteredPhotos[0];
+
+  // Preload adjacent gallery images so next/prev transitions display immediately
+  useEffect(() => {
+    if (filteredPhotos.length <= 1) return;
+    const indicesToPreload = [
+      (safeIndex + 1) % filteredPhotos.length,
+      (safeIndex - 1 + filteredPhotos.length) % filteredPhotos.length,
+    ];
+    for (const idx of indicesToPreload) {
+      const url = filteredPhotos[idx]?.url;
+      if (!url) continue;
+      const resolved = getUploadUrlCandidates(url)[0] || normalizeMediaUrl(url);
+      if (resolved) {
+        const img = new Image();
+        img.decoding = 'async';
+        img.src = resolved;
+      }
+    }
+  }, [filteredPhotos, safeIndex]);
 
   const handlePrev = () => {
     if (filteredPhotos.length <= 1) return;
@@ -171,11 +191,7 @@ export function ShowroomGallery({
             touchStartX.current = null;
           }}
         >
-          <motion.div
-            key={`${currentPhoto.id || currentPhoto.url}-${safeIndex}`}
-            initial={{ opacity: 0.72 }}
-            animate={{ opacity: 1 }}
-            transition={{ duration: 0.16 }}
+          <div
             className="relative z-10 w-full h-full overflow-hidden flex items-center justify-center bg-black"
             onClick={() => setZoomed((z) => !z)}
           >
@@ -183,6 +199,8 @@ export function ShowroomGallery({
             <VehicleImage
               src={currentPhoto.url}
               alt=""
+              loading="eager"
+              fetchPriority="low"
               aria-hidden="true"
               className="absolute inset-0 w-full h-full object-cover blur-2xl opacity-40 scale-110 pointer-events-none"
             />
@@ -201,10 +219,12 @@ export function ShowroomGallery({
                 src={currentPhoto.url}
                 alt={`${carTitle} - ${currentPhoto.angleLabel}`}
                 loading="eager"
+                fetchPriority="high"
+                decoding="sync"
                 className="max-w-full max-h-full w-auto h-auto object-contain object-center drop-shadow-2xl"
               />
             </div>
-          </motion.div>
+          </div>
 
           {/* Bottom Scrim & Metadata (high contrast dark overlay over photos in both themes) */}
           <div className="absolute inset-x-0 bottom-0 z-20 bg-gradient-to-t from-black/90 via-black/45 to-transparent pointer-events-none">
@@ -345,7 +365,9 @@ export function ShowroomGallery({
                 <VehicleImage
                   src={photo.url}
                   alt={photo.angleLabel}
-                  loading="lazy"
+                  loading={idx < 8 ? 'eager' : 'lazy'}
+                  width={112}
+                  height={84}
                   className="w-full h-full object-cover"
                 />
                 <span className="absolute inset-x-0 bottom-0 px-1.5 py-0.5 bg-black/75 text-[10px] text-zinc-100 truncate text-left">

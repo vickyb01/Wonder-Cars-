@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { motion, useScroll, useTransform, AnimatePresence } from 'motion/react';
 import { ArrowRight, Search, X, Sparkles, Car, ChevronLeft, ChevronRight, Camera } from 'lucide-react';
 import type { Car as CarType, HomepageSettings } from '../types/car';
-import { fetchCars, fetchHomepageSettings, subscribeToInventoryUpdates } from '../utils/api';
+import { BACKEND_READY_EVENT, fetchCars, fetchHomepageSettings, subscribeToInventoryUpdates } from '../utils/api';
 import { CarCard } from '../components/CarCard';
 import { SeoHead } from '../components/SeoHead';
 import { HOMEPAGE_SEO_DESCRIPTION, HOMEPAGE_SEO_TITLE } from '../utils/seo';
@@ -82,8 +82,14 @@ export function HomePage() {
   const [homepageSettings, setHomepageSettings] = useState<HomepageSettings | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // Hero 3-image auto carousel state
+  // Hero 3-image auto carousel state (defer non-active slides until after initial paint)
   const [heroSlideIndex, setHeroSlideIndex] = useState(0);
+  const [secondarySlidesReady, setSecondarySlidesReady] = useState(false);
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setSecondarySlidesReady(true), 1200);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   // Hero quick search state
   const [searchQuery, setSearchQuery] = useState('');
@@ -182,22 +188,37 @@ export function HomePage() {
 
   useEffect(() => {
     let active = true;
+    let needsReloadOnWake = false;
+
     async function load() {
+      needsReloadOnWake = false;
       try {
         const [all, homeSet] = await Promise.all([
-          fetchCars({ status: 'Available', sort: 'newest' }).catch(() => []),
+          fetchCars({ status: 'Available', sort: 'newest' }).catch(() => null),
           fetchHomepageSettings().catch(() => null),
         ]);
         if (!active) return;
-        setAllCars(all);
+        if (Array.isArray(all)) {
+          setAllCars(all);
+          needsReloadOnWake = all.length === 0 || !homeSet;
+        } else {
+          needsReloadOnWake = true;
+        }
         if (homeSet) setHomepageSettings(homeSet);
       } catch {
-        // Keep empty gracefully
+        needsReloadOnWake = true;
       } finally {
         if (active) setLoading(false);
       }
     }
     load();
+
+    const handleBackendReady = () => {
+      if (active && needsReloadOnWake) {
+        void load();
+      }
+    };
+    window.addEventListener(BACKEND_READY_EVENT, handleBackendReady);
 
     const unsubscribe = subscribeToInventoryUpdates((evt) => {
       if (evt?.type === 'delete' && evt.carId) {
@@ -213,6 +234,7 @@ export function HomePage() {
 
     return () => {
       active = false;
+      window.removeEventListener(BACKEND_READY_EVENT, handleBackendReady);
       unsubscribe();
     };
   }, []);
@@ -346,25 +368,17 @@ export function HomePage() {
                   isActive ? 'opacity-100 scale-100 md:scale-105' : 'opacity-0 scale-100 md:scale-110 pointer-events-none'
                 }`}
               >
-                {/* Mobile View: High-resolution vertical 9:16 portrait hero background provided by user */}
-                <div className="md:hidden absolute inset-0">
+                {(idx === 0 || isActive || secondarySlidesReady) && (
                   <VehicleImage
                     src={mobileImage}
+                    desktopSrc={slide.src}
                     alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
-                    loading="eager"
+                    loading={idx === 0 || isActive ? 'eager' : 'lazy'}
+                    fetchPriority={idx === 0 ? 'high' : 'low'}
+                    decoding={idx === 0 ? 'sync' : 'async'}
                     className="w-full h-full object-cover object-center"
                   />
-                </div>
-
-                {/* Desktop View: Wide landscape photography filling desktop viewport */}
-                <div className="hidden md:block absolute inset-0">
-                  <VehicleImage
-                    src={slide.src}
-                    alt={slide.alt || 'Luxury automobile in Wonder Cars showroom'}
-                    loading="eager"
-                    className="w-full h-full object-cover object-center"
-                  />
-                </div>
+                )}
               </div>
             );
           })}
@@ -674,7 +688,12 @@ export function HomePage() {
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {featuredCars.map((car, index) => (
-              <CarCard key={car.id} car={car} index={index} />
+              <CarCard
+                key={car.id}
+                car={car}
+                index={index}
+                loading={index < 3 ? 'eager' : 'lazy'}
+              />
             ))}
           </div>
         )}
@@ -705,7 +724,12 @@ export function HomePage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {latestCars.map((car, index) => (
-                <CarCard key={car.id} car={car} index={index} />
+                <CarCard
+                  key={car.id}
+                  car={car}
+                  index={index}
+                  loading={index < 3 ? 'eager' : 'lazy'}
+                />
               ))}
             </div>
           </div>

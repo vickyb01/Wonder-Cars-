@@ -3,6 +3,7 @@ import { Link, NavLink, useLocation } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { useWishlist } from '../context/WishlistContext';
 import { useCart } from '../context/CartContext';
+import { OptimizedPicture } from './OptimizedPicture';
 
 export function Navbar() {
   const [scrolled, setScrolled] = useState(false);
@@ -40,18 +41,26 @@ export function Navbar() {
             aria-label="Used Car Nearby (UsedCarNearby.com) by Wonder Cars Home"
           >
             {/* Light Theme Logo */}
-            <img
+            <OptimizedPicture
               src="/assets/wonder-cars-logo.png"
               alt="Used Car Nearby — Wonder Cars showroom"
+              width={160}
+              height={48}
               className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
             {/* Dark Theme Logo */}
-            <img
+            <OptimizedPicture
               src="/assets/wonder-cars-logo-dark.png"
               alt="Used Car Nearby — Wonder Cars showroom"
+              width={160}
+              height={48}
               className="h-8 xs:h-9 sm:h-11 md:h-12 w-auto max-w-[125px] xs:max-w-[160px] sm:max-w-none object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
               loading="eager"
+              fetchPriority="high"
+              decoding="async"
             />
           </Link>
         </div>

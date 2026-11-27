@@ -12,10 +12,13 @@ interface CarCardProps {
   car: Car;
   index?: number;
   emiConfig?: Partial<EmiConfig>;
+  loading?: 'eager' | 'lazy';
+  fetchPriority?: 'high' | 'low' | 'auto';
 }
 
-export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
+export function CarCard({ car, index = 0, emiConfig, loading, fetchPriority }: CarCardProps) {
   const isSold = car.status === 'Sold';
+  const effectiveLoading = loading ?? (index < 3 ? 'eager' : 'lazy');
   const estimatedEmi = estimateCarEmiWithConfig(car.priceInr, emiConfig);
   const { isWishlisted, toggleWishlist } = useWishlist();
   const saved = isWishlisted(car.id);
@@ -34,6 +37,10 @@ export function CarCard({ car, index = 0, emiConfig }: CarCardProps) {
           <VehicleImage
             src={car.images[0]}
             alt={`${car.year} ${car.brand} ${car.model}`}
+            loading={effectiveLoading}
+            fetchPriority={fetchPriority}
+            width={800}
+            height={600}
             className={`w-full h-full object-cover transition-transform duration-500 ease-out group-hover:scale-[1.05] ${
               isSold ? 'opacity-60 grayscale-[35%]' : ''
             }`}

@@ -31,8 +31,9 @@ import {
   ZoomOut,
 } from 'lucide-react';
 import { SeoHead } from '../components/SeoHead';
+import { OptimizedPicture } from '../components/OptimizedPicture';
 import { VehicleImage } from '../components/VehicleImage';
-import { fetchAboutSettings } from '../utils/api';
+import { BACKEND_READY_EVENT, fetchAboutSettings } from '../utils/api';
 import type { AboutSettings } from '../types/car';
 import {
   ABOUT_DATA,
@@ -41,6 +42,7 @@ import {
   type YouTubeVideoItem,
 } from '../data/aboutConfig';
 import aboutHeroBg from '../assets/images/about-hero-bg.jpg';
+import aboutHeroBgWebp from '../assets/images/about-hero-bg.webp';
 
 // Inline verified SVGs for social brands
 function InstagramIcon({ className = 'w-5 h-5' }: { className?: string }) {
@@ -102,13 +104,25 @@ export function AboutPage() {
 
   useEffect(() => {
     let active = true;
-    fetchAboutSettings()
-      .then((data) => {
-        if (active && data) setLiveSettings(data);
-      })
-      .catch(() => null);
+    let loadedSettings = false;
+    const load = () => {
+      fetchAboutSettings()
+        .then((data) => {
+          if (active && data) {
+            loadedSettings = true;
+            setLiveSettings(data);
+          }
+        })
+        .catch(() => null);
+    };
+    load();
+    const handleReady = () => {
+      if (active && !loadedSettings) load();
+    };
+    window.addEventListener(BACKEND_READY_EVENT, handleReady);
     return () => {
       active = false;
+      window.removeEventListener(BACKEND_READY_EVENT, handleReady);
     };
   }, []);
 
@@ -285,9 +299,13 @@ export function AboutPage() {
       <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-black border-b border-white/[0.08]">
         {/* Cinematic Night Road Background Image */}
         <div className="absolute inset-0 z-0 overflow-hidden pointer-events-none">
-          <img
+          <OptimizedPicture
             src={heroBg}
+            webpSrc={!liveSettings?.heroBgImage ? aboutHeroBgWebp : undefined}
             alt="Wonder Cars Luxury Night Drive"
+            loading="eager"
+            fetchPriority="high"
+            decoding="async"
             className="w-full h-full object-cover object-center"
           />
           {/* Moody luxury overlays matching reference design */}
@@ -377,6 +395,9 @@ export function AboutPage() {
                   src={heroCarImage}
                   alt={heroCarTitle}
                   loading="eager"
+                  fetchPriority="high"
+                  width={800}
+                  height={600}
                   className="w-full aspect-[4/3] object-cover transition-transform duration-500 group-hover:scale-105"
                 />
                 
@@ -441,7 +462,7 @@ export function AboutPage() {
               <div className="relative rounded-3xl overflow-hidden border-2 border-amber-500/20 dark:border-amber-500/30 shadow-xl bg-gradient-to-br from-slate-100 to-slate-200 dark:from-[#18181B] dark:to-[#121215] p-6 text-center">
                 {/* Visual Emblem / Portrait Frame */}
                 <div className="w-48 h-48 sm:w-56 sm:h-56 mx-auto rounded-full overflow-hidden border-4 border-amber-500/40 shadow-xl bg-white flex items-center justify-center">
-                  <img
+                  <OptimizedPicture
                     src={ownerImage || '/assets/wonder-cars-emblem-clean.png'}
                     alt={ownerName}
                     onError={(e) => {
@@ -614,7 +635,7 @@ export function AboutPage() {
                 <div className="space-y-4">
                   {/* Framed Certificate Document Image Preview */}
                   <div className="relative aspect-[4/3] w-full rounded-xl overflow-hidden bg-slate-950/80 border border-slate-200 dark:border-white/10 flex items-center justify-center p-2.5 group-hover:border-amber-500/40 transition-colors">
-                    <img
+                    <OptimizedPicture
                       src={cert.image}
                       alt={cert.title}
                       className="max-h-full max-w-full object-contain rounded-sm transition-transform duration-500 group-hover:scale-[1.03]"
@@ -711,6 +732,9 @@ export function AboutPage() {
                   <VehicleImage
                     src={photo.image}
                     alt={photo.title}
+                    loading={index < 3 ? 'eager' : 'lazy'}
+                    width={600}
+                    height={450}
                     className="w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
                   />
                   {/* Subtle Dark Gradient at bottom of image for sleek depth */}
@@ -980,6 +1004,10 @@ export function AboutPage() {
                     <img
                       src="/assets/usedcarsnearby-avatar.png"
                       alt="Used Cars Nearby Instagram Profile"
+                      loading="lazy"
+                      decoding="async"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover rounded-full"
                     />
                   </a>
@@ -1029,6 +1057,10 @@ export function AboutPage() {
                     <img
                       src="/assets/usedcarsnearby-avatar.png"
                       alt="Used Cars Nearby Facebook Profile"
+                      loading="lazy"
+                      decoding="async"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover rounded-full"
                     />
                   </a>
@@ -1078,6 +1110,10 @@ export function AboutPage() {
                     <img
                       src="/assets/usedcarsnearby-avatar.png"
                       alt="Used Cars Nearby Channel Profile"
+                      loading="lazy"
+                      decoding="async"
+                      width={96}
+                      height={96}
                       className="w-full h-full object-cover rounded-full"
                     />
                   </a>
@@ -1372,7 +1408,7 @@ export function AboutPage() {
               className="max-w-5xl max-h-[82vh] overflow-hidden flex flex-col items-center justify-center"
               onClick={(e) => e.stopPropagation()}
             >
-              <img
+              <OptimizedPicture
                 src={filteredGallery[selectedGalleryIndex].image}
                 alt={filteredGallery[selectedGalleryIndex].title}
                 style={{ transform: `scale(${galleryZoom})` }}
@@ -1468,7 +1504,7 @@ export function AboutPage() {
               <div className="flex items-center justify-between border-b border-slate-100 dark:border-white/[0.08] pb-4">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-xl bg-amber-50 dark:bg-amber-500/10 border border-amber-500/30 flex items-center justify-center p-2 shrink-0">
-                    <img
+                    <OptimizedPicture
                       src="/assets/wonder-cars-emblem-clean.png"
                       alt="Wonder Cars Emblem"
                       className="w-full h-full object-contain"
@@ -1521,7 +1557,7 @@ export function AboutPage() {
                   style={{ transform: `scale(${certZoom})` }}
                   className="transition-transform duration-200 flex items-center justify-center max-w-full"
                 >
-                  <img
+                  <OptimizedPicture
                     src={selectedCert.image}
                     alt={selectedCert.title}
                     className="max-h-[58vh] w-auto max-w-full rounded-md shadow-2xl object-contain mx-auto"

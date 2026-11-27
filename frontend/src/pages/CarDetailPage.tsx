@@ -12,7 +12,14 @@ import {
   ShieldCheck,
 } from 'lucide-react';
 import type { Car } from '../types/car';
-import { fetchCarDetail, getWishlistIds, toggleWishlistId, subscribeToInventoryUpdates } from '../utils/api';
+import {
+  ApiRequestError,
+  BACKEND_READY_EVENT,
+  fetchCarDetail,
+  getWishlistIds,
+  toggleWishlistId,
+  subscribeToInventoryUpdates,
+} from '../utils/api';
 import { trackClickCall, trackClickWhatsApp, trackViewCar } from '../utils/analytics';
 import {
   buildWhatsAppUrl,
@@ -67,6 +74,8 @@ export function CarDetailPage() {
     window.scrollTo(0, 0);
     if (!id) return;
     let active = true;
+    let authoritativeNotFound = false;
+    let needsReloadOnWake = false;
     setCar(null);
     setLoading(true);
     setError('');
@@ -75,6 +84,8 @@ export function CarDetailPage() {
       fetchCarDetail(id)
         .then((res) => {
           if (!active) return;
+          authoritativeNotFound = false;
+          needsReloadOnWake = false;
           setCar(res.car);
           setSimilar(res.similar);
           setSellerOtherCars(res.sellerOtherCars);
@@ -89,6 +100,10 @@ export function CarDetailPage() {
         })
         .catch((err) => {
           if (!active) return;
+          const isClientError =
+            err instanceof ApiRequestError && err.status >= 400 && err.status < 500;
+          authoritativeNotFound = isClientError;
+          needsReloadOnWake = !isClientError;
           setCar(null);
           setError(err instanceof Error ? err.message : 'Unable to load vehicle details.');
         })
@@ -99,8 +114,19 @@ export function CarDetailPage() {
 
     loadCar();
 
+    const handleBackendReady = () => {
+      if (active && needsReloadOnWake && !authoritativeNotFound) {
+        setLoading(true);
+        setError('');
+        loadCar();
+      }
+    };
+    window.addEventListener(BACKEND_READY_EVENT, handleBackendReady);
+
     const unsubscribe = subscribeToInventoryUpdates((data) => {
       if (data?.type === 'delete' && data.carId && data.carId === id) {
+        authoritativeNotFound = true;
+        needsReloadOnWake = false;
         setCar(null);
         setError('Vehicle not found');
         return;
@@ -122,6 +148,7 @@ export function CarDetailPage() {
 
     return () => {
       active = false;
+      window.removeEventListener(BACKEND_READY_EVENT, handleBackendReady);
       unsubscribe();
     };
   }, [id]);

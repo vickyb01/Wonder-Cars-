@@ -4,6 +4,7 @@ import { Phone, Mail, MapPin, QrCode, X, Download } from 'lucide-react';
 import type { BusinessLocationSettings } from '../types/car';
 import { fetchBusinessLocation } from '../utils/api';
 import { buildWhatsAppUrl } from '../utils/format';
+import { OptimizedPicture } from './OptimizedPicture';
 
 function InstagramIcon() {
   return (
@@ -87,17 +88,23 @@ export function Footer() {
           {/* Brand Column */}
           <div className="space-y-4 flex flex-col items-center lg:items-start">
             <Link to="/" className="inline-flex items-center justify-center lg:justify-start group" aria-label="Used Car Nearby (UsedCarNearby.com) by Wonder Cars Home">
-              <img
+              <OptimizedPicture
                 src="/assets/wonder-cars-logo.png"
                 alt="Used Car Nearby — Wonder Cars"
+                width={200}
+                height={80}
                 className="h-16 sm:h-20 w-auto object-contain dark:hidden transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
+                decoding="async"
               />
-              <img
+              <OptimizedPicture
                 src="/assets/wonder-cars-logo-dark.png"
                 alt="Used Car Nearby — Wonder Cars"
+                width={200}
+                height={80}
                 className="h-16 sm:h-20 w-auto object-contain hidden dark:block transition-transform duration-300 group-hover:scale-105"
                 loading="lazy"
+                decoding="async"
               />
             </Link>
             <div className="space-y-1.5">
@@ -276,9 +283,13 @@ export function Footer() {
             </div>
 
             <div className="mx-auto w-fit p-3 rounded-2xl bg-white border border-slate-200 shadow-sm">
-              <img
+              <OptimizedPicture
                 src="/assets/wonder-cars-qr.jpg"
                 alt="Used Car Nearby Wonder Cars QR Code"
+                width={256}
+                height={256}
+                loading="lazy"
+                decoding="async"
                 className="w-60 sm:w-64 h-60 sm:h-64 object-contain rounded-lg"
               />
             </div>

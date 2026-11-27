@@ -254,6 +254,12 @@ export function wakeBackend(): Promise<boolean> {
   return wakePromise;
 }
 
+let preferDirectRenderUploads = false;
+
+export function markUploadProxyFailed(): void {
+  preferDirectRenderUploads = true;
+}
+
 export function getUploadUrlCandidates(url?: string): string[] {
   const normalized = normalizeMediaUrl(url);
   if (!normalized) return [];
@@ -262,12 +268,11 @@ export function getUploadUrlCandidates(url?: string): string[] {
     if (match) {
       const relativePath = match[0];
       const directRenderUrl = `${LIVE_BACKEND_URL.replace(/\/$/, '')}${relativePath}`;
-      // Prefer direct Render backend for uploaded media when running outside localhost to avoid Vercel proxy cold-start timeouts
       if (normalized.startsWith('http://') || normalized.startsWith('https://')) {
         return Array.from(new Set([normalized, directRenderUrl, relativePath]));
       }
-      if (typeof window !== 'undefined' && window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1') {
-        return Array.from(new Set([relativePath, directRenderUrl]));
+      if (preferDirectRenderUploads) {
+        return Array.from(new Set([directRenderUrl, relativePath]));
       }
       return Array.from(new Set([relativePath, directRenderUrl]));
     }
@@ -318,6 +323,7 @@ async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<R
       }
       // If local dev server proxy returned 502 Bad Gateway (local backend offline), seamlessly fallback to Live Render backend
       if (!res.ok && res.status === 502 && !API_BASE && isApiRequest) {
+        markUploadProxyFailed();
         const directRes = await fetch(`${LIVE_BACKEND_URL}${input}`, init);
         if (directRes.ok) markBackendAwake();
         return directRes;
@@ -325,6 +331,7 @@ async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<R
       return res;
     } catch (err) {
       if (!API_BASE && isApiRequest) {
+        markUploadProxyFailed();
         const directRes = await fetch(`${LIVE_BACKEND_URL}${input}`, init);
         if (directRes.ok) markBackendAwake();
         return directRes;
@@ -338,7 +345,7 @@ async function apiFetch(input: RequestInfo | URL, init?: RequestInit): Promise<R
     // Cold start retries: if Render returns 502/503/504 while waking up, trigger warmup & retry cleanly
     if (!res.ok && [502, 503, 504].includes(res.status) && isApiRequest) {
       void wakeBackend();
-      const retryDelays = isGetMethod ? [2500, 5000] : [2500];
+      const retryDelays = isGetMethod ? [2000, 3500, 5000] : [2500];
       for (const delay of retryDelays) {
         await new Promise((r) => setTimeout(r, delay));
         res = await performFetch(targetUrl);

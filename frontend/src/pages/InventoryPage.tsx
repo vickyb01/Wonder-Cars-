@@ -1,8 +1,8 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Heart, RotateCcw, SlidersHorizontal, X } from 'lucide-react';
 import type { Car, CarFilters } from '../types/car';
-import { fetchCars, subscribeToInventoryUpdates } from '../utils/api';
+import { BACKEND_READY_EVENT, fetchCars, subscribeToInventoryUpdates } from '../utils/api';
 import { useWishlist } from '../context/WishlistContext';
 import { CarCard } from '../components/CarCard';
 import { EmiFilterPanel } from '../components/EmiFilterPanel';
@@ -38,6 +38,8 @@ export function InventoryPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const needsReloadOnWakeRef = useRef(false);
+  const needsOptionsReloadRef = useRef(false);
   const { wishlistIds } = useWishlist();
   const isSavedOnly = searchParams.get('saved') === 'true';
 
@@ -79,16 +81,24 @@ export function InventoryPage() {
   );
 
   useEffect(() => {
+    needsOptionsReloadRef.current = false;
     fetchCars({})
-      .then((list) => setAllCarsForOptions(list))
-      .catch(() => {});
+      .then((list) => {
+        needsOptionsReloadRef.current = false;
+        setAllCarsForOptions(list);
+      })
+      .catch(() => {
+        needsOptionsReloadRef.current = true;
+      });
   }, []);
 
   const loadFiltered = useCallback(async () => {
+    needsReloadOnWakeRef.current = false;
     setLoading(true);
     setError('');
     try {
       const data = await fetchCars(filters);
+      needsReloadOnWakeRef.current = false;
       setCars(data);
       if (filters.search || (filters.brand && filters.brand !== 'All') || (filters.fuelType && filters.fuelType !== 'All')) {
         trackSearchCar(filters.search || filters.brand || 'filtered', {
@@ -99,6 +109,7 @@ export function InventoryPage() {
         });
       }
     } catch (err) {
+      needsReloadOnWakeRef.current = true;
       setError(err instanceof Error ? err.message : 'Unable to load vehicle inventory.');
     } finally {
       setLoading(false);
@@ -117,7 +128,26 @@ export function InventoryPage() {
       }
       loadFiltered();
     });
-    return unsubscribe;
+
+    const handleBackendReady = () => {
+      if (needsReloadOnWakeRef.current) {
+        void loadFiltered();
+      }
+      if (needsOptionsReloadRef.current) {
+        needsOptionsReloadRef.current = false;
+        fetchCars({})
+          .then((list) => setAllCarsForOptions(list))
+          .catch(() => {
+            needsOptionsReloadRef.current = true;
+          });
+      }
+    };
+    window.addEventListener(BACKEND_READY_EVENT, handleBackendReady);
+
+    return () => {
+      unsubscribe();
+      window.removeEventListener(BACKEND_READY_EVENT, handleBackendReady);
+    };
   }, [loadFiltered]);
 
   const displayedCars = useMemo(() => {
@@ -652,7 +682,14 @@ export function InventoryPage() {
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {displayedCars.map((car, idx) => (
-                  <CarCard key={car.id} car={car} index={idx} emiConfig={emiConfig} />
+                  <CarCard
+                    key={car.id}
+                    car={car}
+                    index={idx}
+                    emiConfig={emiConfig}
+                    loading={idx < 6 ? 'eager' : 'lazy'}
+                    fetchPriority={idx < 3 ? 'high' : undefined}
+                  />
                 ))}
               </div>
             )}
