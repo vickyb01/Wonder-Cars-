@@ -1,6 +1,12 @@
 import type { Request, Response } from 'express';
 import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import type { BrandItem, CategoryItem, TestimonialItem } from '../models/types.ts';
+import {
+  syncAboutMapsToLocation,
+  syncLocationMapsToAbout,
+  validateAndSanitizeAboutSettings,
+  validateAndSanitizeHomepageSettings,
+} from '../utils/settingsValidation.ts';
 
 // Categories
 export function getCategories(_req: Request, res: Response): void {
@@ -130,10 +136,13 @@ export function getHomepageSettings(_req: Request, res: Response): void {
 
 export function updateHomepageSettings(req: Request, res: Response): void {
   const db = readDb();
-  db.homepageSettings = {
-    ...db.homepageSettings,
-    ...(req.body || {}),
-  };
+  const validation = validateAndSanitizeHomepageSettings(db.homepageSettings, req.body);
+  if (!validation.ok) {
+    res.status(400).json({ error: validation.error, fieldErrors: validation.fieldErrors });
+    return;
+  }
+
+  db.homepageSettings = validation.data;
   writeDb(db);
   logActivity('admin', 'Updated Homepage Settings', 'Modified hero, promotional banner, and CTAs.');
   res.json(db.homepageSettings);
@@ -142,17 +151,24 @@ export function updateHomepageSettings(req: Request, res: Response): void {
 // About Us
 export function getAboutSettings(_req: Request, res: Response): void {
   const db = readDb();
-  res.json(db.aboutSettings);
+  const responseSettings = db.locationSettings?.updatedAt
+    ? syncLocationMapsToAbout(db.aboutSettings, db.locationSettings)
+    : db.aboutSettings;
+  res.json(responseSettings);
 }
 
 export function updateAboutSettings(req: Request, res: Response): void {
   const db = readDb();
-  db.aboutSettings = {
-    ...db.aboutSettings,
-    ...(req.body || {}),
-  };
+  const validation = validateAndSanitizeAboutSettings(db.aboutSettings, req.body);
+  if (!validation.ok) {
+    res.status(400).json({ error: validation.error, fieldErrors: validation.fieldErrors });
+    return;
+  }
+
+  db.aboutSettings = validation.data;
+  db.locationSettings = syncAboutMapsToLocation(db.locationSettings, req.body, db.aboutSettings);
   writeDb(db);
-  logActivity('admin', 'Updated About Us Settings', 'Modified owner profile, story, and gallery.');
+  logActivity('admin', 'Updated About Us Settings', 'Modified owner profile, showroom, and showcase settings.');
   res.json(db.aboutSettings);
 }
 

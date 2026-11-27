@@ -148,8 +148,15 @@ import { EMPTY_LOCATION_SETTINGS, buildDirectionsUrl, formatFullAddress } from '
 import { buildWhatsAppUrl, formatINR, formatINRCompact, formatKm } from '../utils/format';
 import { AdminCarModal } from '../components/AdminCarModal';
 import { SeoHead } from '../components/SeoHead';
+import {
+  ADMIN_DASHBOARD_SEO_DESCRIPTION,
+  ADMIN_DASHBOARD_SEO_TITLE,
+  ADMIN_LOGIN_SEO_DESCRIPTION,
+  ADMIN_LOGIN_SEO_TITLE,
+} from '../utils/seo';
 import { VehicleImage } from '../components/VehicleImage';
 import { AnalyticsDashboard } from '../components/admin/AnalyticsDashboard';
+import { WebsiteSeoSettingsPanel } from '../components/admin/WebsiteSeoSettingsPanel';
 
 export type AdminTab =
   | 'dashboard'
@@ -854,6 +861,7 @@ export function AdminPage() {
     { id: 'about', label: 'About Us Management', icon: UserCheck },
     { id: 'media', label: 'Media Library', icon: Camera, badge: mediaFiles.length },
     { id: 'reports', label: 'Reports & Analytics', icon: BarChart3 },
+    { id: 'settings', label: 'Website & SEO Settings', icon: Settings },
     { id: 'logout', label: 'Logout', icon: LogOut, isAction: true },
   ] as const;
 
@@ -873,8 +881,8 @@ export function AdminPage() {
     return (
       <div className="min-h-screen bg-[#0A192F] flex flex-col justify-center items-center p-4 sm:p-6 text-slate-800 antialiased selection:bg-blue-500 selection:text-white">
         <SeoHead
-          title="Admin Login — Wonder Cars"
-          description="Secure authentication gateway for Wonder Cars showroom administration."
+          title={ADMIN_LOGIN_SEO_TITLE}
+          description={ADMIN_LOGIN_SEO_DESCRIPTION}
           robots="noindex, nofollow"
           noCanonical
         />
@@ -1088,8 +1096,8 @@ export function AdminPage() {
   return (
     <div className="h-screen bg-[#F8FAFC] text-slate-800 flex flex-col antialiased selection:bg-blue-600 selection:text-white overflow-hidden">
       <SeoHead
-        title="Admin Dashboard — Wonder Cars"
-        description="Wonder Cars professional showroom management dashboard."
+        title={ADMIN_DASHBOARD_SEO_TITLE}
+        description={ADMIN_DASHBOARD_SEO_DESCRIPTION}
         robots="noindex, nofollow"
         noCanonical
       />
@@ -4496,7 +4504,7 @@ export function AdminPage() {
                       <input
                         type="text"
                         value={aboutSettings?.instagramUrl || ''}
-                        placeholder="https://www.instagram.com/usedcarsnearby"
+                        placeholder="https://www.instagram.com/usedcarsnearby/"
                         onChange={(e) =>
                           setAboutSettings((prev) => (prev ? { ...prev, instagramUrl: e.target.value } : null))
                         }
@@ -4539,7 +4547,7 @@ export function AdminPage() {
                       <input
                         type="text"
                         value={aboutSettings?.facebookUrl || ''}
-                        placeholder="https://facebook.com/usedcarsnearby"
+                        placeholder="https://www.facebook.com/amanjain.nj784/"
                         onChange={(e) =>
                           setAboutSettings((prev) => (prev ? { ...prev, facebookUrl: e.target.value } : null))
                         }
@@ -4582,7 +4590,7 @@ export function AdminPage() {
                       <input
                         type="text"
                         value={aboutSettings?.youtubeUrl || ''}
-                        placeholder="https://youtube.com/@usedcarsnearby"
+                        placeholder="https://www.youtube.com/c/usedcarsnearby"
                         onChange={(e) =>
                           setAboutSettings((prev) => (prev ? { ...prev, youtubeUrl: e.target.value } : null))
                         }
@@ -4750,7 +4758,7 @@ export function AdminPage() {
                     <input
                       type="text"
                       value={aboutSettings?.googleMapsDirectionsUrl || ''}
-                      placeholder="https://maps.google.com/?q=..."
+                      placeholder="https://www.google.com/maps/dir//Wonder+cars/@28.6396915,77.2936307,17z/..."
                       onChange={(e) =>
                         setAboutSettings((prev) => (prev ? { ...prev, googleMapsDirectionsUrl: e.target.value } : null))
                       }
@@ -4762,7 +4770,7 @@ export function AdminPage() {
                     <input
                       type="text"
                       value={aboutSettings?.googleMapsEmbedUrl || ''}
-                      placeholder="https://www.google.com/maps/embed?pb=..."
+                      placeholder="https://maps.google.com/maps?q=loc:28.6396915,77.2936307+(Wonder+cars)&t=m&z=17&ie=UTF8&iwloc=&output=embed"
                       onChange={(e) =>
                         setAboutSettings((prev) => (prev ? { ...prev, googleMapsEmbedUrl: e.target.value } : null))
                       }
@@ -5180,143 +5188,24 @@ export function AdminPage() {
           )}
 
           {/* ========================================================================= */}
-          {/* TAB 14: WEBSITE SETTINGS */}
+          {/* TAB 14: WEBSITE & SEO SETTINGS */}
           {/* ========================================================================= */}
           {activeTab === 'settings' && (
-            <div className="space-y-6 max-w-4xl">
-              <div>
-                <h1 className="text-2xl font-bold text-[#0B1528] tracking-tight">Website & Showroom Settings</h1>
-                <p className="text-xs text-slate-500 mt-1">Showroom phone, WhatsApp, Google Maps coordinates, SEO metadata, and social media.</p>
-              </div>
-
-              {/* Showroom Location Form */}
-              <form onSubmit={handleSaveLocation} className="bg-white rounded-2xl border border-slate-200/90 p-6 shadow-xs space-y-4">
-                <h3 className="font-bold text-sm text-[#0B1528] pb-2 border-b border-slate-100 flex items-center gap-2">
-                  <MapPin className="w-4 h-4 text-blue-600" />
-                  Showroom Location & Contact Information
-                </h3>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className={labelCls}>Showroom Name</label>
-                    <input
-                      type="text"
-                      value={locationForm.businessName}
-                      onChange={(e) => setLocationForm({ ...locationForm, businessName: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelCls}>Official Phone</label>
-                    <input
-                      type="text"
-                      value={locationForm.phone}
-                      onChange={(e) => setLocationForm({ ...locationForm, phone: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelCls}>WhatsApp Number</label>
-                    <input
-                      type="text"
-                      value={locationForm.whatsapp}
-                      onChange={(e) => setLocationForm({ ...locationForm, whatsapp: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelCls}>Official Email</label>
-                    <input
-                      type="email"
-                      value={locationForm.email}
-                      onChange={(e) => setLocationForm({ ...locationForm, email: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                </div>
-
-                <div>
-                  <label className={labelCls}>Showroom Address (Street & Locality)</label>
-                  <input
-                    type="text"
-                    value={locationForm.address}
-                    onChange={(e) => setLocationForm({ ...locationForm, address: e.target.value })}
-                    className={inputCls}
-                    placeholder="e.g. Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92."
-                  />
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                  <div>
-                    <label className={labelCls}>City</label>
-                    <input
-                      type="text"
-                      value={locationForm.city}
-                      onChange={(e) => setLocationForm({ ...locationForm, city: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelCls}>State / Region</label>
-                    <input
-                      type="text"
-                      value={locationForm.state}
-                      onChange={(e) => setLocationForm({ ...locationForm, state: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                  <div>
-                    <label className={labelCls}>Postal Code (PIN)</label>
-                    <input
-                      type="text"
-                      value={locationForm.postalCode}
-                      onChange={(e) => setLocationForm({ ...locationForm, postalCode: e.target.value })}
-                      className={inputCls}
-                    />
-                  </div>
-                </div>
-
-                {/* Coordinates & Geocode */}
-                <div className="p-4 rounded-xl bg-slate-50 border border-slate-200/90 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-xs font-bold text-slate-800">Map Coordinates (Latitude & Longitude)</span>
-                    <button
-                      type="button"
-                      onClick={handleGeocode}
-                      disabled={geocoding}
-                      className="text-xs text-blue-600 hover:underline font-semibold flex items-center gap-1 cursor-pointer disabled:opacity-50"
-                    >
-                      <Navigation className="w-3.5 h-3.5" />
-                      <span>{geocoding ? 'Resolving...' : 'Auto-Detect via Geocoding'}</span>
-                    </button>
-                  </div>
-                  <div className="grid grid-cols-2 gap-3">
-                    <input
-                      type="text"
-                      value={locationForm.latitude}
-                      onChange={(e) => setLocationForm({ ...locationForm, latitude: e.target.value })}
-                      placeholder="Latitude (e.g. 28.6396915)"
-                      className={inputCls}
-                    />
-                    <input
-                      type="text"
-                      value={locationForm.longitude}
-                      onChange={(e) => setLocationForm({ ...locationForm, longitude: e.target.value })}
-                      placeholder="Longitude (e.g. 77.2936307)"
-                      className={inputCls}
-                    />
-                  </div>
-                </div>
-
-                <button
-                  type="submit"
-                  disabled={savingLocation}
-                  className="px-6 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs shadow-sm cursor-pointer disabled:opacity-60"
-                >
-                  {savingLocation ? 'Saving Details...' : 'Save Location Settings'}
-                </button>
-              </form>
-            </div>
+            <WebsiteSeoSettingsPanel
+              websiteSettings={websiteSettings}
+              onWebsiteSettingsUpdated={(next) => setWebsiteSettings(next)}
+              locationSettings={locationForm}
+              onLocationSettingsUpdated={(next) => setLocationForm(next)}
+              aboutSettings={aboutSettings}
+              onAboutSettingsUpdated={(next) => setAboutSettings(next)}
+              homepageSettings={homepageSettings}
+              onHomepageSettingsUpdated={(next) => setHomepageSettings(next)}
+              onNavigateTab={(tab) => {
+                setActiveTab(tab);
+                setSaveFeedback(null);
+              }}
+              onSaveFeedback={(feedback) => setSaveFeedback(feedback)}
+            />
           )}
 
           {/* ========================================================================= */}

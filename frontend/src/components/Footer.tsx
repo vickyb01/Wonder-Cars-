@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Phone, Mail, MapPin, QrCode, X, Download } from 'lucide-react';
-import type { BusinessLocationSettings } from '../types/car';
-import { fetchBusinessLocation } from '../utils/api';
+import type { BusinessLocationSettings, WebsiteSettings } from '../types/car';
+import { fetchBusinessLocation, fetchWebsiteSettings } from '../utils/api';
 import { buildWhatsAppUrl } from '../utils/format';
+import { SHOWROOM_FULL_ADDRESS, formatFullAddress, normalizeShowroomAddress, normalizeShowroomPlaceUrl } from '../utils/location';
+import { normalizeOfficialSocialUrl } from '../utils/seo';
 import { OptimizedPicture } from './OptimizedPicture';
 
 function InstagramIcon() {
@@ -43,6 +45,7 @@ function WhatsAppIcon() {
 
 export function Footer() {
   const [loc, setLoc] = useState<Partial<BusinessLocationSettings>>({});
+  const [webSettings, setWebSettings] = useState<Partial<WebsiteSettings>>({});
   const [qrOpen, setQrOpen] = useState(false);
 
   useEffect(() => {
@@ -56,10 +59,14 @@ export function Footer() {
 
   useEffect(() => {
     let active = true;
-    fetchBusinessLocation()
-      .then((res) => {
-        if (active && res.location) {
-          setLoc(res.location);
+    Promise.allSettled([fetchBusinessLocation(), fetchWebsiteSettings()])
+      .then(([locResult, webResult]) => {
+        if (!active) return;
+        if (locResult.status === 'fulfilled' && locResult.value?.location) {
+          setLoc(locResult.value.location);
+        }
+        if (webResult.status === 'fulfilled' && webResult.value) {
+          setWebSettings(webResult.value);
         }
       })
       .catch(() => {});
@@ -68,18 +75,35 @@ export function Footer() {
     };
   }, []);
 
-  const displayPhone = loc.phone?.trim() || '+91 83840 68347';
-  const displayEmail = loc.email?.trim() || 'amanjain.nj784@gmail.com';
-  const displayWhatsapp = loc.whatsapp?.trim() || '918384068347';
-  const displayHours = loc.openingHours?.trim() || 'Monday – Sunday: 10:00 AM – 8:00 PM';
+  const displayPhone = loc.phone?.trim() || webSettings.primaryPhone?.trim() || '+91 83840 68347';
+  const displayEmail = loc.email?.trim() || webSettings.supportEmail?.trim() || 'amanjain.nj784@gmail.com';
+  const displayWhatsapp = loc.whatsapp?.trim() || webSettings.whatsappNumber?.trim() || '918384068347';
+  const displayHours = loc.openingHours?.trim() || webSettings.openingHours?.trim() || 'Monday – Sunday: 10:00 AM – 8:00 PM';
+  const displayAddress = loc.address?.trim()
+    ? normalizeShowroomAddress(formatFullAddress({
+        address: loc.address || '',
+        city: loc.city || '',
+        state: loc.state || '',
+        postalCode: loc.postalCode || '',
+      }))
+    : webSettings.showroomAddress?.trim()
+      ? normalizeShowroomAddress(webSettings.showroomAddress)
+      : SHOWROOM_FULL_ADDRESS;
+  const rawFooterAbout = webSettings.footerAboutText?.trim() || '';
+  const hasCustomFooterAbout =
+    Boolean(rawFooterAbout) &&
+    !rawFooterAbout.startsWith('Wonder Cars is Delhi-NCR’s premier automotive dealership');
+  const copyrightText =
+    webSettings.copyrightText?.trim() ||
+    '© 2026 Used Car Nearby · Showroom by Wonder Cars. All rights reserved.';
 
   const whatsappHref = buildWhatsAppUrl(
     displayWhatsapp,
     'Hello Wonder Cars, I would like to speak with a vehicle specialist.'
   );
-  const instagramUrl = loc.instagramUrl?.trim() || 'https://www.instagram.com/usedcarsnearby?fqnt=MWdxdjZndW4zNHkwNQ%3D%3D';
-  const facebookUrl = loc.facebookUrl?.trim() || 'https://www.facebook.com/amanjain.nj784?mibextid=wwXIfr&rdid=PxDsB5WikY8FmiYB&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AMqRrq1Si%2F%3Fmibextid%3DwwXIfr#';
-  const youtubeUrl = loc.youtubeUrl?.trim() || 'https://youtube.com/@usedcarsnearby?si=rLhUh-H6HIdMfBQ5';
+  const instagramUrl = normalizeOfficialSocialUrl('instagram', loc.instagramUrl || webSettings.instagramUrl);
+  const facebookUrl = normalizeOfficialSocialUrl('facebook', loc.facebookUrl || webSettings.facebookUrl);
+  const youtubeUrl = normalizeOfficialSocialUrl('youtube', loc.youtubeUrl || webSettings.youtubeUrl);
 
   return (
     <footer className="bg-slate-50 dark:bg-[#09090B] border-t border-slate-200 dark:border-white/[0.08] text-slate-600 dark:text-zinc-400 transition-colors duration-200">
@@ -112,7 +136,13 @@ export function Footer() {
                 Used Car Nearby <span className="font-normal text-slate-500 dark:text-zinc-400">(UsedCarNearby.com)</span>
               </p>
               <p className="text-sm leading-relaxed text-slate-600 dark:text-zinc-400 max-w-sm lg:max-w-none">
-                Online pre-owned car showcase by <strong className="font-medium text-slate-900 dark:text-zinc-200">Wonder Cars</strong>, Preet Vihar, Delhi — 210-point inspected luxury and performance vehicles.
+                {hasCustomFooterAbout ? (
+                  rawFooterAbout
+                ) : (
+                  <>
+                    Online pre-owned car showcase by <strong className="font-medium text-slate-900 dark:text-zinc-200">Wonder Cars</strong>, Preet Vihar, Delhi — 210-point inspected luxury and performance vehicles.
+                  </>
+                )}
               </p>
             </div>
           </div>
@@ -128,17 +158,22 @@ export function Footer() {
               </li>
               <li>
                 <Link to="/about" className="hover:text-blue-700 dark:hover:text-white transition-colors">
-                  About Wonder Cars
+                  About Used Car Nearby
                 </Link>
               </li>
               <li>
                 <Link to="/contact" className="hover:text-blue-700 dark:hover:text-white transition-colors">
-                  Contact Concierge
+                  Contact Us
                 </Link>
               </li>
               <li>
-                <Link to="/admin" className="hover:text-blue-700 dark:hover:text-white transition-colors">
-                  Admin Portal
+                <Link to="/privacy" className="hover:text-blue-700 dark:hover:text-white transition-colors">
+                  Privacy Policy
+                </Link>
+              </li>
+              <li>
+                <Link to="/terms" className="hover:text-blue-700 dark:hover:text-white transition-colors">
+                  Terms &amp; Conditions
                 </Link>
               </li>
               <li>
@@ -160,13 +195,13 @@ export function Footer() {
             <ul className="space-y-3 text-sm flex flex-col items-center lg:items-start">
               <li>
                 <a
-                  href={loc.googleMapsUrl || 'https://maps.google.com/?q=Shop+No.-3,+Rajkamal+Sadan,+Preet+Vihar,+Commercial+Complex,+Delhi-92'}
+                  href={normalizeShowroomPlaceUrl(loc.googleMapsUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-start justify-center lg:justify-start gap-2.5 hover:text-blue-700 dark:hover:text-white transition-colors group text-center lg:text-left"
                 >
                   <MapPin className="w-4 h-4 text-blue-700 dark:text-blue-400 shrink-0 mt-0.5 group-hover:scale-110 transition-transform" />
-                  <span className="leading-relaxed">Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.</span>
+                  <span className="leading-relaxed">{displayAddress}</span>
                 </a>
               </li>
             </ul>
@@ -249,6 +284,11 @@ export function Footer() {
               </a>
             </div>
           </div>
+        </div>
+
+        <div className="mt-8 pt-5 border-t border-slate-200/80 dark:border-white/[0.06] flex flex-col sm:flex-row items-center justify-between gap-2 text-xs text-slate-500 dark:text-zinc-500">
+          <p>{copyrightText}</p>
+          <p>Showroom: Wonder Cars · Preet Vihar, Delhi - 110092</p>
         </div>
       </div>
 

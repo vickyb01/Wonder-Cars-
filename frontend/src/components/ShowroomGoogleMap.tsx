@@ -13,7 +13,9 @@ import { ExternalLink, MapPin, Navigation } from 'lucide-react';
 import type { BusinessLocationSettings } from '../types/car';
 import { useTheme } from '../context/ThemeContext';
 import {
+  SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL,
   buildDirectionsUrl,
+  buildMapsEmbedUrl,
   buildOpenMapsUrl,
   formatFullAddress,
   parseCoordinates,
@@ -43,18 +45,16 @@ function ShowroomIframeMap({
   zoom: number;
   title: string;
 }) {
-  const displayName = location.businessName || 'Wonder Cars Flagship Showroom';
+  const displayName = location.businessName || 'Wonder Cars';
   const fullAddress = formatFullAddress(location);
   const directionsUrl =
     buildDirectionsUrl(location) ||
-    `https://www.google.com/maps/dir//Wonder+cars/@${coords.lat},${coords.lng},17z/data=!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d${coords.lat}!4d${coords.lng}`;
+    SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL;
   const openMapsUrl =
     buildOpenMapsUrl(location) ||
     `https://www.google.com/maps/place/Wonder+cars/@${coords.lat},${coords.lng},17z`;
 
-  const embedUrl = `https://maps.google.com/maps?q=loc:${coords.lat},${coords.lng}+(${encodeURIComponent(
-    displayName
-  )})&t=m&z=${zoom || 17}&ie=UTF8&iwloc=&output=embed`;
+  const embedUrl = buildMapsEmbedUrl(location, zoom || 17);
 
   return (
     <div

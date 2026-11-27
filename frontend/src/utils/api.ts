@@ -948,7 +948,7 @@ export async function fetchBusinessLocation(): Promise<LocationApiResponse> {
 }
 
 export async function updateBusinessLocation(
-  payload: BusinessLocationSettings
+  payload: Partial<BusinessLocationSettings>
 ): Promise<BusinessLocationSettings> {
   const res = await apiFetch('/api/admin/location', {
     method: 'PUT',

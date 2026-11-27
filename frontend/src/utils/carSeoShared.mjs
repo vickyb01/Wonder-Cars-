@@ -2,8 +2,69 @@ export const CANONICAL_ORIGIN = 'https://www.usedcarnearby.com';
 export const DEFAULT_API_URL = 'https://wonder-cars-1.onrender.com';
 export const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/assets/wonder-cars.jpg`;
 export const SITE_BRAND_NAME = 'Used Car Nearby';
+export const SITE_ALTERNATE_NAMES = ['UsedCarNearby', 'usedcarnearby.com'];
+export const ORGANIZATION_ID = `${CANONICAL_ORIGIN}/#organization`;
+export const WEBSITE_ID = `${CANONICAL_ORIGIN}/#website`;
 export const DEALERSHIP_NAME = 'Wonder Cars';
 export const DEALERSHIP_ID = `${CANONICAL_ORIGIN}/#wondercars`;
+export const SHOWROOM_LOGO_PATH = '/assets/wonder-cars-logo.png';
+export const SHOWROOM_IMAGE_PATH = '/assets/wonder-cars.jpg';
+export const SHOWROOM_TELEPHONE = '+91 83840 68347';
+export const SHOWROOM_EMAIL = 'amanjain.nj784@gmail.com';
+export const SHOWROOM_GOOGLE_MAPS_URL =
+  'https://www.google.com/maps/place/Wonder+cars/@28.6396962,77.2910558,17z/data=!3m1!4b1!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307!16s%2Fg%2F11z4164dfg';
+export const SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL =
+  'https://www.google.com/maps/dir//Wonder+cars/@28.6396915,77.2936307,17z/data=!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307';
+export const SHOWROOM_GOOGLE_MAPS_EMBED_URL =
+  'https://maps.google.com/maps?q=loc:28.6396915,77.2936307+(Wonder+cars)&t=m&z=17&ie=UTF8&iwloc=&output=embed';
+export const SHOWROOM_FULL_ADDRESS =
+  'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092';
+export const SHOWROOM_ADDRESS = Object.freeze({
+  streetAddress: 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex',
+  addressLocality: 'Delhi',
+  addressRegion: 'Delhi',
+  postalCode: '110092',
+  addressCountry: 'IN',
+});
+export const SHOWROOM_GEO = Object.freeze({
+  latitude: 28.6396915,
+  longitude: 77.2936307,
+});
+export const HOMEPAGE_SEO_TITLE =
+  'Used Car Nearby (UsedCarNearby.com) | Pre-Owned Cars by Wonder Cars';
+export const HOMEPAGE_SEO_DESCRIPTION =
+  'Discover 210-point inspected pre-owned cars at Used Car Nearby (UsedCarNearby.com), the online showcase of Wonder Cars in Preet Vihar, Delhi.';
+export const CARS_SEO_TITLE = 'Browse Pre-Owned Cars Inventory';
+export const CARS_SEO_DESCRIPTION =
+  'Browse available pre-owned luxury and performance cars on Used Car Nearby. Compare transparent INR prices, specs, EMI, and book a Wonder Cars viewing.';
+export const ABOUT_SEO_TITLE = 'About Us';
+export const ABOUT_SEO_DESCRIPTION =
+  'Learn about Used Car Nearby and Wonder Cars in Preet Vihar, Delhi — 210-point inspected pre-owned cars, verified history, and transparent pricing.';
+export const CONTACT_SEO_TITLE = 'Contact Us';
+export const CONTACT_SEO_DESCRIPTION =
+  'Contact Used Car Nearby and visit Wonder Cars at Preet Vihar, Delhi for test drives, vehicle enquiries, and inspection reports.';
+export const PRIVACY_SEO_TITLE = 'Privacy Policy';
+export const PRIVACY_SEO_DESCRIPTION =
+  'Read the Privacy Policy for Used Car Nearby (UsedCarNearby.com) explaining how enquiry and booking details shared with Wonder Cars are handled.';
+export const TERMS_SEO_TITLE = 'Terms & Conditions';
+export const TERMS_SEO_DESCRIPTION =
+  'Review the Terms and Conditions for vehicle listings, showroom bookings, and purchases on Used Car Nearby with Wonder Cars.';
+export const ADMIN_LOGIN_SEO_TITLE = 'Admin Login | Used Car Nearby';
+export const ADMIN_LOGIN_SEO_DESCRIPTION =
+  'Secure showroom administration login for Used Car Nearby and Wonder Cars.';
+export const ADMIN_DASHBOARD_SEO_TITLE = 'Admin Dashboard | Used Car Nearby';
+export const ADMIN_DASHBOARD_SEO_DESCRIPTION =
+  'Showroom administration and inventory management dashboard for Used Car Nearby and Wonder Cars.';
+export const OFFICIAL_SOCIAL_PROFILES = Object.freeze({
+  instagram: 'https://www.instagram.com/usedcarsnearby/',
+  facebook: 'https://www.facebook.com/amanjain.nj784/',
+  youtube: 'https://www.youtube.com/c/usedcarsnearby',
+});
+export const OFFICIAL_SAME_AS = Object.freeze([
+  OFFICIAL_SOCIAL_PROFILES.instagram,
+  OFFICIAL_SOCIAL_PROFILES.facebook,
+  OFFICIAL_SOCIAL_PROFILES.youtube,
+]);
 export const DEFAULT_EXECUTION_BUDGET_MS = 7500;
 
 export const STATIC_PUBLIC_ROUTES = [
@@ -45,6 +106,51 @@ export function normalizeSiteUrl(rawUrl) {
 export function normalizeApiBaseUrl(rawUrl) {
   const cleaned = String(rawUrl || '').trim().replace(/\/+$/, '');
   return cleaned || DEFAULT_API_URL;
+}
+
+/**
+ * Normalizes known official social URLs by removing tracking parameters and resolving
+ * legacy/conflicting URL variants to the confirmed canonical social profile URLs.
+ * @param {'instagram' | 'facebook' | 'youtube'} platform
+ * @param {string} [rawUrl]
+ * @returns {string}
+ */
+export function normalizeOfficialSocialUrl(platform, rawUrl) {
+  const fallback = OFFICIAL_SOCIAL_PROFILES[platform];
+  const trimmed = String(rawUrl || '').trim();
+  if (!trimmed) return fallback;
+
+  try {
+    const parsed = new URL(trimmed);
+    const host = parsed.hostname.toLowerCase().replace(/^www\.|^m\./, '');
+    const pathname = parsed.pathname.replace(/\/+$/, '').toLowerCase();
+
+    if (platform === 'instagram' && host === 'instagram.com' && pathname === '/usedcarsnearby') {
+      return OFFICIAL_SOCIAL_PROFILES.instagram;
+    }
+
+    if (
+      platform === 'facebook' &&
+      host === 'facebook.com' &&
+      (pathname === '/amanjain.nj784' ||
+        pathname === '/usedcarsnearby' ||
+        pathname === '/share/1amqrrq1si')
+    ) {
+      return OFFICIAL_SOCIAL_PROFILES.facebook;
+    }
+
+    if (
+      platform === 'youtube' &&
+      (host === 'youtube.com' || host === 'youtu.be') &&
+      (pathname === '/@usedcarsnearby' || pathname === '/c/usedcarsnearby')
+    ) {
+      return OFFICIAL_SOCIAL_PROFILES.youtube;
+    }
+  } catch {
+    return fallback;
+  }
+
+  return trimmed;
 }
 
 /**
@@ -259,8 +365,8 @@ export function buildCarDescription(car) {
   ].filter(Boolean);
 
   return descParts.length > 1
-    ? `${descParts.join(' · ')} at Wonder Cars, Preet Vihar, Delhi.`
-    : `${carName} — Certified pre-owned vehicle at Wonder Cars, Preet Vihar, Delhi.`;
+    ? `${descParts.join(' · ')} at Wonder Cars on Used Car Nearby, Preet Vihar, Delhi.`
+    : `${carName} — Certified pre-owned vehicle at Wonder Cars on Used Car Nearby, Preet Vihar, Delhi.`;
 }
 
 /**
@@ -395,9 +501,7 @@ export function buildCarJsonLd(car, siteBase = CANONICAL_ORIGIN) {
     availability: resolveSchemaAvailability(car?.status),
     itemCondition: 'https://schema.org/UsedCondition',
     seller: {
-      '@type': 'AutoDealer',
       '@id': `${base}/#wondercars`,
-      name: isMeaningfulValue(car?.sellerName) ? String(car.sellerName).trim() : DEALERSHIP_NAME,
     },
   };
 
@@ -541,7 +645,101 @@ export function serializeJsonLdSafe(data) {
 }
 
 /**
- * Replaces managed SEO head tags and injects optional Car JSON-LD into an HTML shell.
+ * Builds the Schema.org Organization entity for the primary Used Car Nearby brand.
+ * @param {string} [siteBase]
+ * @returns {Record<string, any>}
+ */
+export function buildOrganizationJsonLd(siteBase = CANONICAL_ORIGIN) {
+  const base = normalizeSiteUrl(siteBase);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'Organization',
+    '@id': `${base}/#organization`,
+    name: SITE_BRAND_NAME,
+    alternateName: [...SITE_ALTERNATE_NAMES],
+    url: `${base}/`,
+    logo: `${base}${SHOWROOM_LOGO_PATH}`,
+    image: `${base}${SHOWROOM_IMAGE_PATH}`,
+    telephone: SHOWROOM_TELEPHONE,
+    email: SHOWROOM_EMAIL,
+    address: {
+      '@type': 'PostalAddress',
+      ...SHOWROOM_ADDRESS,
+    },
+    subOrganization: {
+      '@id': `${base}/#wondercars`,
+    },
+    sameAs: [...OFFICIAL_SAME_AS],
+  };
+}
+
+/**
+ * Builds the Schema.org WebSite entity for Used Car Nearby.
+ * @param {string} [siteBase]
+ * @returns {Record<string, any>}
+ */
+export function buildWebSiteJsonLd(siteBase = CANONICAL_ORIGIN) {
+  const base = normalizeSiteUrl(siteBase);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${base}/#website`,
+    name: SITE_BRAND_NAME,
+    alternateName: [...SITE_ALTERNATE_NAMES],
+    url: `${base}/`,
+    publisher: {
+      '@id': `${base}/#organization`,
+    },
+    about: {
+      '@id': `${base}/#wondercars`,
+    },
+  };
+}
+
+/**
+ * Builds the Schema.org AutoDealer entity for the Wonder Cars physical showroom.
+ * @param {string} [siteBase]
+ * @returns {Record<string, any>}
+ */
+export function buildAutoDealerJsonLd(siteBase = CANONICAL_ORIGIN) {
+  const base = normalizeSiteUrl(siteBase);
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'AutoDealer',
+    '@id': `${base}/#wondercars`,
+    name: DEALERSHIP_NAME,
+    url: `${base}/`,
+    logo: `${base}${SHOWROOM_LOGO_PATH}`,
+    image: `${base}${SHOWROOM_IMAGE_PATH}`,
+    telephone: SHOWROOM_TELEPHONE,
+    email: SHOWROOM_EMAIL,
+    address: {
+      '@type': 'PostalAddress',
+      ...SHOWROOM_ADDRESS,
+    },
+    geo: {
+      '@type': 'GeoCoordinates',
+      latitude: SHOWROOM_GEO.latitude,
+      longitude: SHOWROOM_GEO.longitude,
+    },
+    hasMap: SHOWROOM_GOOGLE_MAPS_URL,
+    openingHoursSpecification: [
+      {
+        '@type': 'OpeningHoursSpecification',
+        dayOfWeek: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'],
+        opens: '10:00',
+        closes: '20:00',
+      },
+    ],
+    parentOrganization: {
+      '@id': `${base}/#organization`,
+    },
+  };
+}
+
+/**
+ * Replaces managed SEO head tags and injects indexable structured data into an HTML shell.
+ * Noindex pages (404, admin) receive no Organization, WebSite, AutoDealer, or Car JSON-LD.
  * @param {string} templateHtml
  * @param {{
  *   canonicalPath?: string | null,
@@ -566,6 +764,7 @@ export function injectHeadSeoHtml(templateHtml, opts) {
       : null;
   const ogImage = opts.ogImage || `${siteBase}/assets/wonder-cars.jpg`;
   const ogType = opts.ogType || 'website';
+  const isIndexable = !/\bnoindex\b/i.test(String(opts.robots || ''));
 
   const stripped = String(templateHtml || '')
     .replace(/<title>[\s\S]*?<\/title>\s*/gi, '')
@@ -573,7 +772,27 @@ export function injectHeadSeoHtml(templateHtml, opts) {
     .replace(/<link\s+rel=["']canonical["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+property=["']og:(?:site_name|title|description|url|type|image)["'][^>]*>\s*/gi, '')
     .replace(/<meta\s+name=["']twitter:(?:card|title|description|image)["'][^>]*>\s*/gi, '')
-    .replace(/<script[^>]*id=["'](?:website-schema|car-schema)["'][^>]*>[\s\S]*?<\/script>\s*/gi, '');
+    .replace(
+      /<script[^>]*id=["'](?:organization-schema|website-schema|autodealer-schema|car-schema)["'][^>]*>[\s\S]*?<\/script>\s*/gi,
+      ''
+    );
+
+  const schemaScripts = isIndexable
+    ? [
+        `    <script type="application/ld+json" id="organization-schema">${serializeJsonLdSafe(
+          buildOrganizationJsonLd(siteBase)
+        )}</script>`,
+        `    <script type="application/ld+json" id="website-schema">${serializeJsonLdSafe(
+          buildWebSiteJsonLd(siteBase)
+        )}</script>`,
+        `    <script type="application/ld+json" id="autodealer-schema">${serializeJsonLdSafe(
+          buildAutoDealerJsonLd(siteBase)
+        )}</script>`,
+        ...(opts.jsonLd
+          ? [`    <script type="application/ld+json" id="car-schema">${serializeJsonLdSafe(opts.jsonLd)}</script>`]
+          : []),
+      ]
+    : [];
 
   const seoLines = [
     `    <title>${escapeXml(opts.title)}</title>`,
@@ -590,9 +809,7 @@ export function injectHeadSeoHtml(templateHtml, opts) {
     `    <meta name="twitter:title" content="${escapeXml(opts.title)}" />`,
     `    <meta name="twitter:description" content="${escapeXml(opts.description)}" />`,
     `    <meta name="twitter:image" content="${escapeXml(ogImage)}" />`,
-    ...(opts.jsonLd
-      ? [`    <script type="application/ld+json" id="car-schema">${serializeJsonLdSafe(opts.jsonLd)}</script>`]
-      : []),
+    ...schemaScripts,
   ].join('\n');
 
   if (/<meta\s+name=["']viewport["'][^>]*>/i.test(stripped)) {

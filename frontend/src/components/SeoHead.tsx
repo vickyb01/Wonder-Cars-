@@ -1,12 +1,22 @@
 import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
+  buildAutoDealerJsonLd,
   buildCanonicalUrl,
+  buildOrganizationJsonLd,
+  buildWebSiteJsonLd,
+  CANONICAL_ORIGIN,
   formatSeoTitle,
   HOMEPAGE_SEO_DESCRIPTION,
   resolveSeoImageUrl,
   SITE_BRAND_NAME,
 } from '../utils/seo';
+
+const SITEWIDE_SCHEMA_IDS = new Set([
+  'organization-schema',
+  'website-schema',
+  'autodealer-schema',
+]);
 
 interface SeoHeadProps {
   title: string;
@@ -80,11 +90,12 @@ function syncJsonLdScript(id: string, jsonLd?: Record<string, unknown> | null): 
       return;
     }
 
-    // Remove any duplicate Car JSON-LD scripts injected elsewhere while preserving site/dealer schemas
-    if (el.id !== 'website-schema' && el.id !== 'autodealer-schema') {
+    // Remove any duplicate Car/Organization/AutoDealer JSON-LD scripts injected elsewhere
+    if (!SITEWIDE_SCHEMA_IDS.has(el.id)) {
       try {
         const parsed = JSON.parse(el.textContent || '{}') as { '@type'?: string };
-        if (parsed && parsed['@type'] === 'Car') {
+        const schemaType = parsed?.['@type'];
+        if (schemaType === 'Car' || schemaType === 'Organization' || schemaType === 'AutoDealer') {
           el.remove();
         }
       } catch {
@@ -151,7 +162,21 @@ export function SeoHead({
     upsertMetaTag('name', 'twitter:description', effectiveDescription);
     upsertMetaTag('name', 'twitter:image', resolvedImage);
 
-    syncJsonLdScript(jsonLdId, serializedJsonLd ? (JSON.parse(serializedJsonLd) as Record<string, unknown>) : null);
+    const isIndexable = !/\bnoindex\b/i.test(robots);
+    if (isIndexable) {
+      syncJsonLdScript('organization-schema', buildOrganizationJsonLd(CANONICAL_ORIGIN));
+      syncJsonLdScript('website-schema', buildWebSiteJsonLd(CANONICAL_ORIGIN));
+      syncJsonLdScript('autodealer-schema', buildAutoDealerJsonLd(CANONICAL_ORIGIN));
+      syncJsonLdScript(
+        jsonLdId,
+        serializedJsonLd ? (JSON.parse(serializedJsonLd) as Record<string, unknown>) : null
+      );
+    } else {
+      removeJsonLdScript('organization-schema');
+      removeJsonLdScript('website-schema');
+      removeJsonLdScript('autodealer-schema');
+      removeJsonLdScript(jsonLdId);
+    }
   }, [title, description, canonicalPath, pathname, robots, ogType, ogImage, noCanonical, jsonLdId, serializedJsonLd]);
 
   useEffect(() => {

@@ -391,6 +391,9 @@ export interface WebsiteSettings {
   showroomAddress: string;
   openingHours: string;
   googleMapsUrl: string;
+  googleMapsPlaceId?: string;
+  googleMapsEmbedUrl?: string;
+  googleMapsDirectionsUrl?: string;
   instagramUrl: string;
   facebookUrl: string;
   youtubeUrl: string;
@@ -475,6 +478,9 @@ export interface BusinessLocationSettings {
   latitude: string;
   longitude: string;
   googleMapsUrl: string;
+  googleMapsPlaceId?: string;
+  googleMapsEmbedUrl?: string;
+  googleMapsDirectionsUrl?: string;
   openingHours: string;
   nearbyLandmarks: string;
   instagramUrl?: string;

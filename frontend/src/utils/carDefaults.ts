@@ -243,7 +243,7 @@ export function normalizeCarRecord(raw: Partial<Car> & { id: string }): Car {
     fuelType: raw.fuelType || 'Petrol',
     transmission: raw.transmission || 'Automatic',
     ownership: raw.ownership || '1st Owner',
-    location: raw.location || 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+    location: raw.location || 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092',
     status: raw.status || 'Available',
     featured: Boolean(raw.featured),
     featuredOrder: typeof raw.featuredOrder === 'number' ? raw.featuredOrder : undefined,
@@ -311,7 +311,7 @@ export function normalizeCarRecord(raw: Partial<Car> & { id: string }): Car {
     sellerType: raw.sellerType || 'Certified Gallery',
     sellerProfile:
       raw.sellerProfile ||
-      'Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+      'Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092.',
     sellerPhone: raw.sellerPhone || '+91 83840 68347',
     sellerWhatsapp: raw.sellerWhatsapp || '918384068347',
     createdAt: raw.createdAt || new Date().toISOString(),

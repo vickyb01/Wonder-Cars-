@@ -206,7 +206,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [fuelType, setFuelType] = useState<FuelType>('Petrol');
   const [transmission, setTransmission] = useState<TransmissionType>('Automatic');
   const [ownership, setOwnership] = useState('1st Owner');
-  const [location, setLocation] = useState('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+  const [location, setLocation] = useState('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092');
   const [status, setStatus] = useState<CarStatus>('Available');
   const [featured, setFeatured] = useState(false);
   const [warrantyPeriod, setWarrantyPeriod] = useState('1 Year');
@@ -216,7 +216,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
   const [highlightsText, setHighlightsText] = useState('');
   const [sellerName, setSellerName] = useState('Wonder Cars Preet Vihar Showroom');
   const [sellerType, setSellerType] = useState<Car['sellerType']>('Certified Gallery');
-  const [sellerProfile, setSellerProfile] = useState('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+  const [sellerProfile, setSellerProfile] = useState('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092.');
   const [sellerPhone, setSellerPhone] = useState('+91 83840 68347');
   const [sellerWhatsapp, setSellerWhatsapp] = useState('918384068347');
 
@@ -447,7 +447,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setFuelType('Petrol');
       setTransmission('Automatic');
       setOwnership('1st Owner');
-      setLocation('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+      setLocation('Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092');
       setStatus('Available');
       setFeatured(false);
       setWarrantyPeriod('1 Year');
@@ -457,7 +457,7 @@ export function AdminCarModal({ car, open, onClose, onSaved }: AdminCarModalProp
       setHighlightsText('');
       setSellerName('Wonder Cars Preet Vihar Showroom');
       setSellerType('Certified Gallery');
-      setSellerProfile('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.');
+      setSellerProfile('Wonder Cars official showroom at Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092.');
       setSellerPhone('+91 83840 68347');
       setSellerWhatsapp('918384068347');
       setGallery([]);

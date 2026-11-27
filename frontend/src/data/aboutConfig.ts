@@ -1,3 +1,11 @@
+import { OFFICIAL_SOCIAL_PROFILES } from '../utils/seo';
+import {
+  SHOWROOM_FULL_ADDRESS,
+  SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL,
+  SHOWROOM_GOOGLE_MAPS_EMBED_URL,
+  SHOWROOM_GOOGLE_MAPS_URL,
+} from '../utils/location';
+
 export interface OwnerInfo {
   name: string;
   designation: string;
@@ -435,7 +443,7 @@ export const ABOUT_DATA: AboutConfig = {
     title: 'Experience Wonder Cars in Motion',
     description:
       'Watch our comprehensive showroom tours, detailed car inspections, client vehicle deliveries, and automotive highlights.',
-    channelUrl: 'https://youtube.com/@usedcarsnearby?si=rLhUh-H6HIdMfBQ5',
+    channelUrl: OFFICIAL_SOCIAL_PROFILES.youtube,
     items: [
       {
         id: 'v1',
@@ -478,7 +486,7 @@ export const ABOUT_DATA: AboutConfig = {
     title: 'Watch Us on Instagram Reels',
     description:
       'Catch our latest pre-owned luxury car deliveries, condition walkthroughs, and special deals updated daily on @usedcarsnearby.',
-    profileUrl: 'https://www.instagram.com/usedcarsnearby?fqnt=MWdxdjZndW4zNHkwNQ%3D%3D',
+    profileUrl: OFFICIAL_SOCIAL_PROFILES.instagram,
     items: [
       {
         id: 'ig-1',
@@ -509,8 +517,7 @@ export const ABOUT_DATA: AboutConfig = {
     title: 'Real Stories from Wonder Cars Owners',
     description:
       'We measure our success by the satisfaction, confidence, and peace of mind our car owners enjoy across Delhi-NCR and beyond.',
-    googleReviewUrl:
-      'https://www.google.com/maps/place/Wonder+cars/@28.6396962,77.2910558,17z/data=!3m1!4b1!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307!16s%2Fg%2F11z4164dfg',
+    googleReviewUrl: SHOWROOM_GOOGLE_MAPS_URL,
     averageRating: '4.9',
     totalReviews: '120+ Verified Reviews',
     items: [
@@ -553,19 +560,19 @@ export const ABOUT_DATA: AboutConfig = {
   social: {
     instagram: {
       handle: '@usedcarsnearby',
-      url: 'https://www.instagram.com/usedcarsnearby?fqnt=MWdxdjZndW4zNHkwNQ%3D%3D',
+      url: OFFICIAL_SOCIAL_PROFILES.instagram,
       followers: 'Growing Community',
       bio: 'Daily new car inventory drops, live delivery stories, and walkaround videos.',
     },
     facebook: {
       pageName: 'Used cars nearby | Delhi',
-      url: 'https://www.facebook.com/amanjain.nj784?mibextid=wwXIfr&rdid=PxDsB5WikY8FmiYB&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AMqRrq1Si%2F%3Fmibextid%3DwwXIfr#',
+      url: OFFICIAL_SOCIAL_PROFILES.facebook,
       likes: 'Active Community',
       bio: 'Official Facebook page for customer updates, car listings, and special seasonal offers.',
     },
     youtube: {
       channelName: 'Used Cars Nearby',
-      url: 'https://youtube.com/@usedcarsnearby?si=rLhUh-H6HIdMfBQ5',
+      url: OFFICIAL_SOCIAL_PROFILES.youtube,
       subscribers: 'Official Channel',
       bio: 'Watch detailed vehicle walkthroughs, exhaust sound clips, and buyer inspection guides.',
     },
@@ -573,7 +580,7 @@ export const ABOUT_DATA: AboutConfig = {
 
   showroom: {
     name: 'Wonder Cars Flagship Showroom',
-    address: 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+    address: SHOWROOM_FULL_ADDRESS,
     landmark: 'Near Preet Vihar Metro Station',
     city: 'Delhi',
     state: 'Delhi',
@@ -587,12 +594,9 @@ export const ABOUT_DATA: AboutConfig = {
       lat: 28.6396915,
       lng: 77.2936307,
     },
-    googleMapsPlaceUrl:
-      'https://www.google.com/maps/place/Wonder+cars/@28.6396962,77.2910558,17z/data=!3m1!4b1!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307!16s%2Fg%2F11z4164dfg',
-    googleMapsEmbedUrl:
-      'https://maps.google.com/maps?q=loc:28.6396915,77.2936307+(Wonder+cars)&t=m&z=17&ie=UTF8&iwloc=&output=embed',
-    googleMapsDirectionsUrl:
-      'https://www.google.com/maps/dir//Wonder+cars/@28.6396915,77.2936307,17z/data=!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307',
+    googleMapsPlaceUrl: SHOWROOM_GOOGLE_MAPS_URL,
+    googleMapsEmbedUrl: SHOWROOM_GOOGLE_MAPS_EMBED_URL,
+    googleMapsDirectionsUrl: SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL,
   },
 };
 

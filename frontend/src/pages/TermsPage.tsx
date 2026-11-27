@@ -1,11 +1,12 @@
 import { SeoHead } from '../components/SeoHead';
+import { TERMS_SEO_DESCRIPTION, TERMS_SEO_TITLE } from '../utils/seo';
 
 export function TermsPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090B] pt-28 pb-20 transition-colors duration-200">
       <SeoHead
-        title="Terms & Conditions"
-        description="Terms and Conditions governing vehicle listings and transactions at Wonder Cars."
+        title={TERMS_SEO_TITLE}
+        description={TERMS_SEO_DESCRIPTION}
         canonicalPath="/terms"
       />
 

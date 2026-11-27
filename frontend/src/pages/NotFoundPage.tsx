@@ -54,7 +54,7 @@ export function NotFoundPage() {
             className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-500 dark:text-zinc-400 hover:text-amber-600 dark:hover:text-amber-400 transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" aria-hidden="true" />
-            <span>Explore available Wonder Cars inventory</span>
+            <span>Explore Used Car Nearby inventory</span>
           </Link>
         </div>
       </div>

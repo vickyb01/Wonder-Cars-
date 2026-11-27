@@ -66,11 +66,24 @@ export function Navbar() {
         </div>
 
         {/* Mobile inline nav (single-row layout, preserved for clean mobile responsiveness) */}
-        <nav className="md:hidden flex items-center justify-center gap-2 xs:gap-3 flex-1 min-w-0" aria-label="Mobile navigation">
+        <nav className="md:hidden flex items-center justify-center gap-1 xs:gap-2 flex-1 min-w-0" aria-label="Mobile navigation">
+          <NavLink
+            to="/cars"
+            end
+            className={({ isActive }) =>
+              `px-1.5 xs:px-2 py-1.5 rounded-lg text-xs xs:text-sm font-semibold whitespace-nowrap transition-colors ${
+                isActive && !location.search.includes('saved=true')
+                  ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white'
+                  : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
+              }`
+            }
+          >
+            Inventory
+          </NavLink>
           <NavLink
             to="/about"
             className={({ isActive }) =>
-              `px-2 xs:px-2.5 py-1.5 rounded-lg text-[13px] xs:text-sm font-semibold whitespace-nowrap transition-colors ${
+              `px-1.5 xs:px-2 py-1.5 rounded-lg text-xs xs:text-sm font-semibold whitespace-nowrap transition-colors ${
                 isActive
                   ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white'
                   : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'
@@ -81,7 +94,7 @@ export function Navbar() {
           </NavLink>
           <Link
             to="/cars?saved=true"
-            className={`px-2 xs:px-2.5 py-1.5 rounded-lg text-[13px] xs:text-sm font-semibold whitespace-nowrap transition-colors inline-flex items-center gap-1 ${
+            className={`px-1.5 xs:px-2 py-1.5 rounded-lg text-xs xs:text-sm font-semibold whitespace-nowrap transition-colors inline-flex items-center gap-1 ${
               location.pathname === '/cars' && location.search.includes('saved=true')
                 ? 'bg-slate-100 dark:bg-white/[0.08] text-rose-600 dark:text-rose-400'
                 : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-rose-600 dark:hover:text-rose-400'
@@ -93,7 +106,7 @@ export function Navbar() {
           <NavLink
             to="/contact"
             className={({ isActive }) =>
-              `px-2 xs:px-2.5 py-1.5 rounded-lg text-[13px] xs:text-sm font-semibold whitespace-nowrap transition-colors ${
+              `px-1.5 xs:px-2 py-1.5 rounded-lg text-xs xs:text-sm font-semibold whitespace-nowrap transition-colors ${
                 isActive
                   ? 'bg-slate-100 dark:bg-white/[0.08] text-slate-900 dark:text-white'
                   : 'text-slate-700 dark:text-zinc-300 hover:bg-slate-100 dark:hover:bg-white/[0.04] hover:text-slate-900 dark:hover:text-white'

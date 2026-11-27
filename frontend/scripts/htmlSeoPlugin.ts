@@ -1,7 +1,21 @@
 import fs from 'fs';
 import path from 'path';
 import {
+  ABOUT_SEO_DESCRIPTION,
+  ABOUT_SEO_TITLE,
+  ADMIN_LOGIN_SEO_DESCRIPTION,
+  ADMIN_LOGIN_SEO_TITLE,
   CANONICAL_ORIGIN,
+  CARS_SEO_DESCRIPTION,
+  CARS_SEO_TITLE,
+  CONTACT_SEO_DESCRIPTION,
+  CONTACT_SEO_TITLE,
+  PRIVACY_SEO_DESCRIPTION,
+  PRIVACY_SEO_TITLE,
+  SITE_BRAND_NAME,
+  TERMS_SEO_DESCRIPTION,
+  TERMS_SEO_TITLE,
+  buildPageNotFoundSeoData,
   injectHeadSeoHtml,
   normalizeSiteUrl,
 } from '../src/utils/carSeoShared.mjs';
@@ -17,14 +31,14 @@ interface StaticHtmlSeoRoute {
 }
 
 const DEFAULT_OG_IMAGE = `${CANONICAL_ORIGIN}/assets/wonder-cars.jpg`;
+const PAGE_NOT_FOUND_SEO = buildPageNotFoundSeoData(CANONICAL_ORIGIN);
 
 const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'about.html',
     canonicalPath: '/about',
-    title: 'About Us | Used Car Nearby',
-    description:
-      "Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars, showcased online on Used Car Nearby (UsedCarNearby.com).",
+    title: `${ABOUT_SEO_TITLE} | ${SITE_BRAND_NAME}`,
+    description: ABOUT_SEO_DESCRIPTION,
     robots: 'index, follow',
     ogType: 'website',
     ogImage: `${CANONICAL_ORIGIN}/assets/about-hero-bg.jpg`,
@@ -32,9 +46,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'cars.html',
     canonicalPath: '/cars',
-    title: 'Browse Pre-Owned Cars Inventory | Used Car Nearby',
-    description:
-      'Explore pre-owned cars at Used Car Nearby (UsedCarNearby.com) by Wonder Cars, Preet Vihar, Delhi. Compare specifications, view transparent INR pricing, and book a viewing.',
+    title: `${CARS_SEO_TITLE} | ${SITE_BRAND_NAME}`,
+    description: CARS_SEO_DESCRIPTION,
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -42,9 +55,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'contact.html',
     canonicalPath: '/contact',
-    title: 'Contact Us | Used Car Nearby',
-    description:
-      'Contact Wonder Cars via Used Car Nearby for vehicle enquiries, inspection reports, or test drive appointments in Preet Vihar, Delhi.',
+    title: `${CONTACT_SEO_TITLE} | ${SITE_BRAND_NAME}`,
+    description: CONTACT_SEO_DESCRIPTION,
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -52,8 +64,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'privacy.html',
     canonicalPath: '/privacy',
-    title: 'Privacy Policy | Used Car Nearby',
-    description: 'Privacy Policy for Used Car Nearby (Wonder Cars).',
+    title: `${PRIVACY_SEO_TITLE} | ${SITE_BRAND_NAME}`,
+    description: PRIVACY_SEO_DESCRIPTION,
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -61,8 +73,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'terms.html',
     canonicalPath: '/terms',
-    title: 'Terms & Conditions | Used Car Nearby',
-    description: 'Terms and Conditions governing vehicle listings and transactions at Wonder Cars on Used Car Nearby.',
+    title: `${TERMS_SEO_TITLE} | ${SITE_BRAND_NAME}`,
+    description: TERMS_SEO_DESCRIPTION,
     robots: 'index, follow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -70,8 +82,8 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'admin.html',
     canonicalPath: null,
-    title: 'Admin Login — Used Car Nearby',
-    description: 'Secure authentication gateway for Wonder Cars showroom administration on Used Car Nearby.',
+    title: ADMIN_LOGIN_SEO_TITLE,
+    description: ADMIN_LOGIN_SEO_DESCRIPTION,
     robots: 'noindex, nofollow',
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
@@ -79,10 +91,9 @@ const STATIC_HTML_ROUTES: StaticHtmlSeoRoute[] = [
   {
     fileName: 'spa-fallback.html',
     canonicalPath: null,
-    title: 'Page Not Found | Used Car Nearby',
-    description:
-      'The page you requested could not be found on Used Car Nearby. Browse certified pre-owned cars or return to the homepage.',
-    robots: 'noindex, nofollow',
+    title: PAGE_NOT_FOUND_SEO.title,
+    description: PAGE_NOT_FOUND_SEO.description,
+    robots: PAGE_NOT_FOUND_SEO.robots,
     ogType: 'website',
     ogImage: DEFAULT_OG_IMAGE,
   },

@@ -1,4 +1,5 @@
 import { API_BASE, LIVE_BACKEND_URL } from './api';
+import { isValidGa4MeasurementId } from './settingsHelpers.mjs';
 
 declare global {
   interface Window {
@@ -9,24 +10,38 @@ declare global {
 
 export const GA_MEASUREMENT_ID = (import.meta.env.VITE_GA_MEASUREMENT_ID as string) || '';
 
-let isGaInitialized = false;
+let isGaBaseReady = false;
+let configuredGaId = '';
 
 /**
- * Initialize Google Analytics 4 (GA4) with SPA manual route tracking mode
+ * Resolves the active GA4 Measurement ID, prioritizing build-time VITE_GA_MEASUREMENT_ID
+ * and falling back to a validated runtime ID saved in Website Settings.
  */
-export function initGA(): void {
-  if (typeof window === 'undefined' || isGaInitialized) return;
+export function resolveActiveGaId(runtimeMeasurementId?: string): string {
+  const buildId = GA_MEASUREMENT_ID.trim().toUpperCase();
+  if (isValidGa4MeasurementId(buildId)) return buildId;
+  const runtimeId = String(runtimeMeasurementId || '').trim().toUpperCase();
+  if (isValidGa4MeasurementId(runtimeId)) return runtimeId;
+  return '';
+}
 
-  const id = GA_MEASUREMENT_ID.trim();
+/**
+ * Initialize Google Analytics 4 (GA4) with SPA manual route tracking mode.
+ */
+export function initGA(runtimeMeasurementId?: string): void {
+  if (typeof window === 'undefined') return;
 
-  window.dataLayer = window.dataLayer || [];
-  window.gtag = function gtag() {
-    window.dataLayer?.push(arguments);
-  };
+  if (!isGaBaseReady) {
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function gtag() {
+      window.dataLayer?.push(arguments);
+    };
+    window.gtag('js', new Date());
+    isGaBaseReady = true;
+  }
 
-  window.gtag('js', new Date());
-
-  if (id && id.startsWith('G-')) {
+  const id = resolveActiveGaId(runtimeMeasurementId);
+  if (id && id !== configuredGaId && window.gtag) {
     const existingScript = document.querySelector(`script[src*="googletagmanager.com/gtag/js?id=${id}"]`);
     if (!existingScript) {
       const script = document.createElement('script');
@@ -39,9 +54,8 @@ export function initGA(): void {
     window.gtag('config', id, {
       send_page_view: false,
     });
+    configuredGaId = id;
   }
-
-  isGaInitialized = true;
 }
 
 function getClientId(): string {

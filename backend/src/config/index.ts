@@ -24,8 +24,12 @@ export const CLOUDINARY_CLOUD_NAME = process.env.CLOUDINARY_CLOUD_NAME || '';
 export const CLOUDINARY_API_KEY = process.env.CLOUDINARY_API_KEY || '';
 export const CLOUDINARY_API_SECRET = process.env.CLOUDINARY_API_SECRET || '';
 
-export const DATA_DIR = path.resolve(BACKEND_ROOT, 'data');
-export const DB_PATH = path.join(DATA_DIR, 'db.json');
+export const DATA_DIR = process.env.DATA_DIR
+  ? path.resolve(process.env.DATA_DIR)
+  : path.resolve(BACKEND_ROOT, 'data');
+export const DB_PATH = process.env.DB_PATH
+  ? path.resolve(process.env.DB_PATH)
+  : path.join(DATA_DIR, 'db.json');
 export const UPLOADS_DIR = path.resolve(BACKEND_ROOT, 'src', 'uploads');
 
 // Email Lead Notification Configuration

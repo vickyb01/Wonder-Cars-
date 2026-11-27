@@ -20,7 +20,7 @@ import { TermsPage } from './pages/TermsPage';
 import { AdminPage } from './pages/AdminPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { initGA, trackPageView } from './utils/analytics';
-import { wakeBackend } from './utils/api';
+import { fetchWebsiteSettings, wakeBackend } from './utils/api';
 
 function RouteTracker() {
   const { pathname, search } = useLocation();
@@ -108,6 +108,13 @@ export default function App() {
   useEffect(() => {
     initGA();
     void wakeBackend();
+    fetchWebsiteSettings()
+      .then((settings) => {
+        if (settings?.googleAnalyticsId) {
+          initGA(settings.googleAnalyticsId);
+        }
+      })
+      .catch(() => {});
     const handleQuotaExceeded = () => setMapsQuotaExceeded(true);
     window.addEventListener('gmp-quota-exceeded', handleQuotaExceeded);
     return () => window.removeEventListener('gmp-quota-exceeded', handleQuotaExceeded);

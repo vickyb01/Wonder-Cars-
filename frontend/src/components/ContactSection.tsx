@@ -4,7 +4,15 @@ import type { BusinessLocationSettings } from '../types/car';
 import { fetchBusinessLocation, submitEnquiry } from '../utils/api';
 import { useCart } from '../context/CartContext';
 import { buildWhatsAppUrl } from '../utils/format';
-import { EMPTY_LOCATION_SETTINGS, formatFullAddress, buildOpenMapsUrl } from '../utils/location';
+import {
+  EMPTY_LOCATION_SETTINGS,
+  SHOWROOM_FULL_ADDRESS,
+  SHOWROOM_GOOGLE_MAPS_URL,
+  buildOpenMapsUrl,
+  formatFullAddress,
+  normalizeShowroomAddress,
+} from '../utils/location';
+import { OFFICIAL_SOCIAL_PROFILES, normalizeOfficialSocialUrl } from '../utils/seo';
 import { ShowroomGoogleMap } from './ShowroomGoogleMap';
 import { trackClickCall, trackClickWhatsApp, trackGenerateLead } from '../utils/analytics';
 
@@ -14,19 +22,18 @@ const FALLBACK_CONTACT: BusinessLocationSettings = {
   phone: '+91 83840 68347',
   email: 'amanjain.nj784@gmail.com',
   whatsapp: '918384068347',
-  address: 'Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.',
+  address: SHOWROOM_FULL_ADDRESS,
   city: 'Delhi',
   state: 'Delhi',
   postalCode: '110092',
   latitude: '28.6396915',
   longitude: '77.2936307',
-  googleMapsUrl:
-    'https://www.google.com/maps/place/Wonder+cars/@28.6396962,77.2910558,17z/data=!3m1!4b1!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d28.6396915!4d77.2936307!16s%2Fg%2F11z4164dfg',
+  googleMapsUrl: SHOWROOM_GOOGLE_MAPS_URL,
   openingHours: 'Monday – Sunday: 10:00 AM – 8:00 PM',
   nearbyLandmarks: 'Near Preet Vihar Metro Station',
-  instagramUrl: 'https://www.instagram.com/usedcarsnearby?fqnt=MWdxdjZndW4zNHkwNQ%3D%3D',
-  facebookUrl: 'https://www.facebook.com/amanjain.nj784?mibextid=wwXIfr&rdid=PxDsB5WikY8FmiYB&share_url=https%3A%2F%2Fwww.facebook.com%2Fshare%2F1AMqRrq1Si%2F%3Fmibextid%3DwwXIfr#',
-  youtubeUrl: 'https://youtube.com/@usedcarsnearby?si=rLhUh-H6HIdMfBQ5',
+  instagramUrl: OFFICIAL_SOCIAL_PROFILES.instagram,
+  facebookUrl: OFFICIAL_SOCIAL_PROFILES.facebook,
+  youtubeUrl: OFFICIAL_SOCIAL_PROFILES.youtube,
 };
 
 function InstagramIcon() {
@@ -122,9 +129,9 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
     displayWhatsapp,
     'Hello Wonder Cars, I would like to enquire about a vehicle at your showroom.'
   );
-  const instagramUrl = location.instagramUrl || FALLBACK_CONTACT.instagramUrl;
-  const facebookUrl = location.facebookUrl || FALLBACK_CONTACT.facebookUrl;
-  const youtubeUrl = location.youtubeUrl || FALLBACK_CONTACT.youtubeUrl;
+  const instagramUrl = normalizeOfficialSocialUrl('instagram', location.instagramUrl);
+  const facebookUrl = normalizeOfficialSocialUrl('facebook', location.facebookUrl);
+  const youtubeUrl = normalizeOfficialSocialUrl('youtube', location.youtubeUrl);
   const mapsUrl = buildOpenMapsUrl(location) || location.googleMapsUrl || FALLBACK_CONTACT.googleMapsUrl;
 
   async function handleSubmit(e: React.FormEvent) {
@@ -230,7 +237,7 @@ export function ContactSection({ isMainHeading = false, showMap = true }: Contac
                       </span>
                     </div>
                     <p className="text-sm sm:text-base text-slate-600 dark:text-zinc-300 mt-0.5 leading-relaxed">
-                      Shop No.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi-92.
+                      {normalizeShowroomAddress(displayAddress)}
                     </p>
                   </div>
                 </a>

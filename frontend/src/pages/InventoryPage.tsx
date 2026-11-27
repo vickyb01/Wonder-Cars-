@@ -7,7 +7,7 @@ import { useWishlist } from '../context/WishlistContext';
 import { CarCard } from '../components/CarCard';
 import { EmiFilterPanel } from '../components/EmiFilterPanel';
 import { SeoHead } from '../components/SeoHead';
-import { CARS_SEO_DESCRIPTION, CARS_SEO_TITLE } from '../utils/seo';
+import { CARS_SEO_DESCRIPTION, CARS_SEO_TITLE, buildBrandCarsDescription } from '../utils/seo';
 import {
   BRAND_CATALOG,
   matchesBrandFilter,
@@ -501,7 +501,11 @@ export function InventoryPage() {
             ? `${selectedBrandDisplay} Cars`
             : CARS_SEO_TITLE
         }
-        description={CARS_SEO_DESCRIPTION}
+        description={
+          selectedBrandDisplay !== 'All'
+            ? buildBrandCarsDescription(selectedBrandDisplay)
+            : CARS_SEO_DESCRIPTION
+        }
         canonicalPath="/cars"
       />
 

@@ -539,7 +539,9 @@ export function ComparePage() {
     <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-24 pb-20 transition-colors duration-200">
       <SeoHead
         title="Compare Cars Side by Side"
-        description="Compare up to 3 pre-owned vehicles side by side across specifications, monthly EMI, ownership history, and inspection condition."
+        description="Compare up to 3 pre-owned vehicles side by side across specifications, monthly EMI, ownership history, and inspection condition on Used Car Nearby."
+        canonicalPath="/cars"
+        robots="noindex, follow"
       />
 
       {/* Top Header Banner */}

@@ -31,10 +31,17 @@ import {
   ZoomOut,
 } from 'lucide-react';
 import { SeoHead } from '../components/SeoHead';
+import { ABOUT_SEO_DESCRIPTION, ABOUT_SEO_TITLE, normalizeOfficialSocialUrl } from '../utils/seo';
+import {
+  buildDirectionsUrl,
+  buildMapsEmbedUrl,
+  formatFullAddress,
+  normalizeShowroomAddress,
+} from '../utils/location';
 import { OptimizedPicture } from '../components/OptimizedPicture';
 import { VehicleImage } from '../components/VehicleImage';
-import { BACKEND_READY_EVENT, fetchAboutSettings } from '../utils/api';
-import type { AboutSettings } from '../types/car';
+import { BACKEND_READY_EVENT, fetchAboutSettings, fetchBusinessLocation } from '../utils/api';
+import type { AboutSettings, BusinessLocationSettings } from '../types/car';
 import {
   ABOUT_DATA,
   type CertificateItem,
@@ -99,18 +106,23 @@ function getWhyIcon(iconName: string) {
 }
 
 export function AboutPage() {
-  // Live About Settings from Backend
+  // Live About & Location Settings from Backend
   const [liveSettings, setLiveSettings] = useState<AboutSettings | null>(null);
+  const [liveLocation, setLiveLocation] = useState<BusinessLocationSettings | null>(null);
 
   useEffect(() => {
     let active = true;
     let loadedSettings = false;
     const load = () => {
-      fetchAboutSettings()
-        .then((data) => {
-          if (active && data) {
+      Promise.allSettled([fetchAboutSettings(), fetchBusinessLocation()])
+        .then(([aboutRes, locRes]) => {
+          if (!active) return;
+          if (aboutRes.status === 'fulfilled' && aboutRes.value) {
             loadedSettings = true;
-            setLiveSettings(data);
+            setLiveSettings(aboutRes.value);
+          }
+          if (locRes.status === 'fulfilled' && locRes.value?.location) {
+            setLiveLocation(locRes.value.location);
           }
         })
         .catch(() => null);
@@ -230,30 +242,52 @@ export function AboutPage() {
       ? (liveSettings.videoItems as any)
       : ABOUT_DATA.videos.items;
 
-  const instagramUrl = liveSettings?.instagramUrl || ABOUT_DATA.social.instagram.url;
+  const instagramUrl = normalizeOfficialSocialUrl('instagram', liveSettings?.instagramUrl);
   const instagramHandle = liveSettings?.instagramHandle || ABOUT_DATA.social.instagram.handle;
   const instagramBio = liveSettings?.instagramBio || ABOUT_DATA.social.instagram.bio;
 
-  const facebookUrl = liveSettings?.facebookUrl || ABOUT_DATA.social.facebook.url;
+  const facebookUrl = normalizeOfficialSocialUrl('facebook', liveSettings?.facebookUrl);
   const facebookPageName = liveSettings?.facebookPageName || ABOUT_DATA.social.facebook.pageName;
   const facebookBio = liveSettings?.facebookBio || ABOUT_DATA.social.facebook.bio;
 
-  const youtubeUrl = liveSettings?.youtubeUrl || ABOUT_DATA.social.youtube.url;
+  const youtubeUrl = normalizeOfficialSocialUrl('youtube', liveSettings?.youtubeUrl);
   const youtubeChannelName = liveSettings?.youtubeChannelName || ABOUT_DATA.social.youtube.channelName;
   const youtubeBio = liveSettings?.youtubeBio || ABOUT_DATA.social.youtube.bio;
 
-  const showroomName = liveSettings?.showroomName || ABOUT_DATA.showroom.name;
-  const showroomAddress = liveSettings?.showroomAddress || ABOUT_DATA.showroom.address;
-  const showroomLandmark = liveSettings?.showroomLandmark || ABOUT_DATA.showroom.landmark;
-  const showroomCity = liveSettings?.showroomCity || ABOUT_DATA.showroom.city;
-  const showroomState = liveSettings?.showroomState || ABOUT_DATA.showroom.state;
-  const showroomPincode = liveSettings?.showroomPincode || ABOUT_DATA.showroom.pincode;
-  const showroomPhone = liveSettings?.showroomPhone || ABOUT_DATA.showroom.phone;
-  const showroomEmail = liveSettings?.showroomEmail || ABOUT_DATA.showroom.email;
-  const showroomWhatsapp = liveSettings?.showroomWhatsapp || ABOUT_DATA.showroom.whatsapp;
-  const showroomOpeningHours = liveSettings?.showroomOpeningHours || ABOUT_DATA.showroom.openingHours;
-  const showroomDirectionsUrl = liveSettings?.googleMapsDirectionsUrl || ABOUT_DATA.showroom.googleMapsDirectionsUrl;
-  const showroomEmbedUrl = liveSettings?.googleMapsEmbedUrl || ABOUT_DATA.showroom.googleMapsEmbedUrl;
+  const showroomName = liveLocation?.businessName?.trim() || liveSettings?.showroomName || ABOUT_DATA.showroom.name;
+  const showroomCity = liveLocation?.city?.trim() || liveSettings?.showroomCity || ABOUT_DATA.showroom.city;
+  const showroomState = liveLocation?.state?.trim() || liveSettings?.showroomState || ABOUT_DATA.showroom.state;
+  const showroomPincode = liveLocation?.postalCode?.trim() || liveSettings?.showroomPincode || ABOUT_DATA.showroom.pincode;
+  const showroomAddress = liveLocation?.address?.trim()
+    ? formatFullAddress({
+        address: liveLocation.address,
+        city: showroomCity,
+        state: showroomState,
+        postalCode: showroomPincode,
+      })
+    : liveSettings?.showroomAddress || ABOUT_DATA.showroom.address;
+  const showroomLandmark = liveLocation?.nearbyLandmarks?.trim() || liveSettings?.showroomLandmark || ABOUT_DATA.showroom.landmark;
+  const showroomPhone = liveSettings?.showroomPhone || liveLocation?.phone || ABOUT_DATA.showroom.phone;
+  const showroomEmail = liveSettings?.showroomEmail || liveLocation?.email || ABOUT_DATA.showroom.email;
+  const showroomWhatsapp = liveSettings?.showroomWhatsapp || liveLocation?.whatsapp || ABOUT_DATA.showroom.whatsapp;
+  const showroomOpeningHours = liveLocation?.openingHours?.trim() || liveSettings?.showroomOpeningHours || ABOUT_DATA.showroom.openingHours;
+
+  const syncedMapsLocation: Partial<BusinessLocationSettings> = {
+    businessName: showroomName,
+    address: showroomAddress,
+    city: showroomCity,
+    state: showroomState,
+    postalCode: showroomPincode,
+    latitude: liveLocation?.latitude || '28.6396915',
+    longitude: liveLocation?.longitude || '77.2936307',
+    googleMapsPlaceId: liveLocation?.googleMapsPlaceId || '',
+    googleMapsUrl: liveLocation?.googleMapsUrl || '',
+    googleMapsEmbedUrl: liveLocation?.googleMapsEmbedUrl?.trim() || liveSettings?.googleMapsEmbedUrl || '',
+    googleMapsDirectionsUrl: liveLocation?.googleMapsDirectionsUrl?.trim() || liveSettings?.googleMapsDirectionsUrl || '',
+  };
+  const showroomDirectionsUrl =
+    buildDirectionsUrl(syncedMapsLocation) || ABOUT_DATA.showroom.googleMapsDirectionsUrl;
+  const showroomEmbedUrl = buildMapsEmbedUrl(syncedMapsLocation);
 
   // Keyboard navigation for gallery lightbox
   useEffect(() => {
@@ -287,8 +321,8 @@ export function AboutPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-[#FAFAFA] transition-colors duration-200 text-center">
       <SeoHead
-        title="About Us"
-        description="Wonder Cars is Delhi-NCR's premier destination for certified pre-owned luxury and performance cars. Founded by Naman Jain on trust, forensic quality audits, and clear title transparency."
+        title={ABOUT_SEO_TITLE}
+        description={ABOUT_SEO_DESCRIPTION}
         canonicalPath="/about"
         ogImage="https://www.usedcarnearby.com/assets/about-hero-bg.jpg"
       />
@@ -1178,7 +1212,9 @@ export function AboutPage() {
                     {showroomName}
                   </h3>
                   <p className="text-sm text-slate-500 dark:text-zinc-400 mt-1">
-                    {showroomCity}, {showroomState}
+                    {showroomCity === showroomState
+                      ? `${showroomCity}, India`
+                      : `${showroomCity}, ${showroomState}`}
                   </p>
                 </div>
 
@@ -1189,9 +1225,7 @@ export function AboutPage() {
                     <div>
                       <p className="font-semibold text-slate-900 dark:text-white">Address</p>
                       <p className="text-slate-600 dark:text-zinc-400">
-                        {showroomAddress.includes('Delhi-92') || showroomAddress.includes('110092')
-                          ? showroomAddress
-                          : `${showroomAddress}, ${showroomCity}, ${showroomState} ${showroomPincode}`}
+                        {normalizeShowroomAddress(showroomAddress)}
                       </p>
                       <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5 font-medium">
                         Landmark: {showroomLandmark}

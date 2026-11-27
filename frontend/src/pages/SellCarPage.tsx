@@ -73,7 +73,9 @@ export function SellCarPage() {
     <div className="min-h-screen bg-white dark:bg-[#09090B] text-slate-900 dark:text-white pt-24 pb-20 transition-colors duration-200">
       <SeoHead
         title="Sell Your Car"
-        description="Receive a direct buyout offer or private consignment valuation for your luxury car within 24 hours."
+        description="Receive a direct buyout offer or private consignment valuation for your luxury car within 24 hours from Wonder Cars on Used Car Nearby."
+        canonicalPath="/cars"
+        robots="noindex, follow"
       />
 
       <div className="max-w-7xl mx-auto px-5 sm:px-8">

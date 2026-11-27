@@ -1,6 +1,11 @@
 import type { Request, Response } from 'express';
-import { readDb, writeDb, logActivity, normalizeLocationSettings } from '../services/store.service.ts';
+import { readDb, writeDb, logActivity } from '../services/store.service.ts';
 import { GOOGLE_MAPS_API_KEY } from '../config/index.ts';
+import {
+  syncLocationMapsToAbout,
+  validateAndSanitizeLocationSettings,
+  validateAndSanitizeWebsiteSettings,
+} from '../utils/settingsValidation.ts';
 
 // Location Settings
 export function getLocationSettings(_req: Request, res: Response): void {
@@ -13,45 +18,18 @@ export function getLocationSettings(_req: Request, res: Response): void {
 }
 
 export function updateLocationSettings(req: Request, res: Response): void {
-  const normalized = normalizeLocationSettings(req.body || {});
-
-  if (normalized.latitude !== '') {
-    const latNum = Number(normalized.latitude);
-    if (!Number.isFinite(latNum) || latNum < -90 || latNum > 90) {
-      res.status(400).json({ error: 'Latitude must be a valid number between -90 and 90.' });
-      return;
-    }
-  }
-
-  if (normalized.longitude !== '') {
-    const lngNum = Number(normalized.longitude);
-    if (!Number.isFinite(lngNum) || lngNum < -180 || lngNum > 180) {
-      res.status(400).json({ error: 'Longitude must be a valid number between -180 and 180.' });
-      return;
-    }
-  }
-
-  if ((normalized.latitude !== '' && normalized.longitude === '') || (normalized.latitude === '' && normalized.longitude !== '')) {
-    res.status(400).json({ error: 'Please provide both Latitude and Longitude coordinates, or leave both empty.' });
-    return;
-  }
-
-  if (normalized.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(normalized.email)) {
-    res.status(400).json({ error: 'Please enter a valid official email address.' });
-    return;
-  }
-
-  if (normalized.googleMapsUrl && !/^https?:\/\//i.test(normalized.googleMapsUrl)) {
-    res.status(400).json({ error: 'Google Maps URL must start with http:// or https://.' });
-    return;
-  }
-
-  normalized.updatedAt = new Date().toISOString();
-
   const db = readDb();
-  db.locationSettings = normalized;
+  const validation = validateAndSanitizeLocationSettings(db.locationSettings, req.body);
+  if (!validation.ok) {
+    res.status(400).json({ error: validation.error, fieldErrors: validation.fieldErrors });
+    return;
+  }
+
+  db.locationSettings = validation.data;
+  db.aboutSettings = syncLocationMapsToAbout(db.aboutSettings, validation.data);
   writeDb(db);
-  res.json(normalized);
+  logActivity('admin', 'Updated Showroom Location Settings', 'Updated showroom address, coordinates, or Maps configuration.');
+  res.json(db.locationSettings);
 }
 
 export async function geocodeAddress(req: Request, res: Response): Promise<void> {
@@ -123,12 +101,15 @@ export function getWebsiteSettings(_req: Request, res: Response): void {
 
 export function updateWebsiteSettings(req: Request, res: Response): void {
   const db = readDb();
-  db.websiteSettings = {
-    ...db.websiteSettings,
-    ...(req.body || {}),
-  };
+  const validation = validateAndSanitizeWebsiteSettings(db.websiteSettings, req.body);
+  if (!validation.ok) {
+    res.status(400).json({ error: validation.error, fieldErrors: validation.fieldErrors });
+    return;
+  }
+
+  db.websiteSettings = validation.data;
   writeDb(db);
-  logActivity('admin', 'Updated Website Settings', 'Changed branding, contact, SEO, or footer settings.');
+  logActivity('admin', 'Updated Website Settings', 'Changed branding, contact, SEO, analytics, or footer settings.');
   res.json(db.websiteSettings);
 }
 

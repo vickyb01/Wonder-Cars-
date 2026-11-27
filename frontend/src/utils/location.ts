@@ -1,4 +1,18 @@
 import type { BusinessLocationSettings } from '../types/car';
+import {
+  SHOWROOM_FULL_ADDRESS,
+  SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL,
+  SHOWROOM_GOOGLE_MAPS_EMBED_URL,
+  SHOWROOM_GOOGLE_MAPS_URL,
+} from './carSeoShared.mjs';
+import { resolveMapsDirectionsUrl, resolveMapsEmbedUrl } from './settingsHelpers.mjs';
+
+export {
+  SHOWROOM_FULL_ADDRESS,
+  SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL,
+  SHOWROOM_GOOGLE_MAPS_EMBED_URL,
+  SHOWROOM_GOOGLE_MAPS_URL,
+};
 
 export const EMPTY_LOCATION_SETTINGS: BusinessLocationSettings = {
   businessName: '',
@@ -37,24 +51,79 @@ export function parseCoordinates(
 export function formatFullAddress(
   location: Pick<BusinessLocationSettings, 'address' | 'city' | 'state' | 'postalCode'>
 ): string {
+  const street = String(location.address || '').trim();
+  if (/110092/.test(street) && /preet vihar/i.test(street)) {
+    return SHOWROOM_FULL_ADDRESS;
+  }
   const cityStatePin = [location.city, location.state, location.postalCode]
     .map((s) => String(s || '').trim())
-    .filter(Boolean)
+    .filter((val, idx, arr) => Boolean(val) && arr.indexOf(val) === idx)
     .join(', ');
 
-  return [String(location.address || '').trim(), cityStatePin].filter(Boolean).join(', ');
+  return [street, cityStatePin].filter(Boolean).join(', ');
 }
 
-export function buildDirectionsUrl(location: BusinessLocationSettings): string | null {
-  const coords = parseCoordinates(location);
-  if (coords) {
-    return `https://www.google.com/maps/dir//Wonder+cars/@${coords.lat},${coords.lng},17z/data=!4m6!3m5!1s0x390cfbb6c71185b3:0x518ca5e40932dc6d!8m2!3d${coords.lat}!4d${coords.lng}`;
+/**
+ * Standardizes Preet Vihar showroom address variants to the verified public address format.
+ */
+export function normalizeShowroomAddress(rawAddress?: string): string {
+  const trimmed = String(rawAddress || '').trim();
+  if (!trimmed) return SHOWROOM_FULL_ADDRESS;
+  if (/rajkamal sadan/i.test(trimmed) || /preet vihar/i.test(trimmed)) {
+    return SHOWROOM_FULL_ADDRESS;
   }
-  const fullAddr = formatFullAddress(location);
-  if (fullAddr) {
-    return `https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(fullAddr)}`;
+  return trimmed;
+}
+
+/**
+ * Replaces known placeholder Google Maps embed URLs with the verified Wonder Cars embed URL.
+ */
+export function normalizeShowroomMapsEmbedUrl(rawUrl?: string): string {
+  const trimmed = String(rawUrl || '').trim();
+  if (
+    !trimmed ||
+    trimmed.includes('0x390cfb5c00000001') ||
+    trimmed.includes('0x89abcdef12345678') ||
+    (trimmed.includes('28.643387') && trimmed.includes('77.291771'))
+  ) {
+    return SHOWROOM_GOOGLE_MAPS_EMBED_URL;
   }
-  return null;
+  return trimmed;
+}
+
+/**
+ * Replaces generic Google Maps directions links with the verified Wonder Cars Place ID directions URL.
+ */
+export function normalizeShowroomDirectionsUrl(rawUrl?: string): string {
+  const trimmed = String(rawUrl || '').trim();
+  if (!trimmed || /^https?:\/\/maps\.google\.com\/\?q=/i.test(trimmed)) {
+    return SHOWROOM_GOOGLE_MAPS_DIRECTIONS_URL;
+  }
+  return trimmed;
+}
+
+/**
+ * Replaces generic Google Maps place links with the verified Wonder Cars Place URL.
+ */
+export function normalizeShowroomPlaceUrl(rawUrl?: string): string {
+  const trimmed = String(rawUrl || '').trim();
+  if (!trimmed || /^https?:\/\/maps\.google\.com\/\?q=/i.test(trimmed)) {
+    return SHOWROOM_GOOGLE_MAPS_URL;
+  }
+  return trimmed;
+}
+
+export function buildDirectionsUrl(
+  location: Partial<BusinessLocationSettings>
+): string | null {
+  return resolveMapsDirectionsUrl(location);
+}
+
+export function buildMapsEmbedUrl(
+  location: Partial<BusinessLocationSettings>,
+  zoom = 17
+): string {
+  return resolveMapsEmbedUrl(location, zoom);
 }
 
 export function buildOpenMapsUrl(location: BusinessLocationSettings): string | null {

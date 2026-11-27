@@ -1,11 +1,12 @@
 import { SeoHead } from '../components/SeoHead';
+import { PRIVACY_SEO_DESCRIPTION, PRIVACY_SEO_TITLE } from '../utils/seo';
 
 export function PrivacyPage() {
   return (
     <div className="min-h-screen bg-white dark:bg-[#09090B] pt-28 pb-20 transition-colors duration-200">
       <SeoHead
-        title="Privacy Policy"
-        description="Privacy Policy for Wonder Cars."
+        title={PRIVACY_SEO_TITLE}
+        description={PRIVACY_SEO_DESCRIPTION}
         canonicalPath="/privacy"
       />
 

@@ -355,3 +355,172 @@ test('App.tsx routes unknown paths to NotFoundPage with Browse Cars and Homepage
   assert.match(notFoundSource, /to="\/cars"/);
   assert.match(notFoundSource, /to="\/"/);
 });
+
+function extractJsonLdScripts(html) {
+  const matches = [...html.matchAll(/<script[^>]*type=["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)];
+  return matches.map((m) => JSON.parse(m[1]));
+}
+
+test('public HTML shells have valid, non-duplicated Organization, WebSite, and AutoDealer JSON-LD', () => {
+  const publicFiles = ['index.html', 'about.html', 'cars.html', 'contact.html', 'privacy.html', 'terms.html'];
+  const expectedSameAs = [
+    'https://www.instagram.com/usedcarsnearby/',
+    'https://www.facebook.com/amanjain.nj784/',
+    'https://www.youtube.com/c/usedcarsnearby',
+  ];
+
+  for (const fileName of publicFiles) {
+    const html = fs.readFileSync(path.join(DIST_DIR, fileName), 'utf8');
+    const schemas = extractJsonLdScripts(html);
+    const orgs = schemas.filter((s) => s['@type'] === 'Organization');
+    const sites = schemas.filter((s) => s['@type'] === 'WebSite');
+    const dealers = schemas.filter((s) => s['@type'] === 'AutoDealer');
+
+    assert.equal(orgs.length, 1, `Expected 1 Organization in ${fileName}`);
+    assert.equal(sites.length, 1, `Expected 1 WebSite in ${fileName}`);
+    assert.equal(dealers.length, 1, `Expected 1 AutoDealer in ${fileName}`);
+
+    assert.equal(orgs[0].name, 'Used Car Nearby');
+    assert.deepEqual(orgs[0].alternateName, ['UsedCarNearby', 'usedcarnearby.com']);
+    assert.deepEqual(orgs[0].sameAs, expectedSameAs);
+    assert.equal(orgs[0].subOrganization?.['@id'], 'https://www.usedcarnearby.com/#wondercars');
+
+    assert.equal(sites[0].publisher?.['@id'], 'https://www.usedcarnearby.com/#organization');
+
+    assert.equal(dealers[0].name, 'Wonder Cars');
+    assert.equal(dealers[0].parentOrganization?.['@id'], 'https://www.usedcarnearby.com/#organization');
+    assert.equal(dealers[0].address?.postalCode, '110092');
+    assert.equal(dealers[0].geo?.latitude, 28.6396915);
+    assert.equal(dealers[0].geo?.longitude, 77.2936307);
+    assert.equal(dealers[0].sameAs, undefined);
+  }
+});
+
+test('noindex admin and 404 HTML shells exclude Organization, AutoDealer, and business social profiles', async () => {
+  for (const fileName of ['admin.html', 'spa-fallback.html']) {
+    const html = fs.readFileSync(path.join(DIST_DIR, fileName), 'utf8');
+    assert.equal(extractJsonLdScripts(html).length, 0, `Expected no JSON-LD in ${fileName}`);
+    assert.equal(/instagram\.com|facebook\.com|youtube\.com/i.test(html), false);
+  }
+
+  const distFallback = fs.readFileSync(path.join(DIST_DIR, 'spa-fallback.html'), 'utf8');
+  const notFoundHandler = createNotFoundHandler({ templateHtml: distFallback });
+  const res = createMockRes();
+  await notFoundHandler({ method: 'GET', url: '/unknown-page' }, res);
+  assert.equal(extractJsonLdScripts(res.body).length, 0);
+  assert.equal(/instagram\.com|facebook\.com|youtube\.com/i.test(res.body), false);
+});
+
+test('Phase 2 metadata consistency: unique titles/descriptions and aligned static vs shared SEO constants', async () => {
+  const seoShared = await import(
+    pathToFileURL(path.join(FRONTEND_DIR, 'src/utils/carSeoShared.mjs')).href
+  );
+
+  const decodeEntities = (s) =>
+    s
+      .replace(/&amp;/g, '&')
+      .replace(/&apos;/g, "'")
+      .replace(/&quot;/g, '"')
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>');
+
+  const expectedPages = [
+    {
+      file: 'index.html',
+      title: seoShared.HOMEPAGE_SEO_TITLE,
+      description: seoShared.HOMEPAGE_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/',
+      robots: 'index, follow',
+    },
+    {
+      file: 'cars.html',
+      title: `${seoShared.CARS_SEO_TITLE} | ${seoShared.SITE_BRAND_NAME}`,
+      description: seoShared.CARS_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/cars',
+      robots: 'index, follow',
+    },
+    {
+      file: 'about.html',
+      title: `${seoShared.ABOUT_SEO_TITLE} | ${seoShared.SITE_BRAND_NAME}`,
+      description: seoShared.ABOUT_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/about',
+      robots: 'index, follow',
+    },
+    {
+      file: 'contact.html',
+      title: `${seoShared.CONTACT_SEO_TITLE} | ${seoShared.SITE_BRAND_NAME}`,
+      description: seoShared.CONTACT_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/contact',
+      robots: 'index, follow',
+    },
+    {
+      file: 'privacy.html',
+      title: `${seoShared.PRIVACY_SEO_TITLE} | ${seoShared.SITE_BRAND_NAME}`,
+      description: seoShared.PRIVACY_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/privacy',
+      robots: 'index, follow',
+    },
+    {
+      file: 'terms.html',
+      title: `${seoShared.TERMS_SEO_TITLE} | ${seoShared.SITE_BRAND_NAME}`,
+      description: seoShared.TERMS_SEO_DESCRIPTION,
+      canonical: 'https://www.usedcarnearby.com/terms',
+      robots: 'index, follow',
+    },
+    {
+      file: 'admin.html',
+      title: seoShared.ADMIN_LOGIN_SEO_TITLE,
+      description: seoShared.ADMIN_LOGIN_SEO_DESCRIPTION,
+      canonical: null,
+      robots: 'noindex, nofollow',
+    },
+  ];
+
+  const seenTitles = new Set();
+  const seenDescriptions = new Set();
+
+  for (const page of expectedPages) {
+    const html = fs.readFileSync(path.join(DIST_DIR, page.file), 'utf8');
+    const title = decodeEntities(html.match(/<title>([\s\S]*?)<\/title>/i)?.[1] || '');
+    const description = decodeEntities(
+      html.match(/<meta\s+name=["']description["']\s+content=["']([^"']*)["']/i)?.[1] || ''
+    );
+    const robots = html.match(/<meta\s+name=["']robots["']\s+content=["']([^"']*)["']/i)?.[1] || '';
+    const canonical = html.match(/<link\s+rel=["']canonical["']\s+href=["']([^"']*)["']/i)?.[1] || null;
+
+    assert.equal(title, page.title, `Title mismatch in ${page.file}`);
+    assert.equal(description, page.description, `Description mismatch in ${page.file}`);
+    assert.equal(robots, page.robots, `Robots mismatch in ${page.file}`);
+    assert.equal(canonical, page.canonical, `Canonical mismatch in ${page.file}`);
+
+    assert.equal(seenTitles.has(title), false, `Duplicate title found: ${title}`);
+    assert.equal(seenDescriptions.has(description), false, `Duplicate description found: ${description}`);
+    seenTitles.add(title);
+    seenDescriptions.add(description);
+  }
+});
+
+test('Phase 2 Google Maps URLs, showroom address, and internal navigation links are consistent', () => {
+  const locationSrc = fs.readFileSync(path.join(FRONTEND_DIR, 'src/utils/location.ts'), 'utf8');
+  assert.match(locationSrc, /0x390cfb5c00000001/);
+  assert.match(locationSrc, /SHOWROOM_GOOGLE_MAPS_EMBED_URL/);
+
+  const seoSharedSrc = fs.readFileSync(path.join(FRONTEND_DIR, 'src/utils/carSeoShared.mjs'), 'utf8');
+  assert.match(seoSharedSrc, /28\.6396915/);
+  assert.match(seoSharedSrc, /77\.2936307/);
+  assert.match(seoSharedSrc, /0x390cfbb6c71185b3:0x518ca5e40932dc6d/);
+  assert.match(seoSharedSrc, /Shop No\.-3, Rajkamal Sadan, Preet Vihar, Commercial Complex, Delhi, India - 110092/);
+
+  const navbarSrc = fs.readFileSync(path.join(FRONTEND_DIR, 'src/components/Navbar.tsx'), 'utf8');
+  const mobileNavMatch = navbarSrc.match(/aria-label="Mobile navigation"[\s\S]*?<\/nav>/);
+  assert.ok(mobileNavMatch, 'Expected mobile navigation block');
+  assert.match(mobileNavMatch[0], /to="\/cars"/);
+
+  const footerSrc = fs.readFileSync(path.join(FRONTEND_DIR, 'src/components/Footer.tsx'), 'utf8');
+  assert.match(footerSrc, /to="\/about"/);
+  assert.match(footerSrc, /to="\/contact"/);
+  assert.match(footerSrc, /to="\/privacy"/);
+  assert.match(footerSrc, /to="\/terms"/);
+  assert.equal(/to="\/admin"/.test(footerSrc), false, 'Public footer must not link to /admin');
+  assert.equal(/About Wonder Cars/.test(footerSrc), false, 'Footer should not use About Wonder Cars link label');
+});
